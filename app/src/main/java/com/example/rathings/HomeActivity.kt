@@ -30,6 +30,9 @@ class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionList
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         /**END LOGOUT INIT*/
 
+        val fragment = CardsFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Cards").commit()
+
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.action_home -> {

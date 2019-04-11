@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,16 +26,16 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class CardsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
+    private var mRecyclerView: RecyclerView? = null
+    private var mAdapter: RecyclerView.Adapter<*>? = null
+    var list_of_card: ArrayList<Card> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            /*param1 = it.getString(ARG_PARAM1)
+            param2 = it.getString(ARG_PARAM2)*/
         }
     }
 
@@ -43,6 +45,21 @@ class CardsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_cards, container, false)
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //adding items in list
+        for (i in 0..14) {
+            val new_card = Card("card_"+i,"decrizione della card"+i, User())
+            list_of_card.add(new_card)
+        }
+
+        mRecyclerView = getView()!!.findViewById(R.id.my_recycler_view)
+        val mLayoutManager = LinearLayoutManager(super.getContext(), LinearLayoutManager.VERTICAL, false)
+        mRecyclerView!!.layoutManager = mLayoutManager
+        mAdapter = CardAdapter(list_of_card)
+        mRecyclerView!!.adapter = mAdapter
     }
 
     // TODO: Rename method, update argument and hook method into UI event
