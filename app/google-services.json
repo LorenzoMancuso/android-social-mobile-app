@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "967750282231",
+    "firebase_url": "https://progmob-b248a.firebaseio.com",
+    "project_id": "progmob-b248a",
+    "storage_bucket": "progmob-b248a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967750282231:android:71d6d9f2e58aec99",
+        "android_client_info": {
+          "package_name": "com.example.rathings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "967750282231-fv7dmfl6ems5265lu6pnpuqm7qpdibsr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rathings",
+            "certificate_hash": "86a267dca7db22c33e7ad01195a18613d41bf39f"
+          }
+        },
+        {
+          "client_id": "967750282231-v7ajurulkoanhs1fbf1nathn5ef4a46j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiEku3cLA4VFZmj2sBhpaM41LNOUBttis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "967750282231-v7ajurulkoanhs1fbf1nathn5ef4a46j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
