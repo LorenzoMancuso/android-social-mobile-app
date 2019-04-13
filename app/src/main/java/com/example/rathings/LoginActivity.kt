@@ -128,7 +128,6 @@ class LoginActivity : AppCompatActivity() {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
-                createUserInstance()
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -146,6 +145,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
+                    createUserInstance()
                     goToHome()
                 } else {
                     // If sign in fails, display a message to the user.
@@ -158,8 +158,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun createUserInstance() {
         Log.d(TAG, "createUserInstance")
-        var user=UserController()
-        UserController.getProfile("grpHxKTlFZU2UgMoufmyWavhut52")
+        UserController()
+
+        FirebaseUtils.createUserInstance(auth.currentUser!!.uid)
+        UserController.getProfile(auth.currentUser!!.uid)
     }
 
     private fun validateForm(): Boolean {

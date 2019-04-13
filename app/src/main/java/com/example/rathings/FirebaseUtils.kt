@@ -19,6 +19,11 @@ object FirebaseUtils {
         database.child("users").child("TEST").child("username").setValue("Utente di Test")
     }
 
+    @JvmStatic fun createUserInstance(uid:String) {
+        Log.d("[FIREBASE-UTILS]", "createUserInstance $uid")
+        database.child("users").child(uid).child("id").setValue(uid)
+    }
+
     @JvmStatic fun getProfile(uid:String) {
         val ref = FirebaseUtils.database.child("users")
         var user:User?

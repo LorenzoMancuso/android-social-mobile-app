@@ -9,7 +9,7 @@ class UserController: Observer {
         localUserObservable.addObserver(this)
     }
 
-    override fun update(p0: Observable?, p1: Any?) {
+    override fun update(observableObj: Observable?, data: Any?) {
         var user=localUserObservable.getValue()
         Log.e("[USER-CONTROLLER]", "onDataChange " + user?.toString())
 
