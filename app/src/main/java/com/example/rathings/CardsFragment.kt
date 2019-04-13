@@ -51,7 +51,7 @@ class CardsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //adding items in list
         for (i in 0..14) {
-            val new_card = Card("card_"+i,"decrizione della card"+i, User())
+            val new_card = Card("card_"+i,"decrizione della card"+i, User(i.toString()))
             list_of_card.add(new_card)
         }
 
