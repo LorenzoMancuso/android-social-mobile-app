@@ -35,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         email_sign_in_button.setOnClickListener { signIn(txt_email.text.toString(),txt_password.text.toString()) }
+        email_sign_in_button.setOnClickListener { signUp(txt_email.text.toString(),txt_password.text.toString()) }
         google_sign_in_button.setOnClickListener { googleSignIn() }
 
         /**FIREBASE AUTH INIT*/
@@ -90,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun createAccount(email: String, password: String) {
+    private fun signUp(email: String, password: String) {
         Log.d(TAG, "createAccount:$email")
         if (!validateForm()) {
             return
@@ -101,6 +102,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
+                    createUserInstance()
                     goToHome()
                 } else {
                     // If sign in fails, display a message to the user.
@@ -143,6 +145,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
+                    createUserInstance()
                     goToHome()
                 } else {
                     // If sign in fails, display a message to the user.
@@ -151,6 +154,14 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun createUserInstance() {
+        Log.d(TAG, "createUserInstance")
+        UserController()
+
+        FirebaseUtils.createUserInstance(auth.currentUser!!.uid)
+        UserController.getProfile(auth.currentUser!!.uid)
     }
 
     private fun validateForm(): Boolean {
