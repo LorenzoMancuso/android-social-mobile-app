@@ -158,7 +158,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun createUserInstance() {
         Log.d(TAG, "createUserInstance")
-        UserController()
 
         FirebaseUtils.createUserInstance(auth.currentUser!!.uid)
         UserController.getProfile(auth.currentUser!!.uid)

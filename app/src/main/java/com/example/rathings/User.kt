@@ -3,8 +3,17 @@ package com.example.rathings
 class User() {
     public var id:String=""
     public var name: String=""
+    public var surname: String=""
+    public var birth_date: Int=0
+
+    public var country: String=""
+    public var city: String=""
+    public var profession: String=""
+    public var subscription_date: Int=0
+
     public var followed: MutableList<Any> = ArrayList()
     public var followers: MutableList<Any> = ArrayList()
+    public var profile_image: String = ""
 
     /**
      * USERNAME
@@ -19,14 +28,21 @@ class User() {
      * LISTA FOLLOWER
      * LISTA FOLLOWED*/
     constructor(id:String) :this() {}
-    constructor(id:String, name: String, followed: Array<Any>, followers: Array<Any>) : this(id) {}
+    constructor(id:String, name: String, surname: String, birth_date: String, country: String, city: String, profession: String, subscription_date: String, followed: Array<Any>, followers: Array<Any>, profile_image: String) : this(id) {}
 
     override fun toString():String {
         var str="{"
         str+="'id': $id, "
         str+="'name': $name, "
+        str+="'surname': $surname, "
+        str+="'birth_date': $birth_date, "
+        str+="'country': $country, "
+        str+="'city': $city, "
+        str+="'profession': $profession, "
+        str+="'subscription_date': $subscription_date, "
         str+="'followed': ${followed}, "
-        str+="'followers': ${followers}}"
+        str+="'followers': ${followers}, "
+        str+="'profile_image': ${followers}}"
         return str
     }
 }
