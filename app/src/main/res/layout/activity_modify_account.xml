@@ -12,45 +12,53 @@
         android:paddingBottom="16dp"
         tools:context=".ModifyAccountActivity">
 
-    <!-- * NAME
-     * SURNAME
-     * BIRTHDATE
-     * COUNTRY
-     * CITY
-     * PROFESSION-->
-
     <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <TextView
+        <EditText
                 android:id="@+id/txt_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nome"
-                android:maxLines="1"
-                android:singleLine="true"
                 android:padding="16dp"
-                android:layout_marginBottom="10dp"/>
-        <TextView
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:singleLine="true"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <EditText
                 android:id="@+id/txt_surname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="cognome"
-                android:maxLines="1"
-                android:singleLine="true"
                 android:padding="16dp"
-                android:layout_marginBottom="10dp"/>
-        <TextView
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:singleLine="true"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <EditText
                 android:id="@+id/txt_birthdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Data di nascita"
-                android:maxLines="1"
-                android:singleLine="true"
                 android:padding="16dp"
-                android:layout_marginBottom="10dp"/>
-        <TextView
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:singleLine="true"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <EditText
                 android:id="@+id/txt_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,7 +67,12 @@
                 android:singleLine="true"
                 android:padding="16dp"
                 android:layout_marginBottom="10dp"/>
-        <TextView
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <EditText
                 android:id="@+id/txt_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,8 +81,12 @@
                 android:singleLine="true"
                 android:padding="16dp"
                 android:layout_marginBottom="10dp"/>
+    </android.support.design.widget.TextInputLayout>
 
-        <TextView
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <EditText
                 android:id="@+id/txt_profession"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -78,6 +95,7 @@
                 android:singleLine="true"
                 android:padding="16dp"
                 android:layout_marginBottom="10dp"/>
+    </android.support.design.widget.TextInputLayout>
 
         <Button
                 android:id="@+id/confirm_button"
@@ -89,7 +107,4 @@
                 android:textColor="#FFFFFF"
                 android:background="#D84B37"
                 android:textStyle="bold"/>
-
-    </android.support.design.widget.TextInputLayout>
-
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.rathings
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
@@ -45,10 +47,19 @@ class ProfileFragment : Fragment(), Observer {
         /**OBSERVER INIT*/
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
+
+    }
+
+    fun goToEdit(){
+        val intent = Intent(this.context, ModifyAccountActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener {goToEdit()}
+
         //call for get profile info
         FirebaseUtils.getProfile(null)
         //call for get card of current user

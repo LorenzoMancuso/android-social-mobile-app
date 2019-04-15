@@ -46,7 +46,7 @@ class User() {
         return str
     }
 
-    fun toMutableMap(user: User) :MutableMap<String,Any> {
+    fun toMutableMap() :MutableMap<String,Any> {
         val res:MutableMap<String,Any> = mutableMapOf<String,Any>();
         res.set("id",id)
         res.set("name",name)
