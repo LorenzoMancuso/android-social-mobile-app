@@ -42,7 +42,24 @@ class User() {
         str+="'subscription_date': $subscription_date, "
         str+="'followed': ${followed}, "
         str+="'followers': ${followers}, "
-        str+="'profile_image': ${followers}}"
+        str+="'profile_image': ${profile_image}}"
         return str
+    }
+
+    fun toMutableMap(user: User) :MutableMap<String,Any> {
+        val res:MutableMap<String,Any> = mutableMapOf<String,Any>();
+        res.set("id",id)
+        res.set("name",name)
+        res.set("surname",surname)
+        res.set("birth_date",birth_date)
+        res.set("country",country)
+        res.set("city",city)
+        res.set("profession",profession)
+        res.set("subscription_date",subscription_date)
+        res.set("followed",followed)
+        res.set("followers",followers)
+        res.set("profile_image",profile_image)
+
+        return res
     }
 }

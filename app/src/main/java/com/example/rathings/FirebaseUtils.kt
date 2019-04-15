@@ -20,6 +20,10 @@ object FirebaseUtils {
         database.child("users").child("TEST").child("username").setValue("Utente di Test")
     }
 
+    @JvmStatic fun updateData(path:String, newData:MutableMap<String,Any>) {
+        database.child(path).updateChildren(newData);
+    }
+
     @JvmStatic fun createUserInstance(uid:String) {
         Log.d("[FIREBASE-UTILS]", "createUserInstance $uid")
         database.child("users").child(uid).child("id").setValue(uid)
