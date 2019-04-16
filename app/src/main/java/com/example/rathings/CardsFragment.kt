@@ -37,13 +37,10 @@ class CardsFragment : Fragment(), Observer {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            /*param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)*/
-        }
+        arguments?.let {}
+        Log.d("[CARD-FRAGMENT]", "START")
 
         interestCardsObs.addObserver(this)
-        FirebaseUtils.getInterestCards(null)
 
     }
 
@@ -62,6 +59,7 @@ class CardsFragment : Fragment(), Observer {
             val new_card = Card("$i","card_"+i,"decrizione della card"+i, "$i",i)
             list_of_card.add(new_card)
         }*/
+        FirebaseUtils.getInterestCards(null)
     }
 
     override fun onDestroy() {
@@ -85,7 +83,7 @@ class CardsFragment : Fragment(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     updateCardFragment(cards)
 
-                    Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards?.toString())
+                    Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards.toString())
                 }
             }
             else -> Log.d("[CARD-FRAGMENT]", "observable not recognized $data")

@@ -37,6 +37,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         //send hash map of user object for firebase update
         FirebaseUtils.updateData("users/${user.id}/",user.toMutableMap())
         val intent = Intent(this, HomeActivity::class.java)
+        intent.putExtra("mode", "profile");
         startActivity(intent)
     }
 

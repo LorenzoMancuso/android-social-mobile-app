@@ -11,11 +11,29 @@ import com.google.firebase.database.ValueEventListener
 
 object FirebaseUtils {
 
+    var primaryUserProfileObservable:CustomObservable=CustomObservable()
     var userProfileObservable:CustomObservable=CustomObservable()
     var userCardsObservable:CustomObservable=CustomObservable()
     var interestCardsObservable:CustomObservable=CustomObservable()
 
     private var localUserProfile:User?=null
+    private var primaryUserProfile:User?=null
+
+    private var auth: FirebaseAuth
+
+    init{
+        auth = FirebaseAuth.getInstance()
+
+    }
+
+    fun isCurrentUser(user_id:String):Boolean {
+        val currentUser = auth.currentUser
+        Log.d("[FIREBASE-UTILS]", "currentUser ${currentUser?.uid}, userParam $user_id")
+        if (currentUser?.uid == user_id) {
+            return true
+        }
+        return false
+    }
 
     fun getLocalUser():User? {return localUserProfile}
 
@@ -34,6 +52,32 @@ object FirebaseUtils {
         database.child("users").child(uid).child("id").setValue(uid)
     }
 
+    @JvmStatic fun getPrimaryProfile() {
+        val uid=FirebaseAuth.getInstance().currentUser!!.uid
+
+        val ref = FirebaseUtils.database.child("users")
+        var user:User?
+        val phoneQuery = ref.orderByChild("id").equalTo(uid)
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (singleSnapshot in dataSnapshot.children) {
+                    user = singleSnapshot.getValue(User::class.java)
+
+                    primaryUserProfile=user
+                    primaryUserProfileObservable.setValue(user)
+                    Log.e("[FIREBASE-UTILS]", "primaryUser " + user?.toString())
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
+            }
+        }
+        phoneQuery.addValueEventListener(postListener)
+    }
+
+
     @JvmStatic fun getProfile(uid:String?) {
         /**GET CURRENT AUTH USER IF UID IS NULL*/
         var id_user=uid
@@ -51,7 +95,7 @@ object FirebaseUtils {
 
                     localUserProfile=user
                     userProfileObservable.setValue(user)
-                    Log.e("[FIREBASE-UTILS]", "onDataChange " + user?.toString())
+                    Log.e("[FIREBASE-UTILS]", "getProfile " + user?.toString())
                 }
             }
 
@@ -112,9 +156,9 @@ object FirebaseUtils {
                     var card=singleSnapshot.getValue(Card::class.java)
                     if(card is Card)
                         cards.add(card)
-                    Log.e("[FIREBASE-UTILS]", "onDataChange single card ${card.toString()}")
+                    Log.e("[FIREBASE-UTILS]", "onDataChange interest card ${card.toString()}")
                 }
-                var sortedList = cards.sortedWith(compareBy({ it!!.timestamp }))
+                val sortedList = cards.sortedWith(compareBy({ it.timestamp }))
                 interestCardsObservable.setValue(sortedList)
                 Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
             }

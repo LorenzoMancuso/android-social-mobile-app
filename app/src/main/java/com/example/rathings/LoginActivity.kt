@@ -64,6 +64,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToHome() {
         //go to login
+        FirebaseUtils.getProfile(null)
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }

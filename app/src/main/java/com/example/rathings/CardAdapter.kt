@@ -14,8 +14,16 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card, parent, false)
 
         view?.findViewById<TextView>(R.id.user)!!.setOnClickListener {
-            val intent = Intent(parent.context, ProfileActivity::class.java)
-            parent.context.startActivity(intent)
+            val uid=it.findViewById<TextView>(R.id.user).text.toString()
+            if(FirebaseUtils.isCurrentUser(uid)){
+                val intent = Intent(parent.context, HomeActivity::class.java)
+                intent.putExtra("mode", "profile");
+                parent.context.startActivity(intent)
+            }else{
+                val intent = Intent(parent.context, ProfileActivity::class.java)
+                intent.putExtra("user", uid);
+                parent.context.startActivity(intent)
+            }
         }
 
         return CardViewHolder(view)
@@ -24,7 +32,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        holder.user.text = "User: ${mDataList[position].user}"
+        holder.user.text = mDataList[position].user
         holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
     }
