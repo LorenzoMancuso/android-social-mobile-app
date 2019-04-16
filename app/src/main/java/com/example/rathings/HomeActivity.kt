@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.util.Log
+import android.view.View
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -102,6 +103,11 @@ class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionList
 
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
+    }
+
+    fun newCard(view: View) {
+        val newCardIntent = Intent(this, NewCardActivity::class.java)
+        startActivity(newCardIntent)
     }
 
 }
