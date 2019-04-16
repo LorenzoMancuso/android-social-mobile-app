@@ -19,6 +19,8 @@ class Card() {
     public var category: MutableList<Int> = ArrayList()
     //public var multimedia: MutableList<Any> = ArrayList()
 
+    public var likelihood:Double = 0.0;
+
     constructor(id:String) :this() {}
     constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>) : this(id) {}
 

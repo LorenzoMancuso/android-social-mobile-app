@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,11 +28,12 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class CardsFragment : Fragment() {
+class CardsFragment : Fragment(), Observer {
     private var listener: OnFragmentInteractionListener? = null
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
-    var list_of_card: ArrayList<Card> = ArrayList()
+
+    var interestCardsObs=CardController.interestCardObs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +41,10 @@ class CardsFragment : Fragment() {
             /*param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)*/
         }
+
+        interestCardsObs.addObserver(this)
+        FirebaseUtils.getInterestCards(null)
+
     }
 
     override fun onCreateView(
@@ -49,17 +57,39 @@ class CardsFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //adding items in list
+        /*/adding items in list
         for (i in 0..14) {
             val new_card = Card("$i","card_"+i,"decrizione della card"+i, "$i",i)
             list_of_card.add(new_card)
-        }
+        }*/
+    }
 
-        mRecyclerView = getView()!!.findViewById(R.id.my_recycler_view)
+    override fun onDestroy() {
+        super.onDestroy()
+        interestCardsObs.deleteObserver(this)
+    }
+
+    fun updateCardFragment(cards:ArrayList<Card>){
+        mRecyclerView = view?.findViewById(R.id.my_recycler_view)
         val mLayoutManager = LinearLayoutManager(super.getContext(), LinearLayoutManager.VERTICAL, false)
-        mRecyclerView!!.layoutManager = mLayoutManager
-        mAdapter = CardAdapter(list_of_card)
-        mRecyclerView!!.adapter = mAdapter
+        mRecyclerView?.layoutManager = mLayoutManager
+        mAdapter = CardAdapter(cards)
+        mRecyclerView?.adapter = mAdapter
+    }
+
+    override fun update(observableObj: Observable?, data: Any?) {
+        when(observableObj) {
+            interestCardsObs -> {
+                val value = interestCardsObs.getValue()
+                if (value is List<*>) {
+                    val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
+                    updateCardFragment(cards)
+
+                    Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards?.toString())
+                }
+            }
+            else -> Log.d("[CARD-FRAGMENT]", "observable not recognized $data")
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

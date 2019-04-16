@@ -13,7 +13,7 @@ class User() {
 
     public var followed: MutableList<Any> = ArrayList()
     public var followers: MutableList<Any> = ArrayList()
-    public var interests: MutableList<Any> = ArrayList()
+    public var interests: MutableList<Int> = ArrayList()
     public var profile_image: String = ""
 
     /**
@@ -29,7 +29,7 @@ class User() {
      * LISTA FOLLOWER
      * LISTA FOLLOWED*/
     constructor(id:String) :this() {}
-    constructor(id:String, name: String, surname: String, birth_date: String, country: String, city: String, profession: String, subscription_date: String, followed: Array<Any>, followers: Array<Any>, profile_image: String) : this(id) {}
+    constructor(id:String, name: String, surname: String, birth_date: String, country: String, city: String, profession: String, subscription_date: String, followed: Array<Any>, followers: Array<Any>, profile_image: String, interests: Array<Any>) : this(id) {}
 
     override fun toString():String {
         var str="{"
