@@ -6,105 +6,117 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
         tools:context=".ModifyAccountActivity">
 
-    <android.support.design.widget.TextInputLayout
+    <ScrollView
+            android:id="@+id/login_form"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <EditText
-                android:id="@+id/txt_name"
+            android:layout_height="match_parent">
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nome"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"
-                android:maxLines="1"
-                android:singleLine="true"/>
-    </android.support.design.widget.TextInputLayout>
+                android:orientation="vertical"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
 
-    <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <EditText
-                android:id="@+id/txt_surname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="cognome"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"
-                android:maxLines="1"
-                android:singleLine="true"/>
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-    <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <EditText
-                android:id="@+id/txt_birthdate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Data di nascita"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"
-                android:maxLines="1"
-                android:singleLine="true"/>
-    </android.support.design.widget.TextInputLayout>
+                <EditText
+                        android:id="@+id/txt_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nome"
+                        android:padding="16dp"
+                        android:layout_marginBottom="10dp"
+                        android:maxLines="1"
+                        android:singleLine="true"/>
+            </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <EditText
-                android:id="@+id/txt_city"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Città"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"/>
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <EditText
+                        android:id="@+id/txt_surname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="cognome"
+                        android:padding="16dp"
+                        android:layout_marginBottom="10dp"
+                        android:maxLines="1"
+                        android:singleLine="true"/>
+            </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <EditText
-                android:id="@+id/txt_country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Stato"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"/>
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <EditText
+                        android:id="@+id/txt_birthdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Data di nascita (gg/mm/aaaa)"
+                        android:padding="16dp"
+                        android:layout_marginBottom="10dp"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:inputType="date"/>
+            </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <EditText
-                android:id="@+id/txt_profession"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Professione"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"/>
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <EditText
+                        android:id="@+id/txt_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Città"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:padding="16dp"
+                        android:layout_marginBottom="10dp"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <Button
-                android:id="@+id/confirm_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="CONFERMA INFORMAZIONI"
-                android:textColor="#FFFFFF"
-                android:background="#D84B37"
-                android:textStyle="bold"/>
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <EditText
+                        android:id="@+id/txt_country"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Stato"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:padding="16dp"
+                        android:layout_marginBottom="10dp"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <EditText
+                        android:id="@+id/txt_profession"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Professione"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:padding="16dp"
+                        android:layout_marginBottom="10dp"/>
+            </android.support.design.widget.TextInputLayout>
+
+                <Button
+                        android:id="@+id/confirm_button"
+                        style="?android:textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="CONFERMA INFORMAZIONI"
+                        android:textColor="#FFFFFF"
+                        android:background="#D84B37"
+                        android:textStyle="bold"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

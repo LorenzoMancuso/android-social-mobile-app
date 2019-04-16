@@ -17,6 +17,8 @@ class Card() {
     public var user: String=""
     public var timestamp: Int=0
     public var category: MutableList<Int> = ArrayList()
+
+    public var userObj:User=User()
     //public var multimedia: MutableList<Any> = ArrayList()
 
     public var likelihood:Double = 0.0;
@@ -29,9 +31,10 @@ class Card() {
         str+="'id': $id, "
         str+="'title': $title, "
         str+="'description': $description, "
-        str+="'user': $user, "
         str+="'timestamp': $timestamp}"
-        str+="'category': $category}"
+        str+="'category': $category, "
+        str+="'user': $user, "
+        str+="'user': $userObj} "
         return str
     }
 

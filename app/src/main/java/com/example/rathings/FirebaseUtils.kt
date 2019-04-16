@@ -48,8 +48,21 @@ object FirebaseUtils {
     }
 
     @JvmStatic fun createUserInstance(uid:String) {
-        Log.d("[FIREBASE-UTILS]", "createUserInstance $uid")
         database.child("users").child(uid).child("id").setValue(uid)
+
+        database.child("users").orderByChild("id").equalTo(uid).addValueEventListener(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if(dataSnapshot.children.count()==0){
+                        database.child("users").child(uid).child("id").setValue(uid)
+                        database.child("users").child(uid).child("subscription_date").setValue(System.currentTimeMillis() / 1000L)
+                    }
+                }
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            }
+        )
     }
 
     @JvmStatic fun getPrimaryProfile() {
@@ -125,8 +138,29 @@ object FirebaseUtils {
                     Log.e("[FIREBASE-UTILS]", "onDataChange single card ${card.toString()}")
                 }
                 var sortedList = cards.sortedWith(compareBy({ it!!.timestamp }))
-                userCardsObservable.setValue(sortedList)
-                Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+
+                /**GET USER OBJECT FOR EACH CARD*/
+                FirebaseUtils.database.child("users").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (singleSnapshot in dataSnapshot.children) {
+                                var user=singleSnapshot.getValue(User::class.java)
+                                if(user is User){
+                                    for(card in sortedList){
+                                        if (card.user==user.id) {
+                                            card.userObj=user
+                                        }
+                                    }
+                                }
+                            }
+                            userCardsObservable.setValue(sortedList)
+                            Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+                        }
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+                    }
+                )
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -159,8 +193,29 @@ object FirebaseUtils {
                     Log.e("[FIREBASE-UTILS]", "onDataChange interest card ${card.toString()}")
                 }
                 val sortedList = cards.sortedWith(compareBy({ it.timestamp }))
-                interestCardsObservable.setValue(sortedList)
-                Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+
+                /**GET USER OBJECT FOR EACH CARD*/
+                FirebaseUtils.database.child("users").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (singleSnapshot in dataSnapshot.children) {
+                                var user=singleSnapshot.getValue(User::class.java)
+                                if(user is User){
+                                    for(card in sortedList){
+                                        if (card.user==user.id) {
+                                            card.userObj=user
+                                        }
+                                    }
+                                }
+                            }
+                            interestCardsObservable.setValue(sortedList)
+                            Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+                        }
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+                    }
+                )
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

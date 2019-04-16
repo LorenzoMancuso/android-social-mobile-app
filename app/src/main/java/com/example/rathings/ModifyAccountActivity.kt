@@ -26,19 +26,27 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
     }
 
     fun updateInfo() {
-        //update local user
-        user.name = txt_name?.text.toString()
-        user.surname = txt_surname?.text.toString()
-        user.birth_date = txt_birthdate?.text.toString().toInt()
-        user.city = txt_city?.text.toString()
-        user.country = txt_country?.text.toString()
-        user.profession = txt_profession?.text.toString()
 
-        //send hash map of user object for firebase update
-        FirebaseUtils.updateData("users/${user.id}/",user.toMutableMap())
-        val intent = Intent(this, HomeActivity::class.java)
-        intent.putExtra("mode", "profile");
-        startActivity(intent)
+        val regexp:Regex = Regex("^([0-2][0-9]|(3)[0-1])(\\/)(((0)[0-9])|((1)[0-2]))(\\/)\\d{4}\$")
+
+        if (txt_birthdate?.text.toString().matches(regexp)) {
+            //update local user
+            user.name = txt_name?.text.toString()
+            user.surname = txt_surname?.text.toString()
+            user.birth_date = txt_birthdate?.text.toString()
+            user.city = txt_city?.text.toString()
+            user.country = txt_country?.text.toString()
+            user.profession = txt_profession?.text.toString()
+
+            //send hash map of user object for firebase update
+            FirebaseUtils.updateData("users/${user.id}/",user.toMutableMap())
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("mode", "profile");
+            startActivity(intent)
+        }else{
+            txt_birthdate?.error="Formato della data invalido"
+        }
+
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
@@ -58,5 +66,10 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
             }
             else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        localUserProfileObservable.deleteObserver(this)
     }
 }
