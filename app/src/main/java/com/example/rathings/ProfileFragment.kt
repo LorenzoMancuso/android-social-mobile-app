@@ -1,13 +1,19 @@
 package com.example.rathings
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.Button
+import kotlinx.android.synthetic.main.fragment_profile.*
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,18 +29,41 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class ProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class ProfileFragment : Fragment(), Observer {
+
+    var localUserProfileObservable=FirebaseUtils.userProfileObservable
+    var localUserCardsObservable=FirebaseUtils.userCardsObservable
+
+    private var cardRecyclerView: RecyclerView? = null
+    private var cardAdapter: RecyclerView.Adapter<*>? = null
+
     private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        /**CONSTRUCTOR INIT*/
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        arguments?.let {}
+
+        /**OBSERVER INIT*/
+        localUserProfileObservable.addObserver(this)
+        localUserCardsObservable.addObserver(this)
+
+    }
+
+    fun goToEdit(){
+        val intent = Intent(this.context, ModifyAccountActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener {goToEdit()}
+
+        //call for get profile info
+        FirebaseUtils.getProfile(null)
+        //call for get card of current user
+        FirebaseUtils.getUserCards(null)
     }
 
     override fun onCreateView(
@@ -62,6 +91,38 @@ class ProfileFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    override fun update(observableObj: Observable?, data: Any?) {
+        when(observableObj) {
+            localUserProfileObservable -> {
+                val value=localUserProfileObservable.getValue()
+                if(value is User){
+                    val user= value
+                    txt_name?.text = "${user.name} ${user.surname}"
+                    txt_profession?.text = "${user.profession}"
+                    txt_country?.text = "${user.city}, ${user.country}"
+                    txt_followers?.text = "Followers: ${user.followers.size}"
+                    txt_followed?.text = "Followed: ${user.followed.size}"
+                    Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
+                }
+
+
+            }
+            localUserCardsObservable -> {
+                val value = localUserCardsObservable.getValue()
+                if (value is List<*>) {
+                    val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
+                    Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
+                    cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
+                    val mLayoutManager = LinearLayoutManager(super.getContext(), LinearLayoutManager.VERTICAL, false)
+                    cardRecyclerView?.layoutManager = mLayoutManager
+                    cardAdapter = CardAdapter(cards)
+                    cardRecyclerView?.adapter = cardAdapter
+                }
+            }
+            else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
+        }
     }
 
     /**

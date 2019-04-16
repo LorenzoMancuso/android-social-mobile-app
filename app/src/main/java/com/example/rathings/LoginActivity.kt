@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         email_sign_in_button.setOnClickListener { signIn(txt_email.text.toString(),txt_password.text.toString()) }
-        email_sign_in_button.setOnClickListener { signUp(txt_email.text.toString(),txt_password.text.toString()) }
+        email_sign_up_button.setOnClickListener { signUp(txt_email.text.toString(),txt_password.text.toString()) }
         google_sign_in_button.setOnClickListener { googleSignIn() }
 
         /**FIREBASE AUTH INIT*/
@@ -64,6 +64,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToHome() {
         //go to login
+        FirebaseUtils.getProfile(null)
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
@@ -104,6 +105,8 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "createUserWithEmail:success")
                     createUserInstance()
                     goToHome()
+                    /*val intent = Intent(this, ModifyAccountActivity::class.java)
+                    startActivity(intent)*/
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
@@ -158,7 +161,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun createUserInstance() {
         Log.d(TAG, "createUserInstance")
-        UserController()
 
         FirebaseUtils.createUserInstance(auth.currentUser!!.uid)
         UserController.getProfile(auth.currentUser!!.uid)

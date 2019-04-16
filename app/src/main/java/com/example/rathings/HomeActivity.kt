@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.util.Log
 import android.view.View
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -31,8 +32,8 @@ class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionList
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         /**END LOGOUT INIT*/
 
-        val fragment = CardsFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Cards").commit()
+
+        switchFragment(intent.getStringExtra("mode"))
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -55,6 +56,32 @@ class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionList
             return@setOnNavigationItemSelectedListener true
         }
 
+    }
+
+    private fun switchFragment(mode:String?){
+        Log.e("[MODE]", "$mode")
+        when(mode){
+            "tabs"->{
+                val fragment = CardsFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Tabs").commit()
+                selectItem(R.id.action_tabs)
+            }
+            "profile"->{
+                val fragment = ProfileFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Profile").commit()
+                selectItem(R.id.action_profile)
+            }
+            else -> {
+                val fragment = CardsFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Cards").commit()
+                selectItem(R.id.action_home)
+            }
+        }
+    }
+
+    fun selectItem(action:Int){
+        var mBtmView =  findViewById<BottomNavigationView>(R.id.bottom_navigation);
+        mBtmView.menu.findItem(action).setChecked(true);
     }
 
     override fun onCardsFragmentInteraction(uri: Uri) {}
