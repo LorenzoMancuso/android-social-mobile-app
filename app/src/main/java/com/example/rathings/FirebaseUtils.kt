@@ -13,6 +13,11 @@ object FirebaseUtils {
 
     var userProfileObservable:CustomObservable=CustomObservable()
     var userCardsObservable:CustomObservable=CustomObservable()
+    var interestCardsObservable:CustomObservable=CustomObservable()
+
+    private var localUserProfile:User?=null
+
+    fun getLocalUser():User? {return localUserProfile}
 
     val database = FirebaseDatabase.getInstance().reference
 
@@ -43,6 +48,8 @@ object FirebaseUtils {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (singleSnapshot in dataSnapshot.children) {
                     user = singleSnapshot.getValue(User::class.java)
+
+                    localUserProfile=user
                     userProfileObservable.setValue(user)
                     Log.e("[FIREBASE-UTILS]", "onDataChange " + user?.toString())
                 }
@@ -83,6 +90,40 @@ object FirebaseUtils {
             }
         }
         phoneQuery.addValueEventListener(postListener)
+    }
+
+    /**GET INTEREST CARDS
+     * return only cards order by timestamp to the card controller
+     * which get the collection and filter by interests and order by votes*/
+    @JvmStatic fun getInterestCards(uid:String?) {
+        /**GET CURRENT AUTH USER IF UID IS NULL*/
+        var id_user=uid
+        if(uid==null)
+            id_user=FirebaseAuth.getInstance().currentUser!!.uid
+
+        val ref = FirebaseUtils.database.child("cards")
+        var cards: ArrayList<Card> = ArrayList()
+
+        val query = ref.orderByChild("timestamp")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (singleSnapshot in dataSnapshot.children) {
+                    var card=singleSnapshot.getValue(Card::class.java)
+                    if(card is Card)
+                        cards.add(card)
+                    Log.e("[FIREBASE-UTILS]", "onDataChange single card ${card.toString()}")
+                }
+                var sortedList = cards.sortedWith(compareBy({ it!!.timestamp }))
+                interestCardsObservable.setValue(sortedList)
+                Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
+            }
+        }
+        query.addValueEventListener(postListener)
     }
 
 

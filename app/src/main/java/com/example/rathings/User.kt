@@ -13,6 +13,7 @@ class User() {
 
     public var followed: MutableList<Any> = ArrayList()
     public var followers: MutableList<Any> = ArrayList()
+    public var interests: MutableList<Any> = ArrayList()
     public var profile_image: String = ""
 
     /**
@@ -42,6 +43,7 @@ class User() {
         str+="'subscription_date': $subscription_date, "
         str+="'followed': ${followed}, "
         str+="'followers': ${followers}, "
+        str+="'interests': ${interests}, "
         str+="'profile_image': ${profile_image}}"
         return str
     }
@@ -58,6 +60,7 @@ class User() {
         res.set("subscription_date",subscription_date)
         res.set("followed",followed)
         res.set("followers",followers)
+        res.set("interests",interests)
         res.set("profile_image",profile_image)
 
         return res

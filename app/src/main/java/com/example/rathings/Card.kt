@@ -16,10 +16,11 @@ class Card() {
     public var description: String=""
     public var user: String=""
     public var timestamp: Int=0
+    public var category: MutableList<Int> = ArrayList()
     //public var multimedia: MutableList<Any> = ArrayList()
 
     constructor(id:String) :this() {}
-    constructor(id:String, title: String, description: String, user: String, timestamp: Int) : this(id) {}
+    constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>) : this(id) {}
 
     override fun toString():String {
         var str="{"
@@ -28,6 +29,7 @@ class Card() {
         str+="'description': $description, "
         str+="'user': $user, "
         str+="'timestamp': $timestamp}"
+        str+="'category': $category}"
         return str
     }
 
