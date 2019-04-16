@@ -32,6 +32,7 @@
             android:textColor="@color/whitePrimary"
     />
     <LinearLayout
+            android:id="@+id/container"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +62,20 @@
                 android:paddingRight="10dp"
                 android:paddingBottom="100dp"
         />
-
     </LinearLayout>
-
+    <Button
+            android:fontFamily="sans-serif"
+            android:id="@+id/upload_button"
+            android:text="Upload Multimedia"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_top"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center_vertical"
+            android:textStyle="normal"
+            android:padding="10dp"
+            android:drawablePadding="7dp"
+            android:drawableLeft="@drawable/ic_image_black_24dp"
+    />
 </android.support.constraint.ConstraintLayout>
