@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintStart_toStartOf="@id/toolbar"
             app:layout_constraintEnd_toEndOf="@id/toolbar"
-            android:padding="10dp">
+            android:padding="20dp">
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,19 +63,98 @@
                 android:paddingBottom="100dp"
         />
     </LinearLayout>
-    <Button
-            android:fontFamily="sans-serif"
-            android:id="@+id/upload_button"
-            android:text="Upload Multimedia"
-            android:textAllCaps="false"
+    <!--<TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_top"
+            tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
+
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
+    </TableLayout>-->
+    <LinearLayout
+            android:id="@+id/container_buttons"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:gravity="center_vertical"
-            android:textStyle="normal"
-            android:padding="10dp"
-            android:drawablePadding="7dp"
-            android:drawableLeft="@drawable/ic_image_black_24dp"
-    />
+            android:padding="20dp">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="?attr/actionModeSplitBackground"
+                    tools:layout_editor_absoluteY="284dp"
+                    tools:layout_editor_absoluteX="0dp"
+                    android:id="@+id/image_view"
+            />
+            <Button
+                    android:fontFamily="sans-serif"
+                    android:id="@+id/image_btn"
+                    android:text="Immagine"
+                    android:textColor="@color/redPrimary"
+                    android:textAllCaps="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_top"
+                    android:backgroundTint="@color/redPrimary"
+                    android:gravity="center_vertical"
+                    android:textStyle="normal"
+                    android:padding="10dp"
+                    android:drawablePadding="7dp"
+                    android:drawableLeft="@drawable/ic_image_black_24dp"
+                    android:drawableTint="@color/redPrimary"
+            />
+            <Button
+                    android:fontFamily="sans-serif"
+                    android:id="@+id/video_btn"
+                    android:text="Video"
+                    android:textColor="@color/redPrimary"
+                    android:textAllCaps="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_top"
+                    android:backgroundTint="@color/redPrimary"
+                    android:gravity="center_vertical"
+                    android:textStyle="normal"
+                    android:padding="10dp"
+                    android:drawablePadding="7dp"
+                    android:drawableLeft="@drawable/ic_video_library_black_24dp"
+                    android:drawableTint="@color/redPrimary"
+            />
+            <Button
+                    android:fontFamily="sans-serif"
+                    android:id="@+id/audio_btn"
+                    android:text="Audio"
+                    android:textColor="@color/redPrimary"
+                    android:textAllCaps="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_top"
+                    android:backgroundTint="@color/redPrimary"
+                    android:gravity="center_vertical"
+                    android:textStyle="normal"
+                    android:padding="10dp"
+                    android:drawablePadding="7dp"
+                    android:drawableLeft="@drawable/ic_audiotrack_black_24dp"
+                    android:drawableTint="@color/redPrimary"
+            />
+            <Button
+                    android:fontFamily="sans-serif"
+                    android:id="@+id/tag_btn"
+                    android:text="Tags"
+                    android:textColor="@color/redPrimary"
+                    android:textAllCaps="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_top"
+                    android:backgroundTint="@color/redPrimary"
+                    android:gravity="center_vertical"
+                    android:textStyle="normal"
+                    android:padding="10dp"
+                    android:drawablePadding="7dp"
+                    android:drawableLeft="@drawable/ic_bookmark_black_24dp"
+                    android:drawableTint="@color/redPrimary"
+            />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
