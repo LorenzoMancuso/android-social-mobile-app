@@ -1,24 +1,32 @@
 package com.example.rathings
 
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import java.util.*
 
-class UserController: Observer {
-    var localUserObservable=FirebaseUtils.userObservable
+object UserController: Observer {
+
+    var userProfileObservable=FirebaseUtils.userProfileObservable
+
     init {
-        localUserObservable.addObserver(this)
+        //localUserProfileObservable.addObserver(this)
+    }
+
+    fun getProfile(uid:String){
+        FirebaseUtils.getProfile(uid)
+    }
+
+    fun getProfile(){
+        FirebaseUtils.getProfile(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
-        var user=localUserObservable.getValue()
-        Log.e("[USER-CONTROLLER]", "onDataChange " + user?.toString())
-
-    }
-
-    companion object {
-        fun getProfile(uid:String){
-            FirebaseUtils.getProfile(uid)
+        when(observableObj) {
+            userProfileObservable-> {
+                val user=userProfileObservable.getValue()
+                Log.d("[USER-CONTROLLER]", "observable " + user?.toString())
+            }
+            else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
         }
     }
-
 }
