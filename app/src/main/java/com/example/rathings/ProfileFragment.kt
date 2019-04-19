@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
@@ -104,6 +105,8 @@ class ProfileFragment : Fragment(), Observer {
                     txt_country?.text = "${user.city}, ${user.country}"
                     txt_followers?.text = "Followers: ${user.followers.size}"
                     txt_followed?.text = "Followed: ${user.followed.size}"
+                    if(profile_image!=null)
+                        Picasso.with(context).load(user.profile_image).into(profile_image)
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
 
@@ -123,6 +126,12 @@ class ProfileFragment : Fragment(), Observer {
             }
             else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        localUserProfileObservable.deleteObserver(this)
+        localUserCardsObservable.deleteObserver(this)
     }
 
     /**

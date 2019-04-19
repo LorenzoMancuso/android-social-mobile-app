@@ -102,4 +102,11 @@ class ProfileActivity : AppCompatActivity(), Observer {
             else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        localUserProfileObservable.deleteObserver(this)
+        localUserCardsObservable.deleteObserver(this)
+        localPrimaryUserProfileObservable.deleteObserver(this)
+    }
 }
