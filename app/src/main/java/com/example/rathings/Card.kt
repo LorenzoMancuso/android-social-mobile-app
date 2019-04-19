@@ -17,7 +17,7 @@ class Card() {
     public var user: String=""
     public var timestamp: Int=0
     public var category: MutableList<Int> = ArrayList()
-    //public var multimedia: MutableList<Any> = ArrayList()
+    public var multimedia: MutableList<Any> = ArrayList()
 
     public var likelihood:Double = 0.0;
 
@@ -33,6 +33,19 @@ class Card() {
         str+="'timestamp': $timestamp}"
         str+="'category': $category}"
         return str
+    }
+
+    fun toMutableMap() :MutableMap<String,Any> {
+        val res:MutableMap<String,Any> = mutableMapOf<String,Any>();
+        res.set("id",id)
+        res.set("title",title)
+        res.set("description",description)
+        res.set("user",user)
+        res.set("timestamp",timestamp)
+        res.set("category",category)
+        res.set("multimedia",multimedia)
+
+        return res
     }
 
 }
