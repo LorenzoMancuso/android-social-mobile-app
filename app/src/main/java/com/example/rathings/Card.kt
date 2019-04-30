@@ -1,5 +1,7 @@
 package com.example.rathings
 
+import android.net.Uri
+
 class Card() {
     /**
      * LISTA MULTIMEDIA
@@ -18,6 +20,7 @@ class Card() {
     public var timestamp: Int=0
     public var category: MutableList<Int> = ArrayList()
     public var userObj:User=User()
+    public var multimedia: MutableList<String> = ArrayList()
 
     public var likelihood:Double = 0.0;
 
@@ -29,9 +32,9 @@ class Card() {
         str+="'id': $id, "
         str+="'title': $title, "
         str+="'description': $description, "
-        str+="'timestamp': $timestamp}"
+        str+="'timestamp': $timestamp, "
         str+="'category': $category, "
-        str+="'user': $user, "
+        str+="'multimedia': $multimedia, "
         str+="'user': $userObj} "
         return str
     }

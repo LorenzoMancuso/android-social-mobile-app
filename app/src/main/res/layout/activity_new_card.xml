@@ -23,11 +23,10 @@
             android:text="Publish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="322dp" android:id="@+id/button"
+            tools:layout_editor_absoluteX="322dp" android:id="@+id/publish_card"
             app:layout_constraintTop_toTopOf="@id/toolbar"
             app:layout_constraintBottom_toBottomOf="@id/toolbar"
             app:layout_constraintEnd_toEndOf="@id/toolbar"
-            android:onClick="publishCard"
             android:background="@color/redPrimary"
             android:textColor="@color/whitePrimary"
     />
@@ -141,7 +140,5 @@
                     </LinearLayout>
             </LinearLayout>
     </ScrollView>
-
-
 
 </android.support.constraint.ConstraintLayout>
