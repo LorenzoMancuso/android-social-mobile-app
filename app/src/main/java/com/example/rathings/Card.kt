@@ -1,7 +1,5 @@
 package com.example.rathings
 
-import android.net.Uri
-
 class Card() {
     /**
      * LISTA MULTIMEDIA

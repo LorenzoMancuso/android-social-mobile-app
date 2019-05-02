@@ -4,11 +4,19 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context=".TabsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+            <TableLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="TABS"/>
-
+            android:layout_height="wrap_content"
+            tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
+            <!--<TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <Button
+                        android:text="Button"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" android:id="@+id/button"/>
+            </TableRow>-->
+            </TableLayout>
 </FrameLayout>

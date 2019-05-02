@@ -15,6 +15,7 @@ object FirebaseUtils {
     var userProfileObservable:CustomObservable=CustomObservable()
     var userCardsObservable:CustomObservable=CustomObservable()
     var interestCardsObservable:CustomObservable=CustomObservable()
+    var tabsObservable:CustomObservable=CustomObservable()
 
     private var localUserProfile:User?=null
     private var primaryUserProfile:User?=null
@@ -90,6 +91,27 @@ object FirebaseUtils {
         phoneQuery.addValueEventListener(postListener)
     }
 
+    @JvmStatic fun getTabs() {
+        val ref = FirebaseUtils.database.child("tabs")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val tempArray: ArrayList<Tab> = ArrayList()
+                for (singleSnapshot in dataSnapshot.children) {
+                    Log.e("[FIREBASE-UTILS] Data", singleSnapshot.key + ' ' + singleSnapshot.getValue())
+                    val tab: Tab = Tab(singleSnapshot.key as String, singleSnapshot.getValue() as String)
+                    tempArray.add(tab)
+                }
+                tabsObservable.setValue(tempArray)
+                Log.e("[FIREBASE-UTILS]", "tabs " + tempArray)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
+            }
+        }
+        ref.addValueEventListener(postListener)
+    }
 
     @JvmStatic fun getProfile(uid:String?) {
         /**GET CURRENT AUTH USER IF UID IS NULL*/
