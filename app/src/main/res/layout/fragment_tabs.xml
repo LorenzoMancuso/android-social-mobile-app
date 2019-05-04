@@ -8,6 +8,7 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:stretchColumns="*"
             tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
             <!--<TableRow
                     android:layout_width="match_parent"

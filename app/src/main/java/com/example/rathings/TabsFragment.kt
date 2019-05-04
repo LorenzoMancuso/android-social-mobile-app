@@ -56,14 +56,11 @@ class TabsFragment : Fragment(), Observer {
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             tabsObs -> {
+                // TODO: Qui c'è un BUG Quando vai nelle Tabs, torni alla Home e poi vai di nuovo nelle Tabs si rompe
                 val tableLayout = getView()?.findViewById(R.id.container) as TableLayout
 
-                // Clean TableLayout in case of UPDATE
+                // Clean TableLayout
                 tableLayout.removeAllViews()
-
-                // Add new Row
-                val tableRow = TableRow(context)
-                tableLayout.addView(tableRow)
 
                 /*val scale = resources.displayMetrics.density
                 val leftRight = (25 * scale + 0.5f).toInt()
@@ -78,6 +75,11 @@ class TabsFragment : Fragment(), Observer {
                     val tabs: ArrayList<Tab> = ArrayList(value.filterIsInstance<Tab>())
                     Log.d("[TABS-FRAGMENT]", "observable TABS " + tabs.toString())
                     for (i in 0 until tabs.size) {
+                        // Add new Row
+                        var tableRow = TableRow(context)
+                        // tableLayout.setColumnStretchable(tableLayout.childCount - 1, true)
+                        tableLayout.addView(tableRow, tableLayout.childCount)
+
                         var button = Button(super.getContext())
                         var selectedTab = false
                         var buttonText = tabs[i].value
@@ -87,14 +89,16 @@ class TabsFragment : Fragment(), Observer {
                                 buttonText += "(remove)"
                             }
                         }
-                        button.setBackgroundColor(Color.argb(255, Random().nextInt(256), Random().nextInt(256), Random().nextInt(256)))
+                        button.setBackgroundColor(Color.argb(255, 255, Random().nextInt(256), Random().nextInt(256)))
                         button.text = buttonText
+
                         // TODO: Layout -> go to next line (but It doesn't work)
                         /*val buttonParams = TableRow.LayoutParams(
                             TableRow.LayoutParams.MATCH_PARENT,
                             TableRow.LayoutParams.MATCH_PARENT, 1f
                         )
-                        imageButton.layoutParams = buttonParams*/
+                        button.layoutParams = buttonParams*/
+
                         // Set image to imageButton
                         // imageButton.setImageResource(R.drawable.abc_ic_star_half_black_16dp)
                         button.setOnClickListener(View.OnClickListener { setTab(tabs[i], selectedTab) })
@@ -103,6 +107,7 @@ class TabsFragment : Fragment(), Observer {
                 }
             }
             userProfileObs -> {
+                // After setTab function (remove or add Tab)
                 FirebaseUtils.getTabs()
             }
             else -> Log.d("[TABS-FRAGMENT]", "observable not recognized $data")
@@ -111,7 +116,21 @@ class TabsFragment : Fragment(), Observer {
 
     fun setTab(tab: Tab, value: Boolean) {
         Log.d("[TABS-FRAGMENT]", "Clicked Tab ${tab} with User Value ${value}")
-        // TODO: Situazione stabile, ora se si clicca su un bottone il value è true o false a seconda del fatto che sia o meno un 'interest'. Bisogna adesso aggiungerlo all'utente
+        val user = userProfileObs.getValue() as User
+        if (!value) {
+            user.interests.add(tab.id.toInt())
+        } else {
+            for (i in 0 until user.interests.size) {
+                Log.e("[TABS-FRAGMENT]", user.interests[i].toString() + " " + tab.id)
+                if (user.interests[i] == tab.id.toInt()) {
+                    val result = user.interests.remove(user.interests[i])
+                    break
+                }
+            }
+        }
+        user.interests.sort()
+        Log.e("[TABS-FRAGMENT]", "Rimozione ${tab.id}" + tab.toMutableMapForUser(user.interests).toString())
+        FirebaseUtils.setData("users/${user.id}/interests/",tab.toMutableMapForUser(user.interests))
     }
 
     override fun onCreateView(
