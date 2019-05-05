@@ -1,7 +1,5 @@
 package com.example.rathings
 
-import android.util.Log
-
 class Tab {
     public var id:String=""
     public var value:String=""

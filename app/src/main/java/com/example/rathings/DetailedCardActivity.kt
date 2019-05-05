@@ -61,7 +61,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
             // Categories
             var containerCategories = findViewById(R.id.container_categories) as TableRow
             containerCategories.removeAllViews()
-            Log.e("[DETAILED-CARD]", tabsObs.getValue().toString())
             var tabs = tabsObs.getValue() as ArrayList<Tab>
             for (i in 0 until selectedCard.category.size) {
                 for (j in 0 until tabs.size) {
@@ -81,12 +80,9 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
 
 
             // Comments
-            var commentsContainer = findViewById(R.id.container_comments) as TableLayout
             for (i in 0 until selectedCard.comments.size) {
-                var tableRow = TableRow(this)
-
+                Log.d("[DETAILED-CARD]", selectedCard.comments[i].text)
             }
-
 
             Log.d("[DETAILED-CARD]", "Card: " + cards[cardPosition.toInt()]?.toString())
         }

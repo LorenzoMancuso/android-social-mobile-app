@@ -36,7 +36,7 @@
                                 android:layout_width="match_parent"
                                 android:text="Prova UserProva UserProva UserProva UserProva UserProva User"
                                 android:layout_height="match_parent" android:id="@+id/user" android:textAllCaps="true"
-                                android:gravity="center_vertical" android:textSize="18sp"/>
+                                android:textSize="18sp"/>
                     </TableRow>
                     <TableRow android:layout_width="match_parent"
                               android:layout_height="match_parent">
@@ -44,7 +44,7 @@
                                 android:layout_width="match_parent"
                                 android:text="Prova Data"
                                 android:layout_height="match_parent" android:id="@+id/date"
-                                android:gravity="center_vertical" android:textSize="14sp"/>
+                                android:textSize="14sp"/>
                     </TableRow>
                 </TableLayout>
             </TableRow>

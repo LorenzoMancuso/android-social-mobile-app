@@ -251,6 +251,11 @@ object FirebaseUtils {
                                         if (card.user==user.id) {
                                             card.userObj=user
                                         }
+                                        for (comment in card.comments) {
+                                            if (comment.user == user.id) {
+                                                comment.userObj = user
+                                            }
+                                        }
                                     }
                                 }
                             }

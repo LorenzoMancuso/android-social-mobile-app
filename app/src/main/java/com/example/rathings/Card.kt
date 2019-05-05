@@ -19,7 +19,7 @@ class Card() {
     public var category: MutableList<Int> = ArrayList()
     public var userObj:User=User()
     public var multimedia: MutableList<String> = ArrayList()
-    public var comments: MutableList<Any> = ArrayList()
+    public var comments: MutableList<Comment> = ArrayList()
 
     public var likelihood:Double = 0.0;
 
