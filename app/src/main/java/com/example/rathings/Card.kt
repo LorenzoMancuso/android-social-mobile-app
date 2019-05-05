@@ -19,11 +19,12 @@ class Card() {
     public var category: MutableList<Int> = ArrayList()
     public var userObj:User=User()
     public var multimedia: MutableList<String> = ArrayList()
+    public var comments: MutableList<Any> = ArrayList()
 
     public var likelihood:Double = 0.0;
 
     constructor(id:String) :this() {}
-    constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>) : this(id) {}
+    constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>, comments: MutableList<Any>) : this(id) {}
 
     override fun toString():String {
         var str="{"
@@ -33,6 +34,7 @@ class Card() {
         str+="'timestamp': $timestamp, "
         str+="'category': $category, "
         str+="'multimedia': $multimedia, "
+        str+="'comments': $comments, "
         str+="'user': $userObj} "
         return str
     }
@@ -46,6 +48,7 @@ class Card() {
         res.set("timestamp",timestamp)
         res.set("category",category)
         res.set("multimedia",multimedia)
+        res.set("comments",comments)
 
         return res
     }

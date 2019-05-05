@@ -32,6 +32,8 @@ class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionList
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         /**END LOGOUT INIT*/
 
+        // Initialize Tabs
+        FirebaseUtils.getTabs()
 
         switchFragment(intent.getStringExtra("mode"))
 

@@ -43,67 +43,70 @@ class TabsFragment : Fragment(), Observer {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        // TODO: Continuare da qui! Non stampa come si deve (1)
         tabsObs.addObserver(this)
         userProfileObs.addObserver(this)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        FirebaseUtils.getTabs()
+        initTabs()
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             tabsObs -> {
-                // TODO: Qui c'è un BUG Quando vai nelle Tabs, torni alla Home e poi vai di nuovo nelle Tabs si rompe
-                val tableLayout = view?.findViewById(R.id.container) as TableLayout
-
-                // Clean TableLayout
-                tableLayout.removeAllViews()
-
-                /*val scale = resources.displayMetrics.density
-                val leftRight = (25 * scale + 0.5f).toInt()
-                val topBottom = (10 * scale + 0.5f).toInt()
-                tableRow.setPadding(leftRight,topBottom,leftRight,topBottom)*/
-
-                val value = tabsObs.getValue()
-                val userInterests = (userProfileObs.getValue() as User).interests
-                Log.d("[TABS-FRAGMENT]", userInterests.toString())
-                Log.d("[TABS-FRAGMENT]", value.toString())
-                if (value is ArrayList<*>) {
-                    val tabs: ArrayList<Tab> = ArrayList(value.filterIsInstance<Tab>())
-                    Log.d("[TABS-FRAGMENT]", "observable TABS " + tabs.toString())
-                    for (i in 0 until tabs.size) {
-                        // Add new Row
-                        var tableRow = TableRow(context)
-                        // tableLayout.setColumnStretchable(tableLayout.childCount - 1, true)
-                        tableLayout.addView(tableRow, tableLayout.childCount)
-
-                        var button = Button(super.getContext())
-                        var selectedTab = false
-                        var buttonText = tabs[i].value
-                        for (j in 0 until userInterests.size) {
-                            if(userInterests[j] == tabs[i].id.toInt()) {
-                                selectedTab = true
-                                buttonText += "(remove)"
-                            }
-                        }
-                        button.setBackgroundColor(Color.argb(255, 255, Random().nextInt(256), Random().nextInt(256)))
-                        button.text = buttonText
-
-                        // Set image to imageButton
-                        // imageButton.setImageResource(R.drawable.abc_ic_star_half_black_16dp)
-                        button.setOnClickListener(View.OnClickListener { setTab(tabs[i], selectedTab) })
-                        tableRow.addView(button)
-                    }
-                }
+                initTabs()
             }
             userProfileObs -> {
                 // After setTab function (remove or add Tab)
                 FirebaseUtils.getTabs()
             }
             else -> Log.d("[TABS-FRAGMENT]", "observable not recognized $data")
+        }
+    }
+
+    fun initTabs() {
+        // TODO: Qui c'è un BUG Quando vai nelle Tabs, torni alla Home e poi vai di nuovo nelle Tabs si rompe
+        val tableLayout = view?.findViewById(R.id.container) as TableLayout
+
+        // Clean TableLayout
+        tableLayout.removeAllViews()
+
+        /*val scale = resources.displayMetrics.density
+        val leftRight = (25 * scale + 0.5f).toInt()
+        val topBottom = (10 * scale + 0.5f).toInt()
+        tableRow.setPadding(leftRight,topBottom,leftRight,topBottom)*/
+
+        val value = tabsObs.getValue()
+        val userInterests = (userProfileObs.getValue() as User).interests
+        Log.d("[TABS-FRAGMENT]", userInterests.toString())
+        Log.d("[TABS-FRAGMENT]", value.toString())
+        if (value is ArrayList<*>) {
+            val tabs: ArrayList<Tab> = ArrayList(value.filterIsInstance<Tab>())
+            Log.d("[TABS-FRAGMENT]", "observable TABS " + tabs.toString())
+            for (i in 0 until tabs.size) {
+                // Add new Row
+                var tableRow = TableRow(context)
+                // tableLayout.setColumnStretchable(tableLayout.childCount - 1, true)
+                tableLayout.addView(tableRow, tableLayout.childCount)
+
+                var button = Button(super.getContext())
+                var selectedTab = false
+                var buttonText = tabs[i].value
+                for (j in 0 until userInterests.size) {
+                    if(userInterests[j] == tabs[i].id.toInt()) {
+                        selectedTab = true
+                        buttonText += "(remove)"
+                    }
+                }
+                button.setBackgroundColor(Color.argb(255, 255, Random().nextInt(256), Random().nextInt(256)))
+                button.text = buttonText
+
+                // Set image to imageButton
+                // imageButton.setImageResource(R.drawable.abc_ic_star_half_black_16dp)
+                button.setOnClickListener(View.OnClickListener { setTab(tabs[i], selectedTab) })
+                tableRow.addView(button)
+            }
         }
     }
 
@@ -124,6 +127,12 @@ class TabsFragment : Fragment(), Observer {
         user.interests.sort()
         Log.e("[TABS-FRAGMENT]", "Rimozione ${tab.id}" + tab.toMutableMapForUser(user.interests).toString())
         FirebaseUtils.setData("users/${user.id}/interests/",tab.toMutableMapForUser(user.interests))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        userProfileObs.deleteObserver(this)
+        tabsObs.deleteObserver(this)
     }
 
     override fun onCreateView(

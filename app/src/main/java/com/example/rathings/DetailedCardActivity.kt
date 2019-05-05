@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import com.squareup.picasso.Picasso
@@ -13,18 +14,23 @@ import java.util.*
 class DetailedCardActivity : AppCompatActivity(), Observer {
 
     var interestCardsObs = FirebaseUtils.interestCardsObservable
+    var tabsObs = FirebaseUtils.tabsObservable
     var selectedCard: Card = Card()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_card)
         interestCardsObs.addObserver(this)
+        tabsObs.addObserver(this)
         initData()
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             interestCardsObs -> {
+                initData()
+            }
+            tabsObs -> {
                 initData()
             }
             else -> Log.d("[DETAILED-CARD]", "observable not recognized $data")
@@ -44,7 +50,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
 
             // Date
             val date = java.util.Date(selectedCard.timestamp.toLong() * 1000)
-            (findViewById(R.id.date) as TextView).text = java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss").format(date)
+            (findViewById(R.id.date) as TextView).text = java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss", Locale.ITALY).format(date)
 
             // Profile Image
             Log.e("[DETAILED-CARD]", selectedCard.userObj.profile_image)
@@ -55,10 +61,16 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
             // Categories
             var containerCategories = findViewById(R.id.container_categories) as TableRow
             containerCategories.removeAllViews()
+            Log.e("[DETAILED-CARD]", tabsObs.getValue().toString())
+            var tabs = tabsObs.getValue() as ArrayList<Tab>
             for (i in 0 until selectedCard.category.size) {
-                var textView = TextView(this)
-                textView.text = selectedCard.category[i].toString()
-                containerCategories.addView(textView)
+                for (j in 0 until tabs.size) {
+                    if (selectedCard.category[i] == tabs[j].id.toInt()) {
+                        var textView = TextView(this)
+                        textView.text = tabs[j].value
+                        containerCategories.addView(textView)
+                    }
+                }
             }
 
             // Title
@@ -67,7 +79,24 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
             // Description
             (findViewById(R.id.description) as TextView).text = selectedCard.description
 
+
+            // Comments
+            var commentsContainer = findViewById(R.id.container_comments) as TableLayout
+            for (i in 0 until selectedCard.comments.size) {
+                var tableRow = TableRow(this)
+
+            }
+
+
             Log.d("[DETAILED-CARD]", "Card: " + cards[cardPosition.toInt()]?.toString())
         }
     }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        interestCardsObs.deleteObserver(this)
+        tabsObs.deleteObserver(this)
+    }
+
 }

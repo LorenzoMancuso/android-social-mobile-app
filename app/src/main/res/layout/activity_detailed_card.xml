@@ -54,6 +54,7 @@
                       android:id="@+id/container_title" android:padding="10dp">
                 <TextView
                         android:layout_width="match_parent"
+                        android:text="Titolo"
                         android:layout_height="match_parent" android:id="@+id/title" android:textSize="16sp"
                         android:textStyle="bold"/>
             </TableRow>
@@ -61,10 +62,14 @@
                       android:id="@+id/container_description" android:padding="10dp">
                 <TextView
                         android:layout_width="match_parent"
+                        android:text="Descrizione"
                         android:layout_height="match_parent" android:id="@+id/description" android:textSize="16sp"/>
             </TableRow>
             <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
                       android:id="@+id/container_multimedia"/>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:id="@+id/container_comments">
+            </TableRow>
         </TableLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
