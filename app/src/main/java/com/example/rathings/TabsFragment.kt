@@ -57,7 +57,7 @@ class TabsFragment : Fragment(), Observer {
         when(observableObj) {
             tabsObs -> {
                 // TODO: Qui c'è un BUG Quando vai nelle Tabs, torni alla Home e poi vai di nuovo nelle Tabs si rompe
-                val tableLayout = getView()?.findViewById(R.id.container) as TableLayout
+                val tableLayout = view?.findViewById(R.id.container) as TableLayout
 
                 // Clean TableLayout
                 tableLayout.removeAllViews()
@@ -91,13 +91,6 @@ class TabsFragment : Fragment(), Observer {
                         }
                         button.setBackgroundColor(Color.argb(255, 255, Random().nextInt(256), Random().nextInt(256)))
                         button.text = buttonText
-
-                        // TODO: Layout -> go to next line (but It doesn't work)
-                        /*val buttonParams = TableRow.LayoutParams(
-                            TableRow.LayoutParams.MATCH_PARENT,
-                            TableRow.LayoutParams.MATCH_PARENT, 1f
-                        )
-                        button.layoutParams = buttonParams*/
 
                         // Set image to imageButton
                         // imageButton.setImageResource(R.drawable.abc_ic_star_half_black_16dp)

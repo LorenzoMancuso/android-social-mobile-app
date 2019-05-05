@@ -1,6 +1,7 @@
 package com.example.rathings
 
 import android.content.Intent
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,12 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             }
         }
 
+        view?.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
+            val intent = Intent(parent.context, DetailedCardActivity::class.java)
+            intent.putExtra("idCard", view?.findViewById<TextView>(R.id.id_card).text);
+            parent.context.startActivity(intent)
+        }
+
         return CardViewHolder(view)
     }
 
@@ -34,6 +41,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
         holder.id_user.text = mDataList[position].user
+        holder.id_card.text = position.toString()
         holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
     }
@@ -45,12 +53,14 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var user: TextView
         internal var id_user: TextView
+        internal var id_card: TextView
         internal var title: TextView
         internal var description: TextView
 
         init {
             user = itemView.findViewById<View>(R.id.user) as TextView
             id_user = itemView.findViewById<View>(R.id.id_user) as TextView
+            id_card = itemView.findViewById<View>(R.id.id_card) as TextView
             title = itemView.findViewById<View>(R.id.title) as TextView
             description = itemView.findViewById<View>(R.id.description) as TextView
         }

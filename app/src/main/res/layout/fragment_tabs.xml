@@ -4,12 +4,17 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context=".TabsFragment">
-            <TableLayout
-            android:id="@+id/container"
+
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="*"
-            tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
+            android:layout_height="match_parent">
+        <TableLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:orientation="vertical"
+                tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
             <!--<TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -19,5 +24,6 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" android:id="@+id/button"/>
             </TableRow>-->
-            </TableLayout>
+        </TableLayout>
+    </ScrollView>
 </FrameLayout>

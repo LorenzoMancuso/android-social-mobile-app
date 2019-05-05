@@ -15,6 +15,7 @@ object FirebaseUtils {
     var userProfileObservable:CustomObservable=CustomObservable()
     var userCardsObservable:CustomObservable=CustomObservable()
     var interestCardsObservable:CustomObservable=CustomObservable()
+    var selectedCardObservable:CustomObservable=CustomObservable()
     var tabsObservable:CustomObservable=CustomObservable()
 
     private var localUserProfile:User?=null
@@ -114,6 +115,21 @@ object FirebaseUtils {
                 Log.e("[FIREBASE-UTILS]", "tabs " + tempArray)
             }
 
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
+            }
+        }
+        ref.addValueEventListener(postListener)
+    }
+
+    @JvmStatic fun getSelectedCard(idCard: String) {
+        val ref = FirebaseUtils.database.child("cards/${idCard}")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                selectedCardObservable.setValue(dataSnapshot.getValue())
+                Log.e("[FIREBASE-UTILS]", "Selected Card " + dataSnapshot.getValue())
+            }
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
             }
