@@ -9,8 +9,62 @@
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent" tools:layout_editor_absoluteY="8dp" tools:layout_editor_absoluteX="8dp"
-            android:id="@+id/scrollview">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical" android:id="@+id/container"/>
+            android:id="@+id/scrollview" android:clipToPadding="false" android:padding="15dp">
+        <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/container_user"
+                    android:padding="10dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/profile_image"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:src="@drawable/default_avatar"
+                        app:civ_border_width="2dp"
+                        app:civ_border_color="#FFF"/>
+                <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp">
+                    <TableRow android:layout_width="match_parent"
+                              android:layout_height="match_parent">
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:text="Prova UserProva UserProva UserProva UserProva UserProva User"
+                                android:layout_height="match_parent" android:id="@+id/user" android:textAllCaps="true"
+                                android:gravity="center_vertical" android:textSize="18sp"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent"
+                              android:layout_height="match_parent">
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:text="Prova Data"
+                                android:layout_height="match_parent" android:id="@+id/date"
+                                android:gravity="center_vertical" android:textSize="14sp"/>
+                    </TableRow>
+                </TableLayout>
+            </TableRow>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:id="@+id/container_categories" android:padding="10dp"/>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:id="@+id/container_title" android:padding="10dp">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:id="@+id/title" android:textSize="16sp"
+                        android:textStyle="bold"/>
+            </TableRow>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:id="@+id/container_description" android:padding="10dp">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:id="@+id/description" android:textSize="16sp"/>
+            </TableRow>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:id="@+id/container_multimedia"/>
+        </TableLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
