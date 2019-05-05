@@ -10,66 +10,89 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" tools:layout_editor_absoluteY="8dp" tools:layout_editor_absoluteX="8dp"
             android:id="@+id/scrollview" android:clipToPadding="false" android:padding="15dp">
-        <TableLayout
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <TableRow
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:src="@drawable/default_avatar"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FFF"/>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/container_user"
-                    android:padding="10dp">
-                <de.hdodenhof.circleimageview.CircleImageView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/profile_image"
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
-                        android:src="@drawable/default_avatar"
-                        app:civ_border_width="2dp"
-                        app:civ_border_color="#FFF"/>
-                <TableLayout
+                    android:orientation="vertical"
+                    android:layout_marginStart="10dp">
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp">
-                    <TableRow android:layout_width="match_parent"
-                              android:layout_height="match_parent">
-                        <TextView
-                                android:layout_width="match_parent"
-                                android:text="Prova UserProva UserProva UserProva UserProva UserProva User"
-                                android:layout_height="match_parent" android:id="@+id/user" android:textAllCaps="true"
-                                android:textSize="18sp"/>
-                    </TableRow>
-                    <TableRow android:layout_width="match_parent"
-                              android:layout_height="match_parent">
-                        <TextView
-                                android:layout_width="match_parent"
-                                android:text="Prova Data"
-                                android:layout_height="match_parent" android:id="@+id/date"
-                                android:textSize="14sp"/>
-                    </TableRow>
-                </TableLayout>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
-                      android:id="@+id/container_categories" android:padding="10dp"/>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
-                      android:id="@+id/container_title" android:padding="10dp">
+                        android:text="Nome Utente"
+                        android:layout_height="wrap_content" android:id="@+id/user"
+                        android:textAllCaps="true"
+                        android:textSize="18sp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/date"
+                        android:text="Prova Data"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/container_categories"
+                android:orientation="horizontal"
+                android:padding="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/container_title"
+                android:padding="10dp">
                 <TextView
-                        android:layout_width="match_parent"
-                        android:text="Titolo"
-                        android:layout_height="match_parent" android:id="@+id/title" android:textSize="16sp"
-                        android:textStyle="bold"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
-                      android:id="@+id/container_description" android:padding="10dp">
+                    android:layout_width="match_parent"
+                    android:text="Titolo"
+                    android:layout_height="match_parent" android:id="@+id/title" android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/container_description"
+                android:padding="10dp"
+                android:orientation="vertical">
                 <TextView
+                    android:layout_width="match_parent"
+                    android:text="Descrizione"
+                    android:layout_height="match_parent" android:id="@+id/description" android:textSize="16sp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical"
+                android:id="@+id/container_multimedia"/>
+            <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent"
+                android:id="@+id/container_comments">
+                <TextView
+                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:text="Descrizione"
-                        android:layout_height="match_parent" android:id="@+id/description" android:textSize="16sp"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
-                      android:id="@+id/container_multimedia"/>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
-                      android:id="@+id/container_comments">
-            </TableRow>
-        </TableLayout>
+                        android:text="Commenti"
+                        android:layout_height="match_parent" android:textSize="16sp"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

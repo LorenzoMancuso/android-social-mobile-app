@@ -2,11 +2,10 @@ package com.example.rathings
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.widget.ImageView
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
@@ -38,6 +37,9 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
     }
 
     private fun initData() {
+        // TODO: Qui c'è un bug. Funziona quando sei nella home, ma se vai nel profilo, basandosi su un array diverso da interestCards non funziona.
+        // 1) O distinguere se ci si trova nel PROFILO o nella HOME per ricercare in ArrayList differenti
+        // 2) O passare completamente la card in input (scelta più valida, ma come???)
         var cardPosition: String = intent.getStringExtra("card_position")
         Log.e("[DETAILED-CARD]", cardPosition)
         val value = interestCardsObs.getValue()
@@ -59,7 +61,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
             }
 
             // Categories
-            var containerCategories = findViewById(R.id.container_categories) as TableRow
+            var containerCategories = findViewById(R.id.container_categories) as LinearLayout
             containerCategories.removeAllViews()
             var tabs = tabsObs.getValue() as ArrayList<Tab>
             for (i in 0 until selectedCard.category.size) {
@@ -80,9 +82,11 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
 
 
             // Comments
-            for (i in 0 until selectedCard.comments.size) {
-                Log.d("[DETAILED-CARD]", selectedCard.comments[i].text)
-            }
+            var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
+            val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            cardRecyclerView?.layoutManager = mLayoutManager
+            var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
+            cardRecyclerView?.adapter = commentAdapter
 
             Log.d("[DETAILED-CARD]", "Card: " + cards[cardPosition.toInt()]?.toString())
         }
