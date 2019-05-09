@@ -20,8 +20,11 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_card)
         tabsObs.addObserver(this)
+
         initData()
     }
+
+
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
@@ -70,13 +73,13 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         (findViewById(R.id.description) as TextView).text = selectedCard.description
 
         // Multimedia
-        for (i in 0 until selectedCard.multimedia.size) {
-            var image: ImageView = ImageView(this)
-            Picasso.with(this).load(selectedCard.multimedia[i]).into(image)
-            (findViewById(R.id.multimedia_pager) as ViewPager).addView(image)
-        }
-
-
+        var multimediaPagerAdapter = MultimediaPagerAdapter(getSupportFragmentManager());
+        var viewPager = findViewById(R.id.multimedia_pager) as ViewPager
+        multimediaPagerAdapter.NUM_ITEMS = selectedCard.multimedia.size
+        multimediaPagerAdapter.ITEMS = selectedCard.multimedia
+        Log.d("[DETAILED-CARD]", multimediaPagerAdapter.NUM_ITEMS.toString())
+        Log.d("[DETAILED-CARD]", multimediaPagerAdapter.ITEMS.toString())
+        viewPager.setAdapter(multimediaPagerAdapter)
 
         // Comments
         var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView

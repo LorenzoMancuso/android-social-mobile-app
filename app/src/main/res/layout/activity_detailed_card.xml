@@ -74,13 +74,14 @@
                     android:text="Descrizione"
                     android:layout_height="match_parent" android:id="@+id/description" android:textSize="16sp"/>
             </LinearLayout>
-            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical"
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:orientation="vertical"
+                          android:gravity="center_horizontal"
                           android:id="@+id/container_multimedia">
                 <android.support.v4.view.ViewPager
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:layout_editor_absoluteY="519dp"
-                        tools:layout_editor_absoluteX="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="400dp"
                         android:id="@+id/multimedia_pager">
                 </android.support.v4.view.ViewPager>
             </LinearLayout>
