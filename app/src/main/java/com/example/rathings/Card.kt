@@ -1,6 +1,8 @@
 package com.example.rathings
 
-class Card() {
+import java.io.Serializable
+
+class Card(): Serializable {
     /**
      * LISTA MULTIMEDIA
      * DESCRIZIONE
@@ -11,6 +13,7 @@ class Card() {
      * LISTA CATEGORIE DI APPARTENENZA
      * LISTA VOTI RICEVUTI (OGGETTO VOTO CON UTENTE,VALORE)*/
 
+    // NOTA: Ogni oggetto è diventato Serializable, permettendoci così di passarlo come oggetto nei putExtra di un Intent
     public var id:String=""
     public var title:String=""
     public var description: String=""

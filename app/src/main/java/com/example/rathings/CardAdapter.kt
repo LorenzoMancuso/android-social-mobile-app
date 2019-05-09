@@ -11,6 +11,8 @@ import android.widget.TextView
 
 class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
+    var internalObservableCard :CustomObservable=CustomObservable()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card, parent, false)
 
@@ -27,23 +29,22 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             }
         }
 
-        view?.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
-            val intent = Intent(parent.context, DetailedCardActivity::class.java)
-            intent.putExtra("card_position", view?.findViewById<TextView>(R.id.card_position).text);
-            parent.context.startActivity(intent)
-        }
-
         return CardViewHolder(view)
     }
-
-
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
         holder.id_user.text = mDataList[position].user
-        holder.card_position.text = position.toString()
         holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
+
+        holder.itemView.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
+            val intent = Intent(holder.itemView.context, DetailedCardActivity::class.java)
+            val cards: ArrayList<Card> = ArrayList()
+            cards.add(mDataList[position])
+            intent.putExtra("card", cards)
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -53,14 +54,14 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var user: TextView
         internal var id_user: TextView
-        internal var card_position: TextView
         internal var title: TextView
+        internal var card: Card
         internal var description: TextView
 
         init {
             user = itemView.findViewById<View>(R.id.user) as TextView
             id_user = itemView.findViewById<View>(R.id.id_user) as TextView
-            card_position = itemView.findViewById<View>(R.id.card_position) as TextView
+            card = Card()
             title = itemView.findViewById<View>(R.id.title) as TextView
             description = itemView.findViewById<View>(R.id.description) as TextView
         }

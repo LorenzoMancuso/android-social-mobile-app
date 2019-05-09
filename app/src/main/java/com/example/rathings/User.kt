@@ -1,6 +1,8 @@
 package com.example.rathings
 
-class User() {
+import java.io.Serializable
+
+class User(): Serializable {
     public var id:String=""
     public var name: String=""
     public var surname: String=""

@@ -10,6 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/cv"
+            android:onClick="detailedCard"
             app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
@@ -24,13 +25,6 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginRight="16dp"/>-->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:id="@+id/card_position"
-                    />
-
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

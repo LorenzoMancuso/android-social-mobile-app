@@ -1,6 +1,8 @@
 package com.example.rathings
 
-class Comment() {
+import java.io.Serializable
+
+class Comment(): Serializable {
     public var id:Long=0
     public var text:String=""
     public var timestamp:Int=0
