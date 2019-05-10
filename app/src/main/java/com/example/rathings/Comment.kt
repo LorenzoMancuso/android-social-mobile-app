@@ -17,7 +17,7 @@ class Comment(): Serializable {
         str+="'id': $id, "
         str+="'text': $text, "
         str+="'timestamp': $timestamp, "
-        str+="'user': $userObj} "
+        str+="'user': $user} "
         return str
     }
 

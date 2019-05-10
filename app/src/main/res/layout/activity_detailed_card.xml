@@ -5,7 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".DetailedCardActivity">
+        tools:context=".DetailedCardActivity"
+        android:background="@color/whitePrimary">
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent" tools:layout_editor_absoluteY="8dp" tools:layout_editor_absoluteX="8dp"
@@ -46,17 +47,20 @@
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
+                android:background="#fff"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/container_categories"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
-                android:padding="10dp"/>
+                android:padding="15dp"/>
             <LinearLayout
+                android:background="#fff"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:id="@+id/container_title"
-                android:padding="10dp">
+                android:padding="15dp">
                 <TextView
                     android:layout_width="match_parent"
                     android:text="Titolo"
@@ -64,10 +68,11 @@
                     android:textStyle="bold"/>
             </LinearLayout>
             <LinearLayout
+                android:background="#fff"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/container_description"
-                android:padding="10dp"
+                android:padding="15dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
@@ -75,23 +80,65 @@
                     android:layout_height="match_parent" android:id="@+id/description" android:textSize="16sp"/>
             </LinearLayout>
             <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:orientation="vertical"
-                          android:gravity="center_horizontal"
-                          android:id="@+id/container_multimedia">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:id="@+id/container_multimedia">
                 <android.support.v4.view.ViewPager
                         android:layout_width="wrap_content"
                         android:layout_height="400dp"
                         android:id="@+id/multimedia_pager">
                 </android.support.v4.view.ViewPager>
             </LinearLayout>
-            <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 android:id="@+id/container_comments">
-                <TextView
-                        android:padding="10dp"
+                <Button
+                        android:fontFamily="sans-serif"
+                        android:id="@+id/comments_title"
+                        android:text="Comments"
+                        android:textColor="@color/redPrimary"
+                        android:textAllCaps="false"
                         android:layout_width="match_parent"
-                        android:text="Commenti"
-                        android:layout_height="match_parent" android:textSize="16sp"/>
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/border_top"
+                        android:backgroundTint="@color/redPrimary"
+                        android:gravity="center_vertical"
+                        android:textStyle="normal"
+                        android:padding="10dp"
+                        android:drawablePadding="7dp"
+                        android:drawableLeft="@drawable/ic_message_black_24dp"
+                        android:drawableTint="@color/redPrimary"
+                />
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:id="@+id/add_comment"
+                        android:background="#fff"
+                        android:hint="Write your Comment"
+                        android:layout_marginTop="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="100dp"
+                />
+                <Button
+                        android:text="Add comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:layout_editor_absoluteY="0dp"
+                        tools:layout_editor_absoluteX="322dp"
+                        android:id="@+id/publish_comment"
+                        android:background="@color/redPrimary"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/whitePrimary"
+                />
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_comments"
                     android:layout_width="match_parent"
@@ -100,7 +147,8 @@
                     android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="10dp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

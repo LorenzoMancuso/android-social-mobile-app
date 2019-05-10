@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.View
 import android.widget.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -83,14 +84,36 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
 
         // Comments
         var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
+        var commentsTitle = findViewById(R.id.comments_title) as Button
+
+        if (selectedCard.comments.size == 0) {
+            commentsTitle.text = "Click here to add the first comment!"
+        } else {
+            commentsTitle.text = "Comments"
+        }
         val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         cardRecyclerView?.layoutManager = mLayoutManager
         var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
         cardRecyclerView?.adapter = commentAdapter
 
+        val publishComment = findViewById(R.id.publish_comment) as Button
+        publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(R.id.add_comment) as EditText).text.toString()) })
+
         Log.d("[DETAILED-CARD]", "Card: " + cards[0])
     }
 
+    fun addComment(idNewComment: String, idCard: String, text: String) {
+        var newComment = Comment()
+        newComment.id = idNewComment.toLong()
+        newComment.userObj = FirebaseUtils.getLocalUser() as User
+        newComment.user = newComment.userObj.id
+        newComment.text = text
+        newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
+        Log.d("[ADD-COMMENT]", newComment.toString())
+        FirebaseUtils.updateData("cards/${idCard}/comments/${idNewComment}",newComment.toMutableMap())
+
+        // FirebaseUtils.updateData()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
