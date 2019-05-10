@@ -112,8 +112,7 @@
                         android:padding="10dp"
                         android:drawablePadding="7dp"
                         android:drawableLeft="@drawable/ic_message_black_24dp"
-                        android:drawableTint="@color/redPrimary"
-                />
+                        android:drawableTint="@color/redPrimary"/>
                 <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -125,8 +124,7 @@
                         android:paddingLeft="10dp"
                         android:paddingTop="10dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="100dp"
-                />
+                        android:paddingBottom="100dp"/>
                 <Button
                         android:text="Add comment"
                         android:layout_width="wrap_content"
@@ -137,8 +135,7 @@
                         android:background="@color/redPrimary"
                         android:layout_gravity="right"
                         android:layout_marginTop="5dp"
-                        android:textColor="@color/whitePrimary"
-                />
+                        android:textColor="@color/whitePrimary"/>
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_comments"
                     android:layout_width="match_parent"

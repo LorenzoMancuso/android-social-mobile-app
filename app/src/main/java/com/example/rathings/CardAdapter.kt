@@ -3,11 +3,19 @@ package com.example.rathings
 import android.content.Intent
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RatingBar
 import android.widget.TextView
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.fragment_profile.*
+import org.w3c.dom.Text
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
@@ -37,6 +45,13 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         holder.id_user.text = mDataList[position].user
         holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
+        holder.comments_size.text = "Comments: " + mDataList[position].comments.size
+        holder.ratings.rating = mDataList[position].likelihood.toFloat()
+        holder.date.text =  java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss", Locale.ITALY).format(Date(mDataList[position].timestamp.toLong() * 1000))
+        Log.d("[PROFILE-IMAGE]", mDataList[position].userObj.profile_image)
+        if(mDataList[position].userObj.profile_image != "") {
+            Picasso.with(holder.itemView.context).load(mDataList[position].userObj.profile_image).into(holder.profile_image)
+        }
 
         holder.itemView.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailedCardActivity::class.java)
@@ -54,16 +69,24 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var user: TextView
         internal var id_user: TextView
+        internal var profile_image: CircleImageView
         internal var title: TextView
         internal var card: Card
         internal var description: TextView
+        internal var comments_size: TextView
+        internal var ratings: RatingBar
+        internal var date: TextView
 
         init {
             user = itemView.findViewById<View>(R.id.user) as TextView
             id_user = itemView.findViewById<View>(R.id.id_user) as TextView
             card = Card()
+            profile_image = itemView.findViewById<View>(R.id.profile_image) as CircleImageView
             title = itemView.findViewById<View>(R.id.title) as TextView
             description = itemView.findViewById<View>(R.id.description) as TextView
+            comments_size = itemView.findViewById<View>(R.id.comments_size) as TextView
+            ratings = itemView.findViewById<View>(R.id.ratings) as RatingBar
+            date = itemView.findViewById<View>(R.id.date) as TextView
         }
     }
 }

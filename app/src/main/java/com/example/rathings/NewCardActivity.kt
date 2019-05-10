@@ -90,12 +90,17 @@ class NewCardActivity : AppCompatActivity() {
             if (requestCode == 1 || requestCode == 3) {
                 val imageView = ImageView(context)
                 try {
-                    var filePath = data?.data
+                    var filePath: Uri
                     var bitmap:Bitmap
 
                     // TODO: Risolvere problema 'filePath must not be null'
-                    if (requestCode == 3) bitmap = data.getExtras().get("data") as Bitmap // Photocamera
-                    else bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath) // Archive
+                    if (requestCode == 3) {
+                        bitmap = data.getExtras().get("data") as Bitmap
+                        filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
+                    } else {
+                        filePath = data?.data
+                        bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath) // Archive
+                    }
 
                     val resized = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
                     imageView.setImageBitmap(resized)

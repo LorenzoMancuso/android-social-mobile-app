@@ -111,8 +111,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
         Log.d("[ADD-COMMENT]", newComment.toString())
         FirebaseUtils.updateData("cards/${idCard}/comments/${idNewComment}",newComment.toMutableMap())
-
-        // FirebaseUtils.updateData()
     }
 
     override fun onDestroy() {
