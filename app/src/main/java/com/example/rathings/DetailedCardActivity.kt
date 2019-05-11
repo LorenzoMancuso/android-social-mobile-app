@@ -25,8 +25,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         initData()
     }
 
-
-
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             tabsObs -> {
@@ -91,17 +89,16 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
 
         // Comments
         var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
-        var commentsTitle = findViewById(R.id.comments_title) as TextView
         var addComment = findViewById(R.id.add_comment) as EditText
         val publishComment = findViewById(R.id.publish_comment) as Button
+        var commentsTitle = findViewById(R.id.comments_title) as TextView
 
+        commentsTitle.setOnClickListener(View.OnClickListener { enableComments() })
 
         if (selectedCard.comments.size == 0) {
             commentsTitle.text = "Click here to add the first comment!"
         } else {
-            commentsTitle.text = "Comments"
-            addComment.visibility = View.VISIBLE
-            publishComment.visibility = View.VISIBLE
+            enableComments()
         }
         val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         cardRecyclerView?.layoutManager = mLayoutManager
@@ -111,6 +108,15 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(R.id.add_comment) as EditText).text.toString()) })
 
         Log.d("[DETAILED-CARD]", "Card: " + cards[0])
+    }
+
+    fun enableComments() {
+        var commentsTitle = findViewById(R.id.comments_title) as TextView
+        var addComment = findViewById(R.id.add_comment) as EditText
+        val publishComment = findViewById(R.id.publish_comment) as Button
+        commentsTitle.text = "Comments"
+        addComment.visibility = View.VISIBLE
+        publishComment.visibility = View.VISIBLE
     }
 
     fun addComment(idNewComment: String, idCard: String, text: String) {
