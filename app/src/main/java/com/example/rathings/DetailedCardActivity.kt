@@ -74,29 +74,40 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         (findViewById(R.id.description) as TextView).text = selectedCard.description
 
         // Multimedia
-        var multimediaPagerAdapter = MultimediaPagerAdapter(getSupportFragmentManager());
-        var viewPager = findViewById(R.id.multimedia_pager) as ViewPager
-        multimediaPagerAdapter.NUM_ITEMS = selectedCard.multimedia.size
-        multimediaPagerAdapter.ITEMS = selectedCard.multimedia
-        Log.d("[DETAILED-CARD]", multimediaPagerAdapter.NUM_ITEMS.toString())
-        Log.d("[DETAILED-CARD]", multimediaPagerAdapter.ITEMS.toString())
-        viewPager.setAdapter(multimediaPagerAdapter)
+        if (selectedCard.multimedia.size > 0) {
+            var multimediaPagerAdapter = MultimediaPagerAdapter(getSupportFragmentManager());
+            var viewPager = findViewById(R.id.multimedia_pager) as ViewPager
+
+            // Set scaled height (400 dp)
+            val scale = resources.displayMetrics.density
+            viewPager.layoutParams.height = (400 * scale + 0.5f).toInt()
+
+            // Set adapter data
+            multimediaPagerAdapter.NUM_ITEMS = selectedCard.multimedia.size
+            multimediaPagerAdapter.ITEMS = selectedCard.multimedia
+            Log.d("[DETAILED-CARD]", multimediaPagerAdapter.ITEMS.toString())
+            viewPager.setAdapter(multimediaPagerAdapter)
+        }
 
         // Comments
         var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
-        var commentsTitle = findViewById(R.id.comments_title) as Button
+        var commentsTitle = findViewById(R.id.comments_title) as TextView
+        var addComment = findViewById(R.id.add_comment) as EditText
+        val publishComment = findViewById(R.id.publish_comment) as Button
+
 
         if (selectedCard.comments.size == 0) {
             commentsTitle.text = "Click here to add the first comment!"
         } else {
             commentsTitle.text = "Comments"
+            addComment.visibility = View.VISIBLE
+            publishComment.visibility = View.VISIBLE
         }
         val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         cardRecyclerView?.layoutManager = mLayoutManager
         var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
         cardRecyclerView?.adapter = commentAdapter
 
-        val publishComment = findViewById(R.id.publish_comment) as Button
         publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(R.id.add_comment) as EditText).text.toString()) })
 
         Log.d("[DETAILED-CARD]", "Card: " + cards[0])

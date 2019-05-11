@@ -17,6 +17,8 @@ import android.app.ProgressDialog
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 class NewCardActivity : AppCompatActivity() {
 
@@ -28,10 +30,19 @@ class NewCardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_card)
 
+        // Set Card info
         card.timestamp = (System.currentTimeMillis() / 1000).toInt()
         card.id = user?.id + "_" + card.timestamp.toString()
         card.user = user!!.id
 
+        // Set User info
+        (findViewById(R.id.user) as TextView).text = "${user!!.name} ${user!!.surname}"
+        val profile_image = findViewById(R.id.profile_image) as CircleImageView
+        if(user!!.profile_image != "") {
+            Picasso.with(this).load(user!!.profile_image).into(profile_image)
+        }
+
+        // Set OnClickListeners for buttons
         val publishBtn = findViewById(R.id.publish_card) as Button
         publishBtn.setOnClickListener(View.OnClickListener { publishCard() })
 

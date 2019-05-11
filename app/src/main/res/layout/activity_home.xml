@@ -19,7 +19,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-
     <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
@@ -29,18 +28,19 @@
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true" app:srcCompat="@android:drawable/ic_menu_add"
-            android:id="@+id/add_new_card"
-            app:backgroundTint="@color/redPrimary"
-            app:rippleColor="#FFF"
-            app:layout_constraintEnd_toEndOf="@id/container"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:onClick="newCard"
-    />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        android:id="@+id/add_new_card"
+        app:backgroundTint="@color/redPrimary"
+        android:tint="#FFF"
+        app:layout_constraintEnd_toEndOf="@id/container"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:scaleType="center"
+        android:layout_marginRight="10dp"
+        android:onClick="newCard"/>
 
 </android.support.constraint.ConstraintLayout>
