@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
+import android.util.Log
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
@@ -43,6 +44,9 @@ class NewCardActivity : AppCompatActivity() {
         }
 
         // Set OnClickListeners for buttons
+        val addCategories = findViewById(R.id.add_categories) as Button
+        addCategories.setOnClickListener(View.OnClickListener { addCategories() })
+
         val publishBtn = findViewById(R.id.publish_card) as Button
         publishBtn.setOnClickListener(View.OnClickListener { publishCard() })
 
@@ -51,6 +55,16 @@ class NewCardActivity : AppCompatActivity() {
 
         val videoBtn = findViewById(R.id.video_btn) as Button
         videoBtn.setOnClickListener(View.OnClickListener { chooseFile("video", 2) })
+    }
+
+    // Identifiers to Publish Card
+    var listOfTabsIds: ArrayList<Int> = ArrayList()
+    // Tabs List from TabsActivity
+    var listOfSelectedTabs: ArrayList<Tab> = ArrayList()
+    fun addCategories() {
+        val intent = Intent(this, TabsActivity::class.java)
+        intent.putExtra("list_of_selected_tabs", listOfSelectedTabs)
+        startActivityForResult(intent, 5)
     }
 
     private fun chooseFile(type: String, requestCode: Int) {
@@ -82,56 +96,78 @@ class NewCardActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null) {
-            val context = getApplicationContext()
-            val tableLayout = findViewById(R.id.container_multimedia) as TableLayout
-            var tableRow = tableLayout.getChildAt(tableLayout.childCount - 1) as TableRow
+        if (resultCode == 5) { // CASE Add Tab
+            Log.d("[EXTRAS]", data?.extras?.get("added_categories").toString())
 
-            if (tableRow.childCount == 3) {
-                tableRow = TableRow(context)
-                tableLayout.addView(tableRow)
+            // Re-initialize lists
+            listOfSelectedTabs = ArrayList()
+            listOfTabsIds = ArrayList()
+
+            listOfSelectedTabs = data?.extras?.get("added_categories") as ArrayList<Tab>
+
+            var addedCategories = findViewById(R.id.added_categories) as LinearLayout
+            addedCategories.removeAllViews()
+            for(tab in listOfSelectedTabs) {
+                // Add id to publish card
+                listOfTabsIds.add(tab.id.toInt())
+
+                // View value
+                var textView = TextView(this)
+                textView.text = tab.value
+                addedCategories.addView(textView)
             }
+        } else { // CASE Add Multimedia
+            if (data != null) {
+                val context = getApplicationContext()
+                val tableLayout = findViewById(R.id.container_multimedia) as TableLayout
+                var tableRow = tableLayout.getChildAt(tableLayout.childCount - 1) as TableRow
 
-            val scale = resources.displayMetrics.density
-            val leftRight = (25 * scale + 0.5f).toInt()
-            val topBottom = (10 * scale + 0.5f).toInt()
-
-            tableRow.setPadding(leftRight,topBottom,leftRight,topBottom)
-
-            if (requestCode == 1 || requestCode == 3) {
-                val imageView = ImageView(context)
-                try {
-                    var filePath: Uri
-                    var bitmap:Bitmap
-
-                    // TODO: Risolvere problema 'filePath must not be null'
-                    if (requestCode == 3) {
-                        bitmap = data.getExtras().get("data") as Bitmap
-                        filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
-                    } else {
-                        filePath = data?.data
-                        bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath) // Archive
-                    }
-
-                    val resized = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
-                    imageView.setImageBitmap(resized)
-                    imageView.setPadding(5,5,5,5)
-                    tableRow.addView(imageView)
-                    uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "image")
-                } catch (e: IOException) {
-                    e.printStackTrace()
+                if (tableRow.childCount == 3) {
+                    tableRow = TableRow(context)
+                    tableLayout.addView(tableRow)
                 }
-            } else if (requestCode == 2 || requestCode == 4) {
-                // TODO: Risolvere il problema di visualizzazione!
-                val videoView = VideoView(context)
-                try {
-                    var filePath = data?.data
-                    videoView.setVideoURI(filePath)
-                    videoView.setPadding(5,5,5,5)
-                    tableRow.addView(videoView)
-                    uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "video")
-                } catch (e: IOException) {
-                    e.printStackTrace()
+
+                val scale = resources.displayMetrics.density
+                val leftRight = (25 * scale + 0.5f).toInt()
+                val topBottom = (10 * scale + 0.5f).toInt()
+
+                tableRow.setPadding(leftRight,topBottom,leftRight,topBottom)
+
+                if (requestCode == 1 || requestCode == 3) {
+                    val imageView = ImageView(context)
+                    try {
+                        var filePath: Uri
+                        var bitmap:Bitmap
+
+                        // TODO: Risolvere problema 'filePath must not be null'
+                        if (requestCode == 3) {
+                            bitmap = data.getExtras().get("data") as Bitmap
+                            filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
+                        } else {
+                            filePath = data?.data
+                            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath) // Archive
+                        }
+
+                        val resized = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
+                        imageView.setImageBitmap(resized)
+                        imageView.setPadding(5,5,5,5)
+                        tableRow.addView(imageView)
+                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "image")
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                } else if (requestCode == 2 || requestCode == 4) {
+                    // TODO: Risolvere il problema di visualizzazione!
+                    val videoView = VideoView(context)
+                    try {
+                        var filePath = data?.data
+                        videoView.setVideoURI(filePath)
+                        videoView.setPadding(5,5,5,5)
+                        tableRow.addView(videoView)
+                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "video")
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
                 }
             }
         }
@@ -206,7 +242,7 @@ class NewCardActivity : AppCompatActivity() {
 
         card.title = (findViewById(R.id.title_text) as EditText).text.toString()
         card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
-        card.category.add(1)
+        card.category = listOfTabsIds
         card.multimedia = listOfDownloadUri
 
         //send hash map of card object for firebase update

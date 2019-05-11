@@ -1,10 +1,13 @@
 package com.example.rathings
 
-class Tab {
+import java.io.Serializable
+
+class Tab(): Serializable {
     public var id:String=""
     public var value:String=""
 
-    constructor(id:String, value:String) {
+    constructor(id:String) :this() {}
+    constructor(id:String, value:String) : this(id) {
         this.id = id
         this.value = value
     }

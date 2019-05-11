@@ -15,15 +15,6 @@
                 android:stretchColumns="*"
                 android:orientation="vertical"
                 tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
-            <!--<TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <Button
-                        android:text="Button"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" android:id="@+id/button"/>
-            </TableRow>-->
         </TableLayout>
     </ScrollView>
 </FrameLayout>
