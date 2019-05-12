@@ -24,11 +24,14 @@ class Card(): Serializable {
     public var userObj:User=User()
     public var multimedia: MutableList<String> = ArrayList()
     public var comments: MutableList<Comment> = ArrayList()
+    public var ratings_users: MutableMap<String, Float> = mutableMapOf()
+    public var ratings_average: Float = 0.0F
+    public var ratings_count: Int = 0
 
-    public var likelihood:Double = 0.0;
+    public var likelihood:Double = 0.0
 
     constructor(id:String) :this() {}
-    constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>, comments: MutableList<Any>) : this(id) {}
+    constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>, comments: MutableList<Any>, ratings_average: Float, ratings_count: Int, ratings_users: MutableMap<String, Float>) : this(id) {}
 
     override fun toString():String {
         var str="{"
@@ -53,6 +56,9 @@ class Card(): Serializable {
         res.set("category",category)
         res.set("multimedia",multimedia)
         res.set("comments",comments)
+        res.set("ratings_users",ratings_users)
+        res.set("ratings_average",ratings_average)
+        res.set("ratings_count",ratings_count)
 
         return res
     }

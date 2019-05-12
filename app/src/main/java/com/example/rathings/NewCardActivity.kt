@@ -244,6 +244,8 @@ class NewCardActivity : AppCompatActivity() {
         card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
         card.category = listOfTabsIds
         card.multimedia = listOfDownloadUri
+        card.ratings_average = 0.0F
+        card.ratings_count = 0
 
         //send hash map of card object for firebase update
         println(card.multimedia)

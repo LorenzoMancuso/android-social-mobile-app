@@ -21,7 +21,6 @@
                     android:id="@+id/cv"
                     app:cardCornerRadius="5dp"
                     app:cardUseCompatPadding="true"
-                    android:onClick="detailedCard"
                     app:layout_constraintTop_toTopOf="parent">
                 <LinearLayout
                         android:orientation="vertical"
@@ -97,21 +96,26 @@
                                 android:text="Descrizione"
                                 android:id="@+id/description"/>
                         <LinearLayout
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_marginTop="10dp"
                             android:gravity="right"
                             android:layout_height="match_parent">
+                            <TextView
+                                android:id="@+id/ratings_title"
+                                android:gravity="right"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/redPrimary"
+                                android:text="What do you think about this Card?"
+                                android:textSize="16sp"/>
                             <RatingBar
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:scaleX="1.2"
-                                android:scaleY="1.2"
-                                android:transformPivotX="0dp"
-                                android:transformPivotY="0dp"
-                                android:isIndicator="true"
                                 android:max="5"
-                                style="?android:attr/ratingBarStyleSmall"
+                                style="?android:attr/ratingBarStyle"
+                                android:progressTint="@color/redPrimary"
+                                android:stepSize="0.5"
                                 android:id="@+id/ratings"/>
                         </LinearLayout>
                     </LinearLayout>

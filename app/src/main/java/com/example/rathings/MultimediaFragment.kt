@@ -33,7 +33,7 @@ class MultimediaFragment : Fragment() {
             Picasso.with(context).load(cardMedia).into(imageView)
             layout.addView(imageView)
         } else {
-            // TODO: Risolvere il problema di cache per cui il video si vede SOLO una volta (test: cancella l'app e riesegui)
+            // TODO: Risolvere il problema di cache per cui il video si vede SOLO una volta nel caso pesi qualche mega
             var videoView = VideoView(context)
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
             params.gravity = Gravity.CENTER_HORIZONTAL

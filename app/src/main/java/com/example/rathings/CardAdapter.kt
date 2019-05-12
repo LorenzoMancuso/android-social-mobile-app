@@ -46,7 +46,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
         holder.comments_size.text = "Comments: " + mDataList[position].comments.size
-        holder.ratings.rating = mDataList[position].likelihood.toFloat()
+        holder.ratings.rating = mDataList[position].ratings_average
         holder.date.text =  java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss", Locale.ITALY).format(Date(mDataList[position].timestamp.toLong() * 1000))
         Log.d("[PROFILE-IMAGE]", mDataList[position].userObj.profile_image)
         if(mDataList[position].userObj.profile_image != "") {

@@ -66,16 +66,10 @@ class TabsFragment : Fragment(), Observer {
     }
 
     fun initTabs() {
-        // TODO: Qui c'è un BUG Quando vai nelle Tabs, torni alla Home e poi vai di nuovo nelle Tabs si rompe
         val tableLayout = view?.findViewById(R.id.container) as TableLayout
 
         // Clean TableLayout
         tableLayout.removeAllViews()
-
-        /*val scale = resources.displayMetrics.density
-        val leftRight = (25 * scale + 0.5f).toInt()
-        val topBottom = (10 * scale + 0.5f).toInt()
-        tableRow.setPadding(leftRight,topBottom,leftRight,topBottom)*/
 
         val value = tabsObs.getValue()
         val userInterests = (userProfileObs.getValue() as User).interests

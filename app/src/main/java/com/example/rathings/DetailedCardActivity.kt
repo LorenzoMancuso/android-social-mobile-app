@@ -71,6 +71,42 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         // Description
         (findViewById(R.id.description) as TextView).text = selectedCard.description
 
+        // RatingBar
+        var ratingBar = findViewById(R.id.ratings) as RatingBar
+        var user = FirebaseUtils.getLocalUser() as User
+
+        // Block the RatingBar if the user has already voted in the past
+        if(selectedCard.ratings_users.containsKey(user.id)) {
+            (findViewById(R.id.ratings_title) as TextView).text = "Ratings average"
+            ratingBar.setIsIndicator(true)
+            ratingBar.rating = selectedCard.ratings_average
+        }
+
+        ratingBar.setOnRatingBarChangeListener { ratings, value, fromUser ->
+            run {
+                if (fromUser) {
+                    (findViewById(R.id.ratings_title) as TextView).text = "Ratings average"
+
+                    // Calc the average
+                    selectedCard.ratings_average = ((selectedCard.ratings_average * selectedCard.ratings_count) + value) / (selectedCard.ratings_count + 1)
+                    selectedCard.ratings_count++
+                    selectedCard.ratings_users.set(user.id, value)
+
+                    // Block the RatingBar
+                    ratings.setIsIndicator(true)
+
+                    Toast.makeText(this, "Thanks for your Rate.", Toast.LENGTH_SHORT).show()
+
+                    // Set new Value on RatingBar
+                    ratings.rating = selectedCard.ratings_average
+
+                    // Save data in Firebase
+                    FirebaseUtils.updateData("cards/${selectedCard.id}/",selectedCard.toMutableMap())
+                }
+                Log.d("[RATING-BAR]", "New value = ${value} , fromUser = ${fromUser}")
+            }
+        }
+
         // Multimedia
         if (selectedCard.multimedia.size > 0) {
             var multimediaPagerAdapter = MultimediaPagerAdapter(getSupportFragmentManager());
