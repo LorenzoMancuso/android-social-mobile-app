@@ -106,7 +106,7 @@ class ProfileFragment : Fragment(), Observer {
                     txt_followers?.text = "Followers: ${user.followers.size}"
                     txt_followed?.text = "Followed: ${user.followed.size}"
                     if(profile_image!=null)
-                        Picasso.with(context).load(user.profile_image).into(profile_image)
+                        Picasso.get().load(user.profile_image).into(profile_image)
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
 

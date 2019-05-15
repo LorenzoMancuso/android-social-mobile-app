@@ -14,18 +14,26 @@ import android.support.v7.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import io.github.ponnamkarthik.richlinkpreview.ViewListener
+import io.github.ponnamkarthik.richlinkpreview.RichLinkView
+import io.github.ponnamkarthik.richlinkpreview.RichLinkViewTwitter
+import java.net.MalformedURLException
 
-class NewCardActivity : AppCompatActivity() {
+
+class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentInteractionListener {
 
     var listOfDownloadUri: MutableList<String> = ArrayList()
     var card = Card()
     var user = FirebaseUtils.getLocalUser()
+
+    override fun onFragmentInteraction(uri: Uri) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +48,7 @@ class NewCardActivity : AppCompatActivity() {
         (findViewById(R.id.user) as TextView).text = "${user!!.name} ${user!!.surname}"
         val profile_image = findViewById(R.id.profile_image) as CircleImageView
         if(user!!.profile_image != "") {
-            Picasso.with(this).load(user!!.profile_image).into(profile_image)
+            Picasso.get().load(user!!.profile_image).into(profile_image)
         }
 
         // Set OnClickListeners for buttons
@@ -55,6 +63,18 @@ class NewCardActivity : AppCompatActivity() {
 
         val videoBtn = findViewById(R.id.video_btn) as Button
         videoBtn.setOnClickListener(View.OnClickListener { chooseFile("video", 2) })
+
+        val linkBtn = findViewById(R.id.link_btn) as Button
+        linkBtn.setOnClickListener(View.OnClickListener { addLink() })
+
+        /*val richLinkView = findViewById(R.id.richLinkView) as RichLinkViewTwitter
+        richLinkView.setLink("https://google.com", object : ViewListener {
+            override fun onSuccess(status: Boolean) {
+            }
+            override fun onError(e: Exception) {
+            }
+        })*/
+
     }
 
     // Identifiers to Publish Card
@@ -65,6 +85,33 @@ class NewCardActivity : AppCompatActivity() {
         val intent = Intent(this, TabsActivity::class.java)
         intent.putExtra("list_of_selected_tabs", listOfSelectedTabs)
         startActivityForResult(intent, 5)
+    }
+
+    fun addLink(): Boolean {
+        var taskEditText = EditText(this)
+        var dialog = AlertDialog.Builder(this)
+        .setTitle("Add Link")
+        .setMessage("Write or paste here a link")
+        .setView(taskEditText)
+        .setPositiveButton("Add", DialogInterface.OnClickListener() { dialog, which ->
+            Log.d("[DIALOG]", taskEditText.text.toString())
+            if (!taskEditText.text.contains("http://") || !taskEditText.text.contains("http://")) {
+                Log.e("[DIALOG]", "Malformed URL")
+            } else {
+                val fragmentManager = supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                val linkPreviewFragment = LinkPreviewFragment()
+                val arguments = Bundle()
+                arguments.putString("URL", taskEditText.text.toString())
+                linkPreviewFragment.setArguments(arguments)
+                fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
+                fragmentTransaction.commit()
+            }
+        })
+        .setNegativeButton("Cancel", null)
+        .create()
+        dialog.show()
+        return true
     }
 
     private fun chooseFile(type: String, requestCode: Int) {

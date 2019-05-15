@@ -27,7 +27,7 @@ class CommentAdapter(private val mDataList: ArrayList<Comment>) : RecyclerView.A
         holder.date.text = java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss", Locale.ITALY).format(date)
         holder.text.text = mDataList[position].text
         if(mDataList[position].userObj.profile_image != "") {
-            Picasso.with(holder.profile_image.context).load(mDataList[position].userObj.profile_image).into(holder.profile_image)
+            Picasso.get().load(mDataList[position].userObj.profile_image).into(holder.profile_image)
         }
     }
 

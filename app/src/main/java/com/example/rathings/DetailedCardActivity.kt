@@ -51,7 +51,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         // Profile Image
         Log.e("[DETAILED-CARD]", selectedCard.userObj.profile_image)
         if(profile_image != null && selectedCard.userObj.profile_image != "") {
-            Picasso.with(this).load(selectedCard.userObj.profile_image).into(profile_image)
+            Picasso.get().load(selectedCard.userObj.profile_image).into(profile_image)
         }
 
         // Categories

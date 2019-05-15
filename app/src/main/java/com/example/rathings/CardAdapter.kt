@@ -50,7 +50,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         holder.date.text =  java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss", Locale.ITALY).format(Date(mDataList[position].timestamp.toLong() * 1000))
         Log.d("[PROFILE-IMAGE]", mDataList[position].userObj.profile_image)
         if(mDataList[position].userObj.profile_image != "") {
-            Picasso.with(holder.itemView.context).load(mDataList[position].userObj.profile_image).into(holder.profile_image)
+            Picasso.get().load(mDataList[position].userObj.profile_image).into(holder.profile_image)
         }
 
         holder.itemView.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
