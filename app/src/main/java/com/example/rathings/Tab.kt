@@ -26,14 +26,4 @@ class Tab(): Serializable {
         return res
     }
 
-    fun toMutableMapForUser(interests: MutableList<Int>): MutableMap<String,Any> {
-        val res:MutableMap<String,Any> = mutableMapOf<String,Any>()
-        var i = 0
-        while (i < interests.size) {
-            res.set("${i}",interests[i])
-            i++
-        }
-        return res
-    }
-
 }

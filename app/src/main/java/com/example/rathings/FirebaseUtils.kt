@@ -11,36 +11,29 @@ import com.google.firebase.database.ValueEventListener
 
 object FirebaseUtils {
 
-    var primaryUserProfileObservable:CustomObservable=CustomObservable()
-    var userProfileObservable:CustomObservable=CustomObservable()
-    var userCardsObservable:CustomObservable=CustomObservable()
-    var interestCardsObservable:CustomObservable=CustomObservable()
-    var selectedCardObservable:CustomObservable=CustomObservable()
-    var tabsObservable:CustomObservable=CustomObservable()
+    var primaryUserProfileObservable: CustomObservable = CustomObservable()
+    var userProfileObservable: CustomObservable = CustomObservable()
 
-    private var localUserProfile:User?=null
-    private var primaryUserProfile:User?=null
+    var userCardsObservable: CustomObservable = CustomObservable()
+    var interestCardsObservable: CustomObservable = CustomObservable()
+
+    var tabsObservable: CustomObservable = CustomObservable()
+
+    private var localUserProfile: User? = null
+    private var primaryUserProfile: User? = null
 
     private var auth: FirebaseAuth
 
-    init{
-        auth = FirebaseAuth.getInstance()
-
-    }
-
-    fun isCurrentUser(user_id:String):Boolean {
-        val currentUser = auth.currentUser
-        Log.d("[FIREBASE-UTILS]", "currentUser ${currentUser?.uid}, userParam $user_id")
-        if (currentUser?.uid == user_id) {
-            return true
-        }
-        return false
-    }
-
-    fun getLocalUser():User? {return localUserProfile}
-
     val database = FirebaseDatabase.getInstance().reference
 
+    init{
+        auth = FirebaseAuth.getInstance()
+    }
+
+
+    // ----------------------
+    // BEGIN Firebase methods
+    // ----------------------
     @JvmStatic fun basePost() {
         database.child("users").child("TEST").child("username").setValue("Utente di Test")
     }
@@ -57,6 +50,10 @@ object FirebaseUtils {
         database.child(path).removeValue()
     }
 
+
+    // ------------------
+    // BEGIN User methods
+    // ------------------
     @JvmStatic fun createUserInstance(uid:String) {
         database.child("users").child(uid).child("id").setValue(uid)
 
@@ -75,6 +72,21 @@ object FirebaseUtils {
         )
     }
 
+    fun isCurrentUser(user_id:String):Boolean {
+        val currentUser = auth.currentUser
+        Log.d("[FIREBASE-UTILS]", "currentUser ${currentUser?.uid}, userParam $user_id")
+        if (currentUser?.uid == user_id) {
+            return true
+        }
+        return false
+    }
+
+    fun getLocalUser():User? {return localUserProfile}
+
+
+    // ---------------------------------
+    // BEGIN Wrappers for UserController
+    // ---------------------------------
     @JvmStatic fun getPrimaryProfile() {
         val uid=FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -98,43 +110,6 @@ object FirebaseUtils {
             }
         }
         phoneQuery.addValueEventListener(postListener)
-    }
-
-    @JvmStatic fun getTabs() {
-        val ref = FirebaseUtils.database.child("tabs")
-
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val tempArray: ArrayList<Tab> = ArrayList()
-                for (singleSnapshot in dataSnapshot.children) {
-                    Log.e("[FIREBASE-UTILS] Data", singleSnapshot.key + ' ' + singleSnapshot.getValue())
-                    val tab: Tab = Tab(singleSnapshot.key as String, singleSnapshot.getValue() as String)
-                    tempArray.add(tab)
-                }
-                tabsObservable.setValue(tempArray)
-                Log.e("[FIREBASE-UTILS]", "tabs " + tempArray)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
-            }
-        }
-        ref.addValueEventListener(postListener)
-    }
-
-    @JvmStatic fun getSelectedCard(idCard: String) {
-        val ref = FirebaseUtils.database.child("cards/${idCard}")
-
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                selectedCardObservable.setValue(dataSnapshot.getValue())
-                Log.e("[FIREBASE-UTILS]", "Selected Card " + dataSnapshot.getValue())
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
-            }
-        }
-        ref.addValueEventListener(postListener)
     }
 
     @JvmStatic fun getProfile(uid:String?) {
@@ -165,6 +140,36 @@ object FirebaseUtils {
         phoneQuery.addValueEventListener(postListener)
     }
 
+
+    // --------------------------------
+    // BEGIN Wrappers for TabController
+    // --------------------------------
+    @JvmStatic fun getTabs() {
+        val ref = FirebaseUtils.database.child("tabs")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val tempArray: ArrayList<Tab> = ArrayList()
+                for (singleSnapshot in dataSnapshot.children) {
+                    Log.e("[FIREBASE-UTILS] Data", singleSnapshot.key + ' ' + singleSnapshot.getValue())
+                    val tab = Tab(singleSnapshot.key as String, singleSnapshot.getValue() as String)
+                    tempArray.add(tab)
+                }
+                tabsObservable.setValue(tempArray)
+                Log.e("[FIREBASE-UTILS]", "tabs " + tempArray)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
+            }
+        }
+        ref.addValueEventListener(postListener)
+    }
+
+
+    // ---------------------------------
+    // BEGIN Wrappers for CardController
+    // ---------------------------------
     @JvmStatic fun getUserCards(uid:String?) {
         /**GET CURRENT AUTH USER IF UID IS NULL*/
         var id_user=uid
@@ -220,11 +225,6 @@ object FirebaseUtils {
      * return only cards order by timestamp to the card controller
      * which get the collection and filter by interests and order by votes*/
     @JvmStatic fun getInterestCards(uid:String?) {
-        /**GET CURRENT AUTH USER IF UID IS NULL*/
-        var id_user=uid
-        if(uid==null)
-            id_user=FirebaseAuth.getInstance().currentUser!!.uid
-
         val ref = FirebaseUtils.database.child("cards")
         var cards: ArrayList<Card> = ArrayList()
 
@@ -275,7 +275,4 @@ object FirebaseUtils {
         }
         query.addValueEventListener(postListener)
     }
-
-
-
 }

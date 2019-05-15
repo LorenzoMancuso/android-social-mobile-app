@@ -1,5 +1,7 @@
 package com.example.rathings
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.ViewPager
@@ -14,12 +16,13 @@ import java.util.*
 
 class DetailedCardActivity : AppCompatActivity(), Observer {
 
-    var tabsObs = FirebaseUtils.tabsObservable
+    var tabsObs = TabController.tabsObs
     var selectedCard: Card = Card()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_card)
+
         tabsObs.addObserver(this)
 
         initData()
@@ -73,13 +76,17 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
 
         // RatingBar
         var ratingBar = findViewById(R.id.ratings) as RatingBar
+        var finalRatingBar = findViewById(R.id.final_ratings) as RatingBar
+        ratingBar.rating = selectedCard.ratings_average
+        finalRatingBar.rating = selectedCard.ratings_average
+
         var user = FirebaseUtils.getLocalUser() as User
 
-        // Block the RatingBar if the user has already voted in the past
+        // Show the FinalRatingBar if the user has already voted in the past
         if(selectedCard.ratings_users.containsKey(user.id)) {
+            ratingBar.visibility = View.GONE
+            finalRatingBar.visibility = View.VISIBLE
             (findViewById(R.id.ratings_title) as TextView).text = "Ratings average"
-            ratingBar.setIsIndicator(true)
-            ratingBar.rating = selectedCard.ratings_average
         }
 
         ratingBar.setOnRatingBarChangeListener { ratings, value, fromUser ->
@@ -92,13 +99,15 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
                     selectedCard.ratings_count++
                     selectedCard.ratings_users.set(user.id, value)
 
-                    // Block the RatingBar
-                    ratings.setIsIndicator(true)
-
                     Toast.makeText(this, "Thanks for your Rate.", Toast.LENGTH_SHORT).show()
 
                     // Set new Value on RatingBar
                     ratings.rating = selectedCard.ratings_average
+                    finalRatingBar.rating = selectedCard.ratings_average
+
+                    // Set Visibility after rate
+                    ratingBar.visibility = View.GONE
+                    finalRatingBar.visibility = View.VISIBLE
 
                     // Save data in Firebase
                     FirebaseUtils.updateData("cards/${selectedCard.id}/",selectedCard.toMutableMap())
@@ -131,11 +140,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
 
         commentsTitle.setOnClickListener(View.OnClickListener { enableComments() })
 
-        if (selectedCard.comments.size == 0) {
-            commentsTitle.text = "Click here to add the first comment!"
-        } else {
-            enableComments()
-        }
         val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         cardRecyclerView?.layoutManager = mLayoutManager
         var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
@@ -150,9 +154,15 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
         var commentsTitle = findViewById(R.id.comments_title) as TextView
         var addComment = findViewById(R.id.add_comment) as EditText
         val publishComment = findViewById(R.id.publish_comment) as Button
-        commentsTitle.text = "Comments"
-        addComment.visibility = View.VISIBLE
-        publishComment.visibility = View.VISIBLE
+        if (commentsTitle.text == "Comments") {
+            commentsTitle.text = "Click here to add a comment"
+            addComment.visibility = View.GONE
+            publishComment.visibility = View.GONE
+        } else {
+            commentsTitle.text = "Comments"
+            addComment.visibility = View.VISIBLE
+            publishComment.visibility = View.VISIBLE
+        }
     }
 
     fun addComment(idNewComment: String, idCard: String, text: String) {

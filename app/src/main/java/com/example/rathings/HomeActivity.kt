@@ -33,7 +33,7 @@ class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionList
         /**END LOGOUT INIT*/
 
         // Initialize Tabs
-        FirebaseUtils.getTabs()
+        TabController.getTabs()
 
         switchFragment(intent.getStringExtra("mode"))
 

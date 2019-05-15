@@ -40,14 +40,32 @@
                             android:textColor="@color/whitePrimary"/>
                     </android.support.v7.widget.Toolbar>
                 </LinearLayout>
-                <TableLayout
+                <LinearLayout
                         android:id="@+id/container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:stretchColumns="*"
-                        android:orientation="vertical"
-                        tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
-                </TableLayout>
+                        android:orientation="vertical" >
+                    <LinearLayout
+                            android:id="@+id/linearLayout2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+                        <Button
+                                android:id="@+id/textView1"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="TestBtn1"/>
+                        <Button
+                                android:id="@+id/textView2"
+                                android:layout_weight="1"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:gravity="center"
+                                android:text="TestBtn2"/>
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
 </android.support.constraint.ConstraintLayout>

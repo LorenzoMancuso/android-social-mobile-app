@@ -2,10 +2,13 @@ package com.example.rathings
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +36,9 @@ class TabsFragment : Fragment(), Observer {
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
 
-    var tabsObs = FirebaseUtils.tabsObservable
+    var flatPalette: ArrayList<String> = ArrayList(Arrays.asList("#1abc9c", "#16a085", "#2ecc71", "#27ae60", "#3498db", "#2980b9", "#f1c40f", "#f39c12", "#e67e22", "#d35400", "#e74c3c", "#c0392b", "#9b59b6", "#8e44ad"))
+
+    var tabsObs = TabController.tabsObs
     var userProfileObs = FirebaseUtils.userProfileObservable
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,17 +64,17 @@ class TabsFragment : Fragment(), Observer {
             }
             userProfileObs -> {
                 // After setTab function (remove or add Tab)
-                FirebaseUtils.getTabs()
+                TabController.getTabs()
             }
             else -> Log.d("[TABS-FRAGMENT]", "observable not recognized $data")
         }
     }
 
     fun initTabs() {
-        val tableLayout = view?.findViewById(R.id.container) as TableLayout
+        val container = view?.findViewById(R.id.container) as LinearLayout
 
-        // Clean TableLayout
-        tableLayout.removeAllViews()
+        // Clean ScrollView
+        container.removeAllViews()
 
         val value = tabsObs.getValue()
         val userInterests = (userProfileObs.getValue() as User).interests
@@ -79,27 +84,46 @@ class TabsFragment : Fragment(), Observer {
             val tabs: ArrayList<Tab> = ArrayList(value.filterIsInstance<Tab>())
             Log.d("[TABS-FRAGMENT]", "observable TABS " + tabs.toString())
             for (i in 0 until tabs.size) {
-                // Add new Row
-                var tableRow = TableRow(context)
-                // tableLayout.setColumnStretchable(tableLayout.childCount - 1, true)
-                tableLayout.addView(tableRow, tableLayout.childCount)
+                var linearLayout = LinearLayout(context)
 
-                var button = Button(super.getContext())
+                if (i != 0) {
+                    // Get the last layout If childCount exists
+                    linearLayout = container.getChildAt(container.childCount - 1) as LinearLayout
+                }
+
+                if (linearLayout.childCount == 0 || linearLayout.childCount == 2) {
+                    // If last layout.childCount == 2 OR It's the first tab set new layout
+                    linearLayout = LinearLayout(context)
+                    var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    linearLayout.layoutParams = params
+                    linearLayout.orientation = LinearLayout.HORIZONTAL
+                    linearLayout.setPadding(5,5,5,5)
+                    container.addView(linearLayout)
+                }
+
+                var button = Button(context)
+                var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (100 * resources.displayMetrics.density + 0.5f).toInt(), 1F)
+                button.layoutParams = params
+                button.gravity = Gravity.CENTER
+
+                // button.setCompoundDrawablesWithIntrinsicBounds( 0, 0, 0, R.drawable.ic_star_border_black_24dp);
+
+                button.setBackgroundColor(Color.parseColor("#eeecec"))
+                button.text = tabs[i].value
+                button.setTypeface(button.typeface, Typeface.ITALIC)
+
                 var selectedTab = false
-                var buttonText = tabs[i].value
                 for (j in 0 until userInterests.size) {
                     if(userInterests[j] == tabs[i].id.toInt()) {
                         selectedTab = true
-                        buttonText += "(remove)"
+                        button.setBackgroundColor(Color.parseColor(flatPalette[i]))
+                        button.setAllCaps(false)
+                        button.setTypeface(button.typeface, Typeface.BOLD)
                     }
                 }
-                button.setBackgroundColor(Color.argb(255, 255, Random().nextInt(256), Random().nextInt(256)))
-                button.text = buttonText
 
-                // Set image to imageButton
-                // imageButton.setImageResource(R.drawable.abc_ic_star_half_black_16dp)
                 button.setOnClickListener(View.OnClickListener { setTab(tabs[i], selectedTab) })
-                tableRow.addView(button)
+                linearLayout.addView(button)
             }
         }
     }
@@ -119,8 +143,8 @@ class TabsFragment : Fragment(), Observer {
             }
         }
         user.interests.sort()
-        Log.e("[TABS-FRAGMENT]", "Rimozione ${tab.id}" + tab.toMutableMapForUser(user.interests).toString())
-        FirebaseUtils.setData("users/${user.id}/interests/",tab.toMutableMapForUser(user.interests))
+        Log.e("[TABS-FRAGMENT]", "Rimozione ${tab.id}" + TabController.toMutableMapForUser(user.interests).toString())
+        FirebaseUtils.setData("users/${user.id}/interests/",TabController.toMutableMapForUser(user.interests))
     }
 
     override fun onDestroy() {
