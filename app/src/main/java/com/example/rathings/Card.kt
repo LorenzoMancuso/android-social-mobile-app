@@ -18,6 +18,7 @@ class Card(): Serializable {
     public var title:String=""
     public var description: String=""
     public var user: String=""
+    public var link: String=""
     public var timestamp: Int=0
     public var category: MutableList<Int> = ArrayList()
     // public var categoryObj: MutableList<Tab> = ArrayList()
@@ -42,6 +43,7 @@ class Card(): Serializable {
         str+="'category': $category, "
         str+="'multimedia': $multimedia, "
         str+="'comments': $comments, "
+        str+="'link': $link, "
         str+="'user': $userObj} "
         return str
     }
@@ -59,7 +61,7 @@ class Card(): Serializable {
         res.set("ratings_users",ratings_users)
         res.set("ratings_average",ratings_average)
         res.set("ratings_count",ratings_count)
-
+        res.set("link",link)
         return res
     }
 

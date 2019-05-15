@@ -9,38 +9,36 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/cv">
                 <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:padding="10dp">
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
                     <ImageView
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            tools:srcCompat="@drawable/ic_broken_image_black_24dp"
                             android:id="@+id/image"/>
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:paddingLeft="10dp"
                             android:orientation="vertical">
                         <TextView android:layout_width="match_parent"
                                   android:layout_height="match_parent"
                                   android:layout_weight="1"
                                   android:gravity="bottom"
                                   android:textStyle="bold"
-                                  android:id="@+id/title"
-                                  android:text="Twitter. It's whats's happening."/>
+                                  android:id="@+id/title"/>
                         <TextView android:layout_width="match_parent"
                                   android:layout_height="match_parent"
                                   android:layout_weight="1"
-                                  android:id="@+id/description"
-                                  android:text="From breaking news and entertainment to sports and politi..."/>
+                                  android:id="@+id/description"/>
                         <TextView android:layout_width="match_parent"
                                   android:layout_height="match_parent"
                                   android:layout_weight="1"
                                   android:textStyle="italic"
                                   android:id="@+id/link"
-                                  android:gravity="bottom"
-                                  android:text="www.twitter.com"/>
+                                  android:gravity="bottom"/>
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>

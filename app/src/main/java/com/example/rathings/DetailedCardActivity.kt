@@ -2,6 +2,7 @@ package com.example.rathings
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.ViewPager
@@ -14,10 +15,12 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
-class DetailedCardActivity : AppCompatActivity(), Observer {
+class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.OnFragmentInteractionListener {
 
     var tabsObs = TabController.tabsObs
     var selectedCard: Card = Card()
+
+    override fun onFragmentInteraction(uri: Uri) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +117,20 @@ class DetailedCardActivity : AppCompatActivity(), Observer {
                 }
                 Log.d("[RATING-BAR]", "New value = ${value} , fromUser = ${fromUser}")
             }
+        }
+
+        // Link
+        if (selectedCard.link != "") {
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            val linkPreviewFragment = LinkPreviewFragment()
+            val arguments = Bundle()
+            var containerLink = findViewById(R.id.container_link) as LinearLayout
+            containerLink.removeAllViews()
+            arguments.putString("URL", selectedCard.link)
+            linkPreviewFragment.setArguments(arguments)
+            fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
+            fragmentTransaction.commit()
         }
 
         // Multimedia

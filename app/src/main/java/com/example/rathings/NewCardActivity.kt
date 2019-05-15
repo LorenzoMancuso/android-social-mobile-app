@@ -15,6 +15,7 @@ import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.text.InputType
 import android.util.Log
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -87,25 +88,32 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
         startActivityForResult(intent, 5)
     }
 
+    var addedLink = ""
     fun addLink(): Boolean {
         var taskEditText = EditText(this)
+        taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+        var errorEditText = EditText(this)
         var dialog = AlertDialog.Builder(this)
         .setTitle("Add Link")
         .setMessage("Write or paste here a link")
         .setView(taskEditText)
         .setPositiveButton("Add", DialogInterface.OnClickListener() { dialog, which ->
             Log.d("[DIALOG]", taskEditText.text.toString())
-            if (!taskEditText.text.contains("http://") || !taskEditText.text.contains("http://")) {
+            if (!taskEditText.text.contains("http://") && !taskEditText.text.contains("https://")) {
                 Log.e("[DIALOG]", "Malformed URL")
+                Toast.makeText(this, "Malformed URL. Try to add 'http://' in your link.", Toast.LENGTH_LONG).show()
             } else {
                 val fragmentManager = supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val linkPreviewFragment = LinkPreviewFragment()
                 val arguments = Bundle()
+                var containerLink = findViewById(R.id.container_link) as LinearLayout
+                containerLink.removeAllViews()
                 arguments.putString("URL", taskEditText.text.toString())
                 linkPreviewFragment.setArguments(arguments)
                 fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
                 fragmentTransaction.commit()
+                addedLink = taskEditText.text.toString()
             }
         })
         .setNegativeButton("Cancel", null)
@@ -293,6 +301,10 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
         card.multimedia = listOfDownloadUri
         card.ratings_average = 0.0F
         card.ratings_count = 0
+
+        if (addedLink != "") {
+            card.link = addedLink
+        }
 
         //send hash map of card object for firebase update
         println(card.multimedia)

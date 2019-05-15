@@ -1,6 +1,8 @@
 package com.example.rathings
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import io.github.ponnamkarthik.richlinkpreview.MetaData
@@ -48,12 +51,16 @@ class LinkPreviewFragment : Fragment() {
         val richPreview = RichPreview(object : ResponseListener {
             override fun onData(metaData: MetaData) {
                 data = metaData
-                if (metaData.imageurl != "") {
+                Log.d("[RICH-PREVIEW]", metaData.imageurl)
+                if (metaData.imageurl != null && metaData.imageurl != "") {
                     Picasso.get().load(metaData.imageurl).into(view?.findViewById(R.id.image) as ImageView)
+                } else {
+                    Picasso.get().load(R.drawable.ic_broken_image_black_24dp).into(view?.findViewById(R.id.image) as ImageView)
                 }
                 (view?.findViewById(R.id.title) as TextView)?.text = if (metaData.title.length > 32) metaData.title.substring(0, 30) + "..." else metaData.title
                 (view?.findViewById(R.id.description) as TextView)?.text = if (metaData.description.length > 32) metaData.description.substring(0, 55) + "..." else metaData.description
                 (view?.findViewById(R.id.link) as TextView)?.text = if (metaData.url.length > 32) metaData.url.substring(0, 20) + "..." else metaData.url
+                (view?.findViewById(R.id.container) as LinearLayout).setOnClickListener(View.OnClickListener { openLink() })
             }
             override fun onError(e: Exception) {
                 //handle error
@@ -64,6 +71,12 @@ class LinkPreviewFragment : Fragment() {
         richPreview.getPreview(URL)
 
         return inflater.inflate(R.layout.fragment_link_preview, container, false)
+    }
+
+    fun openLink() {
+        var uri = Uri.parse(URL)
+        var intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
     }
 
     // TODO: Rename method, update argument and hook method into UI event
