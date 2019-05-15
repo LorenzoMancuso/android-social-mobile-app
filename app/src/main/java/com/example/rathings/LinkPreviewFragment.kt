@@ -49,6 +49,7 @@ class LinkPreviewFragment : Fragment() {
         var data: MetaData
 
         val richPreview = RichPreview(object : ResponseListener {
+            // TODO: Gestire il caso in cui il link non rimandi a nulla mettendo dei dati di errore
             override fun onData(metaData: MetaData) {
                 data = metaData
                 Log.d("[RICH-PREVIEW]", metaData.imageurl)
