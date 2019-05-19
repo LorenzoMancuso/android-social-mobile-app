@@ -1,10 +1,12 @@
 package com.example.rathings
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -165,6 +167,19 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(R.id.add_comment) as EditText).text.toString()) })
 
         Log.d("[DETAILED-CARD]", "Card: " + cards[0])
+
+        // Edit Card
+        var localUser = FirebaseUtils.getLocalUser() as User
+        if (selectedCard.userObj.id == localUser.id) {
+            (findViewById(R.id.edit_card) as FloatingActionButton).visibility = View.VISIBLE
+        }
+
+    }
+
+    fun editCard(view: View) {
+        val intent = Intent(view.context, EditCardActivity::class.java)
+        intent.putExtra("card", selectedCard)
+        view.context.startActivity(intent)
     }
 
     fun enableComments() {

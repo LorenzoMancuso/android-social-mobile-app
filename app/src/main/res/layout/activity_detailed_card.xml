@@ -7,6 +7,22 @@
         android:layout_height="match_parent"
         tools:context=".DetailedCardActivity"
         android:background="@color/whitePrimary">
+    <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_edit_black_24dp"
+            android:id="@+id/edit_card"
+            android:visibility="gone"
+            app:backgroundTint="@color/redPrimary"
+            android:tint="#FFF"
+            app:layout_constraintEnd_toEndOf="@id/scrollview"
+            app:layout_constraintBottom_toBottomOf="@id/scrollview"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:scaleType="center"
+            android:onClick="editCard"/>
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -71,7 +87,6 @@
                                     android:textStyle="bold"
                                     android:visibility="gone"/>
                         </LinearLayout>
-
                     </LinearLayout>
                     <LinearLayout
                             android:background="#fff"
@@ -158,7 +173,6 @@
                 android:id="@+id/container_link">
             </LinearLayout>
             <LinearLayout
-                android:padding="15dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -166,6 +180,7 @@
                 android:focusableInTouchMode="true"
                 android:id="@+id/container_comments">
                 <TextView
+                        android:padding="15dp"
                         android:fontFamily="sans-serif"
                         android:textColor="@color/redPrimary"
                         android:layout_width="match_parent"
@@ -184,8 +199,8 @@
                         android:background="#fff"
                         android:hint="Write your Comment"
                         android:layout_marginTop="10dp"
-                        android:paddingLeft="10dp"
                         android:visibility="gone"
+                        android:paddingLeft="10dp"
                         android:paddingTop="10dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="100dp"/>
@@ -206,9 +221,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_comments"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_height="match_parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
