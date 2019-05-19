@@ -10,7 +10,9 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:id="@+id/scrollView2">
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView2"
+            android:paddingBottom="50dp">
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -89,21 +91,7 @@
                     android:orientation="horizontal"
                     android:id="@+id/added_categories">
                 </LinearLayout>
-                <Button
-                    android:fontFamily="sans-serif"
-                    android:id="@+id/add_categories"
-                    android:text="Add Tabs"
-                    android:textColor="@color/redPrimary"
-                    android:textAllCaps="false"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:gravity="center_vertical"
-                    android:textStyle="normal"
-                    android:backgroundTint="#FFF"
-                    android:drawablePadding="7dp"
-                    android:drawableLeft="@drawable/ic_widgets_black_24dp"
-                    android:drawableTint="@color/redPrimary"/>
+
             </LinearLayout>
             <LinearLayout
                     android:id="@+id/container"
@@ -134,84 +122,89 @@
                         android:paddingBottom="100dp"/>
             </LinearLayout>
             <LinearLayout
-                android:id="@+id/container_link"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusableInTouchMode="true"
-                android:padding="20dp">
-            </LinearLayout>
-            <TableLayout
                     android:id="@+id/container_multimedia"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/container_link"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="parent"
-                    tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
-                <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="25dp">
-                </TableRow>
-            </TableLayout>
+                    android:focusableInTouchMode="true"
+                    android:padding="10dp">
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <android.support.v7.widget.Toolbar
+    <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFF"
-            android:theme="?attr/actionBarTheme"
-            android:minHeight="?attr/actionBarSize"
-            tools:layout_editor_absoluteY="602dp"
-            tools:layout_editor_absoluteX="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/container_buttons">
-        <Button
-                android:fontFamily="sans-serif"
-                android:id="@+id/image_btn"
-                android:text="Image"
-                android:textColor="@color/redPrimary"
-                android:textAllCaps="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:gravity="center_vertical"
-                android:textStyle="normal"
-                style="?android:attr/borderlessButtonStyle"
-                android:backgroundTint="#FFF"
-                android:drawablePadding="7dp"
-                android:drawableLeft="@drawable/ic_image_black_24dp"
-                android:drawableTint="@color/redPrimary"/>
-        <Button
-                android:fontFamily="sans-serif"
-                android:id="@+id/video_btn"
-                android:text="Video"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/redPrimary"
-                android:textAllCaps="false"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textStyle="normal"
-                android:backgroundTint="#FFF"
-                android:drawablePadding="7dp"
-                android:drawableLeft="@drawable/ic_video_library_black_24dp"
-                android:drawableTint="@color/redPrimary"/>
-        <Button
-                android:fontFamily="sans-serif"
-                android:id="@+id/link_btn"
-                android:text="Link"
-                android:layout_gravity="right"
-                android:textColor="@color/redPrimary"
-                android:textAllCaps="false"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#FFF"
-                android:gravity="center_vertical"
-                android:textStyle="normal"
-                android:drawablePadding="7dp"
-                android:drawableLeft="@drawable/ic_bookmark_black_24dp"
-                android:drawableTint="@color/redPrimary"/>
-    </android.support.v7.widget.Toolbar>
+            app:layout_constraintBottom_toBottomOf="parent">
+            <android.support.v7.widget.Toolbar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="?attr/actionBarTheme"
+                    android:minHeight="?attr/actionBarSize"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/container_buttons">
+                    <Button
+                            android:fontFamily="sans-serif"
+                            android:id="@+id/add_categories"
+                            android:text="Tabs"
+                            android:textColor="@color/redPrimary"
+                            android:textAllCaps="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:layout_gravity="center_horizontal"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:textStyle="normal"
+                            android:backgroundTint="#FFF"
+                            android:drawablePadding="7dp"
+                            android:drawableLeft="@drawable/ic_widgets_black_24dp"
+                            android:drawableTint="@color/redPrimary"/>
+                    <Button
+                            android:fontFamily="sans-serif"
+                            android:id="@+id/multimedia_btn"
+                            android:text="Multimedia"
+                            android:textColor="@color/redPrimary"
+                            android:textAllCaps="false"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:layout_gravity="center_horizontal"
+                            android:textStyle="normal"
+                            android:backgroundTint="#FFF"
+                            android:drawablePadding="7dp"
+                            android:drawableLeft="@drawable/ic_video_library_black_24dp"
+                            android:drawableTint="@color/redPrimary"/>
+                    <Button
+                            android:fontFamily="sans-serif"
+                            android:id="@+id/link_btn"
+                            android:text="Link"
+                            android:textColor="@color/redPrimary"
+                            android:textAllCaps="false"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="#FFF"
+                            android:gravity="center_vertical"
+                            android:layout_gravity="center_horizontal"
+                            android:textStyle="normal"
+                            android:drawablePadding="7dp"
+                            android:drawableLeft="@drawable/ic_bookmark_black_24dp"
+                            android:drawableTint="@color/redPrimary"/>
+            </android.support.v7.widget.Toolbar>
+    </HorizontalScrollView>
 </android.support.constraint.ConstraintLayout>

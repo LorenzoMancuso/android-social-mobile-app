@@ -180,6 +180,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         val intent = Intent(view.context, EditCardActivity::class.java)
         intent.putExtra("card", selectedCard)
         view.context.startActivity(intent)
+        initData()
     }
 
     fun enableComments() {

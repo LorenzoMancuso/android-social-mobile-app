@@ -158,7 +158,6 @@
                                 android:progressTint="@color/redPrimary"
                                 android:stepSize="0.5"
                                 android:layout_marginTop="10dp"
-                                android:visibility="gone"
                                 android:id="@+id/final_ratings"/>
                         </LinearLayout>
                     </LinearLayout>

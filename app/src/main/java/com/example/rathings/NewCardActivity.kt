@@ -17,6 +17,7 @@ import android.app.ProgressDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.text.InputType
 import android.util.Log
+import android.view.MenuItem
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
@@ -25,6 +26,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 import io.github.ponnamkarthik.richlinkpreview.ViewListener
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView
 import io.github.ponnamkarthik.richlinkpreview.RichLinkViewTwitter
+import kotlinx.android.synthetic.main.activity_new_card.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import java.net.MalformedURLException
 
 
@@ -59,14 +62,26 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
         val publishBtn = findViewById(R.id.publish_card) as Button
         publishBtn.setOnClickListener(View.OnClickListener { publishCard() })
 
-        val imageBtn = findViewById(R.id.image_btn) as Button
-        imageBtn.setOnClickListener(View.OnClickListener { chooseFile("image", 1) })
-
-        val videoBtn = findViewById(R.id.video_btn) as Button
-        videoBtn.setOnClickListener(View.OnClickListener { chooseFile("video", 2) })
-
         val linkBtn = findViewById(R.id.link_btn) as Button
         linkBtn.setOnClickListener(View.OnClickListener { addLink() })
+
+        var multimetiaBtn = findViewById(R.id.multimedia_btn) as Button
+        multimetiaBtn.setOnClickListener(View.OnClickListener() {
+            var popup = PopupMenu(this, multimetiaBtn);
+            popup.getMenuInflater().inflate(R.menu.multimedia, popup.getMenu())
+
+            popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener() {
+                if (it.title == "Image") {
+                    chooseFile("image", 1)
+                    true
+                } else if (it.title == "Video") {
+                    chooseFile("video", 2)
+                    true
+                }
+                false
+            })
+            popup.show()
+        })
 
         /*val richLinkView = findViewById(R.id.richLinkView) as RichLinkViewTwitter
         richLinkView.setLink("https://google.com", object : ViewListener {
@@ -113,6 +128,7 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
                 linkPreviewFragment.setArguments(arguments)
                 fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
                 fragmentTransaction.commit()
+                containerLink.requestFocus()
                 addedLink = taskEditText.text.toString()
             }
         })
@@ -174,22 +190,23 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
         } else { // CASE Add Multimedia
             if (data != null) {
                 val context = getApplicationContext()
-                val tableLayout = findViewById(R.id.container_multimedia) as TableLayout
-                var tableRow = tableLayout.getChildAt(tableLayout.childCount - 1) as TableRow
+                val containerMultimedia = findViewById(R.id.container_multimedia) as LinearLayout
+                var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
+                val scale = resources.displayMetrics.density
 
-                if (tableRow.childCount == 3) {
-                    tableRow = TableRow(context)
-                    tableLayout.addView(tableRow)
+                if (row.childCount == 2) {
+                    row = LinearLayout(context)
+                    var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
+                    row.layoutParams = params
+                    row.orientation = LinearLayout.HORIZONTAL
+                    containerMultimedia.addView(row)
                 }
 
-                val scale = resources.displayMetrics.density
-                val leftRight = (25 * scale + 0.5f).toInt()
-                val topBottom = (10 * scale + 0.5f).toInt()
-
-                tableRow.setPadding(leftRight,topBottom,leftRight,topBottom)
-
                 if (requestCode == 1 || requestCode == 3) {
-                    val imageView = ImageView(context)
+                    var imageView = ImageView(context)
+                    var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
+                    imageView.setPadding(5,5,5,5)
+                    imageView.layoutParams = params
                     try {
                         var filePath: Uri
                         var bitmap:Bitmap
@@ -200,13 +217,10 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
                             filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
                         } else {
                             filePath = data?.data
-                            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath) // Archive
                         }
 
-                        val resized = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
-                        imageView.setImageBitmap(resized)
-                        imageView.setPadding(5,5,5,5)
-                        tableRow.addView(imageView)
+                        Picasso.get().load(filePath).centerCrop().fit().into(imageView)
+                        row.addView(imageView)
                         uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "image")
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -218,7 +232,7 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
                         var filePath = data?.data
                         videoView.setVideoURI(filePath)
                         videoView.setPadding(5,5,5,5)
-                        tableRow.addView(videoView)
+                        row.addView(videoView)
                         uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "video")
                     } catch (e: IOException) {
                         e.printStackTrace()

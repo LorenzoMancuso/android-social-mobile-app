@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import android.widget.*
-import android.media.MediaPlayer
 
 class MultimediaFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
@@ -27,7 +26,7 @@ class MultimediaFragment : Fragment() {
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
             params.gravity = Gravity.CENTER_HORIZONTAL
             imageView.layoutParams = params
-            Picasso.get().load(cardMedia).into(imageView)
+            Picasso.get().load(cardMedia).centerCrop().fit().into(imageView)
             layout.addView(imageView)
         } else {
             // TODO: Risolvere il problema di cache per cui il video si vede SOLO una volta nel caso pesi qualche mega

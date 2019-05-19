@@ -20,9 +20,18 @@
                     android:layout_height="match_parent"
                     android:padding="16dp">
                 <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/first_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp">
                     <de.hdodenhof.circleimageview.CircleImageView
                             xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/profile_image"
@@ -65,7 +74,8 @@
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="10dp">
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -93,6 +103,7 @@
                                 android:transformPivotX="0dp"
                                 android:transformPivotY="0dp"
                                 android:isIndicator="true"
+                                android:progressTint="@color/redPrimary"
                                 android:max="5"
                                 style="?android:attr/ratingBarStyleSmall"
                                 android:id="@+id/ratings"/>

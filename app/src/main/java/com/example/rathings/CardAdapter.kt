@@ -1,6 +1,7 @@
 package com.example.rathings
 
 import android.content.Intent
+import android.media.Image
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import com.squareup.picasso.Picasso
@@ -52,6 +54,11 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         if(mDataList[position].userObj.profile_image != "") {
             Picasso.get().load(mDataList[position].userObj.profile_image).into(holder.profile_image)
         }
+        if(mDataList[position].multimedia.size > 0 && mDataList[position].multimedia[0].contains("image")) {
+            Picasso.get().load(mDataList[position].multimedia[0]).centerCrop().fit().into(holder.first_image)
+        } else {
+            holder.first_image.visibility = View.GONE
+        }
 
         holder.itemView.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailedCardActivity::class.java)
@@ -70,6 +77,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         internal var user: TextView
         internal var id_user: TextView
         internal var profile_image: CircleImageView
+        internal var first_image: ImageView
         internal var title: TextView
         internal var card: Card
         internal var description: TextView
@@ -82,6 +90,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             id_user = itemView.findViewById<View>(R.id.id_user) as TextView
             card = Card()
             profile_image = itemView.findViewById<View>(R.id.profile_image) as CircleImageView
+            first_image = itemView.findViewById<View>(R.id.first_image) as ImageView
             title = itemView.findViewById<View>(R.id.title) as TextView
             description = itemView.findViewById<View>(R.id.description) as TextView
             comments_size = itemView.findViewById<View>(R.id.comments_size) as TextView
