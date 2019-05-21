@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -56,7 +56,7 @@ class ProfileFragment : Fragment(), Observer {
         startActivity(intent)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener {goToEdit()}
@@ -118,7 +118,11 @@ class ProfileFragment : Fragment(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
-                    val mLayoutManager = LinearLayoutManager(super.getContext(), LinearLayoutManager.VERTICAL, false)
+                    val mLayoutManager = LinearLayoutManager(
+                        super.getContext(),
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
                     cardRecyclerView?.layoutManager = mLayoutManager
                     cardAdapter = CardAdapter(cards)
                     cardRecyclerView?.adapter = cardAdapter

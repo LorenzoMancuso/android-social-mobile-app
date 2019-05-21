@@ -3,9 +3,9 @@ package com.example.rathings
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -48,7 +48,7 @@ class CardsFragment : Fragment(), Observer {
         return inflater.inflate(R.layout.fragment_cards, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Start process to Initialize Data
@@ -62,7 +62,11 @@ class CardsFragment : Fragment(), Observer {
 
     fun updateCardFragment(cards:ArrayList<Card>){
         mRecyclerView = view?.findViewById(R.id.my_recycler_view)
-        val mLayoutManager = LinearLayoutManager(super.getContext(), LinearLayoutManager.VERTICAL, false)
+        val mLayoutManager = LinearLayoutManager(
+            super.getContext(),
+            LinearLayoutManager.VERTICAL,
+            false
+        )
         mRecyclerView?.layoutManager = mLayoutManager
         mAdapter = CardAdapter(cards)
         mRecyclerView?.adapter = mAdapter

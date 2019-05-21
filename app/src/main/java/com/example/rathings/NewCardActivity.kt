@@ -1,6 +1,6 @@
 package com.example.rathings
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.content.Intent
@@ -10,11 +10,11 @@ import android.widget.*
 import java.io.IOException
 import android.content.DialogInterface
 import android.net.Uri
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.InputType
 import android.util.Log
 import android.view.MenuItem

@@ -1,9 +1,9 @@
 package com.example.rathings
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
@@ -84,7 +84,11 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
                     cardRecyclerView = findViewById(R.id.user_cards_recycler_view)
-                    val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    val mLayoutManager = LinearLayoutManager(
+                        this,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
                     cardRecyclerView?.layoutManager = mLayoutManager
                     cardAdapter = CardAdapter(cards)
                     cardRecyclerView?.adapter = cardAdapter

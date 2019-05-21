@@ -3,9 +3,9 @@ package com.example.rathings
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.util.Log
 import android.view.View
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -108,7 +108,7 @@ class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionList
     }
 
     fun newCard(view: View) {
-        val newCardIntent = Intent(this, NewCardActivity::class.java)
+        val newCardIntent = Intent(view.context, NewCardActivity::class.java)
         startActivity(newCardIntent)
     }
 

@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     app:cardUseCompatPadding="true">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   app:cardUseCompatPadding="true">
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fillViewport="true"
-                app:tabIndicatorColor="@color/redPrimary"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/redPrimary"
+                android:backgroundTint="#FFF"
+                app:tabIconTint="@color/redPrimary"
                 app:tabTextColor="@color/redPrimary">
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:icon="@drawable/ic_star_border_red_24dp"
                         android:text="Interest Cards"/>
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:icon="@drawable/ic_language_red_24dp"
                         android:text="Popular Cards"/>
-        </android.support.design.widget.TabLayout>
-        <android.support.v7.widget.RecyclerView
+        </com.google.android.material.tabs.TabLayout>
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/my_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,4 +37,4 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

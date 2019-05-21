@@ -6,7 +6,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -52,7 +52,7 @@ class TabsFragment : Fragment(), Observer {
         userProfileObs.addObserver(this)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initTabs()
     }
@@ -109,6 +109,7 @@ class TabsFragment : Fragment(), Observer {
                 // button.setCompoundDrawablesWithIntrinsicBounds( 0, 0, 0, R.drawable.ic_star_border_black_24dp);
 
                 button.setBackgroundColor(Color.parseColor("#eeecec"))
+                button.setTextColor(Color.BLACK)
                 button.text = tabs[i].value
                 button.setTypeface(button.typeface, Typeface.ITALIC)
 
@@ -117,6 +118,7 @@ class TabsFragment : Fragment(), Observer {
                     if(userInterests[j] == tabs[i].id.toInt()) {
                         selectedTab = true
                         button.setBackgroundColor(Color.parseColor(flatPalette[i]))
+                        button.setTextColor(Color.parseColor("#EEECEC"))
                         button.setAllCaps(false)
                         button.setTypeface(button.typeface, Typeface.BOLD)
                     }

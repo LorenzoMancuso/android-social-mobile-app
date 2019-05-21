@@ -2,7 +2,7 @@ package com.example.rathings
 
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -18,10 +18,10 @@ class MultimediaFragment : Fragment() {
         // val imageView = swipeView.findViewById(R.id.imageView) as ImageView
         val layout = swipeView.findViewById(R.id.layout) as LinearLayout
 
-        val cardMedia = getArguments().getString("media")
+        val cardMedia = getArguments()?.getString("media")
         Log.d("[MULTIMEDIA-FRAG]", cardMedia)
 
-        if (cardMedia.contains("image")) {
+        if (cardMedia!!.contains("image")) {
             var imageView = ImageView(context)
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
             params.gravity = Gravity.CENTER_HORIZONTAL

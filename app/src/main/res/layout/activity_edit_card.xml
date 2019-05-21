@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,7 +20,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="horizontal">
-                        <android.support.v7.widget.Toolbar
+                        <androidx.appcompat.widget.Toolbar
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="?attr/colorPrimary"
@@ -40,7 +40,7 @@
                                     android:id="@+id/confirm_button"
                                     android:background="@color/redPrimary"
                                     android:textColor="@color/whitePrimary"/>
-                        </android.support.v7.widget.Toolbar>
+                        </androidx.appcompat.widget.Toolbar>
                     </LinearLayout>
                     <LinearLayout
                             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="Text"/>
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
                                     <EditText
@@ -66,8 +66,8 @@
                                             android:layout_marginBottom="10dp"
                                             android:maxLines="1"
                                             android:singleLine="true"/>
-                            </android.support.design.widget.TextInputLayout>
-                            <android.support.design.widget.TextInputLayout
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
                                     <EditText
@@ -79,7 +79,7 @@
                                             android:layout_marginBottom="10dp"
                                             android:maxLines="1"
                                             android:singleLine="true"/>
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/container_categories"
@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:background="#FFF"
                 app:layout_constraintBottom_toBottomOf="parent">
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:theme="?attr/actionBarTheme"
@@ -205,6 +205,6 @@
                             android:drawablePadding="7dp"
                             android:drawableLeft="@drawable/ic_bookmark_black_24dp"
                             android:drawableTint="@color/redPrimary"/>
-                </android.support.v7.widget.Toolbar>
+                </androidx.appcompat.widget.Toolbar>
         </HorizontalScrollView>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
