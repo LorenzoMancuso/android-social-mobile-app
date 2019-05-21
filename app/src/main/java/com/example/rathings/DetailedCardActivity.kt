@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
@@ -21,6 +23,8 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     var tabsObs = TabController.tabsObs
     var selectedCard: Card = Card()
+
+    var flatPalette: java.util.ArrayList<String> = java.util.ArrayList(Arrays.asList("#1abc9c","#16a085","#2ecc71","#27ae60","#3498db","#2980b9","#f1c40f","#f39c12","#e67e22","#d35400","#e74c3c","#c0392b","#9b59b6","#8e44ad"))
 
     override fun onFragmentInteraction(uri: Uri) {}
 
@@ -60,15 +64,17 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
 
         // Categories
-        var containerCategories = findViewById(R.id.container_categories) as LinearLayout
+        var containerCategories = findViewById(R.id.container_categories) as ChipGroup
         containerCategories.removeAllViews()
         var tabs = tabsObs.getValue() as ArrayList<Tab>
         for (i in 0 until selectedCard.category.size) {
             for (j in 0 until tabs.size) {
                 if (selectedCard.category[i] == tabs[j].id.toInt()) {
-                    var textView = TextView(this)
-                    textView.text = tabs[j].value
-                    containerCategories.addView(textView)
+                    var chip = Chip(this)
+                    chip.text = tabs[j].value
+                    chip.setChipBackgroundColorResource(R.color.bluePrimary)
+                    chip.setTextColor(Color.WHITE)
+                    containerCategories.addView(chip)
                 }
             }
         }

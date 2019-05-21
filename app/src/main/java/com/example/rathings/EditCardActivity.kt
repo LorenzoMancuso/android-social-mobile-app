@@ -2,6 +2,7 @@ package com.example.rathings
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,8 @@ import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_card.*
 import kotlinx.android.synthetic.main.activity_modify_account.*
@@ -43,15 +46,24 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         val addCategories = findViewById(R.id.add_categories) as Button
         addCategories.setOnClickListener(View.OnClickListener { addCategories() })
 
-        var addedCategories = findViewById(R.id.added_categories) as LinearLayout
+        var addedCategories = findViewById(R.id.added_categories) as ChipGroup
         var tabs = tabsObs.getValue() as ArrayList<Tab>
         for (i in 0 until selectedCard.category.size) {
             for (j in 0 until tabs.size) {
                 if (selectedCard.category[i] == tabs[j].id.toInt()) {
                     listOfSelectedTabs.add(tabs[j])
-                    var textView = TextView(this)
-                    textView.text = tabs[j].value
-                    addedCategories.addView(textView)
+
+                    var chip = Chip(this)
+                    chip.text = tabs[j].value
+                    chip.setChipBackgroundColorResource(R.color.bluePrimary)
+                    chip.setTextColor(Color.WHITE)
+                    chip.setCloseIconEnabled(true)
+                    addedCategories.addView(chip)
+
+                    chip.setOnCloseIconClickListener(View.OnClickListener { v ->
+                        addedCategories.removeView(v)
+                        listOfSelectedTabs.remove(tabs[j])
+                    })
                 }
             }
         }
@@ -153,16 +165,25 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
 
             listOfSelectedTabs = data?.extras?.get("added_categories") as ArrayList<Tab>
 
-            var addedCategories = findViewById(R.id.added_categories) as LinearLayout
+            var addedCategories = findViewById(R.id.added_categories) as ChipGroup
             addedCategories.removeAllViews()
             for(tab in listOfSelectedTabs) {
                 // Add id to publish card
                 listOfTabsIds.add(tab.id.toInt())
 
-                // View value
-                var textView = TextView(this)
-                textView.text = tab.value
-                addedCategories.addView(textView)
+                var chip = Chip(this)
+                chip.text = tab.value
+                chip.setChipBackgroundColorResource(R.color.bluePrimary)
+                chip.setTextColor(Color.WHITE)
+                chip.setCloseIconEnabled(true)
+                addedCategories.addView(chip)
+
+                chip.setOnCloseIconClickListener(View.OnClickListener { v ->
+                    addedCategories.removeView(v)
+                    listOfTabsIds.remove(tab.id.toInt())
+                    listOfSelectedTabs.remove(tab)
+                })
+
             }
         }
     }

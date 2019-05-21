@@ -14,12 +14,15 @@ import androidx.appcompat.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
+import android.graphics.Color
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.InputType
 import android.util.Log
 import android.view.MenuItem
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -176,16 +179,30 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
 
             listOfSelectedTabs = data?.extras?.get("added_categories") as ArrayList<Tab>
 
-            var addedCategories = findViewById(R.id.added_categories) as LinearLayout
+            var addedCategories = findViewById(R.id.added_categories) as ChipGroup
+
+            addedCategories.setOnCheckedChangeListener(ChipGroup.OnCheckedChangeListener() {chipGroup, id ->
+                Log.d("[CHIP-GROUP]", chipGroup.toString())
+                Log.d("[CHIP-GROUP]", id.toString())
+            })
             addedCategories.removeAllViews()
             for(tab in listOfSelectedTabs) {
                 // Add id to publish card
                 listOfTabsIds.add(tab.id.toInt())
 
                 // View value
-                var textView = TextView(this)
-                textView.text = tab.value
-                addedCategories.addView(textView)
+                var chip = Chip(this)
+                chip.text = tab.value
+                chip.setChipBackgroundColorResource(R.color.bluePrimary)
+                chip.setTextColor(Color.WHITE)
+                chip.setCloseIconEnabled(true)
+                addedCategories.addView(chip)
+
+                chip.setOnCloseIconClickListener(View.OnClickListener { v ->
+                    addedCategories.removeView(v)
+                    listOfTabsIds.remove(tab.id.toInt())
+                    listOfSelectedTabs.remove(tab)
+                })
             }
         } else { // CASE Add Multimedia
             if (data != null) {
