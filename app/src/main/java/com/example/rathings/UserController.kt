@@ -6,7 +6,7 @@ import java.util.*
 
 object UserController: Observer {
 
-    var userProfileObservable=FirebaseUtils.userProfileObservable
+    var userProfileObservable = FirebaseUtils.userProfileObservable
 
     init {
         //localUserProfileObservable.addObserver(this)
@@ -23,10 +23,11 @@ object UserController: Observer {
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             userProfileObservable-> {
-                val user=userProfileObservable.getValue()
+                val user = userProfileObservable.getValue()
                 Log.d("[USER-CONTROLLER]", "observable " + user?.toString())
             }
             else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
         }
     }
+
 }

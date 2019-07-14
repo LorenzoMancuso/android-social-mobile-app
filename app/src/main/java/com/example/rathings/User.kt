@@ -1,10 +1,12 @@
 package com.example.rathings
 
-class User() {
+import java.io.Serializable
+
+class User(): Serializable {
     public var id:String=""
     public var name: String=""
     public var surname: String=""
-    public var birth_date: Int=0
+    public var birth_date: String=""
 
     public var country: String=""
     public var city: String=""

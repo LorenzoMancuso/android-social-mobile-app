@@ -4,14 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
@@ -55,7 +56,7 @@ class ProfileFragment : Fragment(), Observer {
         startActivity(intent)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener {goToEdit()}
@@ -104,6 +105,8 @@ class ProfileFragment : Fragment(), Observer {
                     txt_country?.text = "${user.city}, ${user.country}"
                     txt_followers?.text = "Followers: ${user.followers.size}"
                     txt_followed?.text = "Followed: ${user.followed.size}"
+                    if(profile_image!=null && user.profile_image != "")
+                        Picasso.get().load(user.profile_image).into(profile_image)
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
 
@@ -115,7 +118,11 @@ class ProfileFragment : Fragment(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
-                    val mLayoutManager = LinearLayoutManager(super.getContext(), LinearLayoutManager.VERTICAL, false)
+                    val mLayoutManager = LinearLayoutManager(
+                        super.getContext(),
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
                     cardRecyclerView?.layoutManager = mLayoutManager
                     cardAdapter = CardAdapter(cards)
                     cardRecyclerView?.adapter = cardAdapter
@@ -123,6 +130,12 @@ class ProfileFragment : Fragment(), Observer {
             }
             else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        localUserProfileObservable.deleteObserver(this)
+        localUserCardsObservable.deleteObserver(this)
     }
 
     /**

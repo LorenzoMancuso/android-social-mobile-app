@@ -11,19 +11,65 @@ import com.google.firebase.database.ValueEventListener
 
 object FirebaseUtils {
 
-    var primaryUserProfileObservable:CustomObservable=CustomObservable()
-    var userProfileObservable:CustomObservable=CustomObservable()
-    var userCardsObservable:CustomObservable=CustomObservable()
-    var interestCardsObservable:CustomObservable=CustomObservable()
+    var primaryUserProfileObservable: CustomObservable = CustomObservable()
+    var userProfileObservable: CustomObservable = CustomObservable()
 
-    private var localUserProfile:User?=null
-    private var primaryUserProfile:User?=null
+    var userCardsObservable: CustomObservable = CustomObservable()
+    var interestCardsObservable: CustomObservable = CustomObservable()
+
+    var tabsObservable: CustomObservable = CustomObservable()
+
+    private var localUserProfile: User? = null
+    private var primaryUserProfile: User? = null
 
     private var auth: FirebaseAuth
 
+    val database = FirebaseDatabase.getInstance().reference
+
     init{
         auth = FirebaseAuth.getInstance()
+    }
 
+
+    // ----------------------
+    // BEGIN Firebase methods
+    // ----------------------
+    @JvmStatic fun basePost() {
+        database.child("users").child("TEST").child("username").setValue("Utente di Test")
+    }
+
+    @JvmStatic fun setData(path:String, newData:MutableMap<String,Any>) {
+        database.child(path).setValue(newData)
+    }
+
+    @JvmStatic fun updateData(path:String, newData:MutableMap<String,Any>) {
+        database.child(path).updateChildren(newData);
+    }
+
+    @JvmStatic fun deleteData(path:String) {
+        database.child(path).removeValue()
+    }
+
+
+    // ------------------
+    // BEGIN User methods
+    // ------------------
+    @JvmStatic fun createUserInstance(uid:String) {
+        database.child("users").child(uid).child("id").setValue(uid)
+
+        database.child("users").orderByChild("id").equalTo(uid).addValueEventListener(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if(dataSnapshot.children.count()==0){
+                        database.child("users").child(uid).child("id").setValue(uid)
+                        database.child("users").child(uid).child("subscription_date").setValue(System.currentTimeMillis() / 1000L)
+                    }
+                }
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            }
+        )
     }
 
     fun isCurrentUser(user_id:String):Boolean {
@@ -37,21 +83,10 @@ object FirebaseUtils {
 
     fun getLocalUser():User? {return localUserProfile}
 
-    val database = FirebaseDatabase.getInstance().reference
 
-    @JvmStatic fun basePost() {
-        database.child("users").child("TEST").child("username").setValue("Utente di Test")
-    }
-
-    @JvmStatic fun updateData(path:String, newData:MutableMap<String,Any>) {
-        database.child(path).updateChildren(newData);
-    }
-
-    @JvmStatic fun createUserInstance(uid:String) {
-        Log.d("[FIREBASE-UTILS]", "createUserInstance $uid")
-        database.child("users").child(uid).child("id").setValue(uid)
-    }
-
+    // ---------------------------------
+    // BEGIN Wrappers for UserController
+    // ---------------------------------
     @JvmStatic fun getPrimaryProfile() {
         val uid=FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -76,7 +111,6 @@ object FirebaseUtils {
         }
         phoneQuery.addValueEventListener(postListener)
     }
-
 
     @JvmStatic fun getProfile(uid:String?) {
         /**GET CURRENT AUTH USER IF UID IS NULL*/
@@ -106,6 +140,36 @@ object FirebaseUtils {
         phoneQuery.addValueEventListener(postListener)
     }
 
+
+    // --------------------------------
+    // BEGIN Wrappers for TabController
+    // --------------------------------
+    @JvmStatic fun getTabs() {
+        val ref = FirebaseUtils.database.child("tabs")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val tempArray: ArrayList<Tab> = ArrayList()
+                for (singleSnapshot in dataSnapshot.children) {
+                    Log.e("[FIREBASE-UTILS] Data", singleSnapshot.key + ' ' + singleSnapshot.getValue())
+                    val tab = Tab(singleSnapshot.key as String, singleSnapshot.getValue() as String)
+                    tempArray.add(tab)
+                }
+                tabsObservable.setValue(tempArray)
+                Log.e("[FIREBASE-UTILS]", "tabs " + tempArray)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
+            }
+        }
+        ref.addValueEventListener(postListener)
+    }
+
+
+    // ---------------------------------
+    // BEGIN Wrappers for CardController
+    // ---------------------------------
     @JvmStatic fun getUserCards(uid:String?) {
         /**GET CURRENT AUTH USER IF UID IS NULL*/
         var id_user=uid
@@ -125,8 +189,29 @@ object FirebaseUtils {
                     Log.e("[FIREBASE-UTILS]", "onDataChange single card ${card.toString()}")
                 }
                 var sortedList = cards.sortedWith(compareBy({ it!!.timestamp }))
-                userCardsObservable.setValue(sortedList)
-                Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+
+                /**GET USER OBJECT FOR EACH CARD*/
+                FirebaseUtils.database.child("users").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (singleSnapshot in dataSnapshot.children) {
+                                var user=singleSnapshot.getValue(User::class.java)
+                                if(user is User){
+                                    for(card in sortedList){
+                                        if (card.user==user.id) {
+                                            card.userObj=user
+                                        }
+                                    }
+                                }
+                            }
+                            userCardsObservable.setValue(sortedList)
+                            Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+                        }
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+                    }
+                )
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -140,11 +225,6 @@ object FirebaseUtils {
      * return only cards order by timestamp to the card controller
      * which get the collection and filter by interests and order by votes*/
     @JvmStatic fun getInterestCards(uid:String?) {
-        /**GET CURRENT AUTH USER IF UID IS NULL*/
-        var id_user=uid
-        if(uid==null)
-            id_user=FirebaseAuth.getInstance().currentUser!!.uid
-
         val ref = FirebaseUtils.database.child("cards")
         var cards: ArrayList<Card> = ArrayList()
 
@@ -159,8 +239,34 @@ object FirebaseUtils {
                     Log.e("[FIREBASE-UTILS]", "onDataChange interest card ${card.toString()}")
                 }
                 val sortedList = cards.sortedWith(compareBy({ it.timestamp }))
-                interestCardsObservable.setValue(sortedList)
-                Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+
+                /**GET USER OBJECT FOR EACH CARD*/
+                FirebaseUtils.database.child("users").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (singleSnapshot in dataSnapshot.children) {
+                                var user=singleSnapshot.getValue(User::class.java)
+                                if(user is User){
+                                    for(card in sortedList){
+                                        if (card.user==user.id) {
+                                            card.userObj=user
+                                        }
+                                        for (comment in card.comments) {
+                                            if (comment.user == user.id) {
+                                                comment.userObj = user
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            interestCardsObservable.setValue(sortedList)
+                            Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
+                        }
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+                    }
+                )
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -169,7 +275,4 @@ object FirebaseUtils {
         }
         query.addValueEventListener(postListener)
     }
-
-
-
 }

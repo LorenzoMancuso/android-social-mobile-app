@@ -1,12 +1,19 @@
 package com.example.rathings
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,11 +30,16 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TabsFragment : Fragment() {
+class TabsFragment : Fragment(), Observer {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
+
+    var flatPalette: ArrayList<String> = ArrayList(Arrays.asList("#1abc9c", "#16a085", "#2ecc71", "#27ae60", "#3498db", "#2980b9", "#f1c40f", "#f39c12", "#e67e22", "#d35400", "#e74c3c", "#c0392b", "#9b59b6", "#8e44ad"))
+
+    var tabsObs = TabController.tabsObs
+    var userProfileObs = FirebaseUtils.userProfileObservable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +47,112 @@ class TabsFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        tabsObs.addObserver(this)
+        userProfileObs.addObserver(this)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initTabs()
+    }
+
+    override fun update(observableObj: Observable?, data: Any?) {
+        when(observableObj) {
+            tabsObs -> {
+                initTabs()
+            }
+            userProfileObs -> {
+                // After setTab function (remove or add Tab)
+                TabController.getTabs()
+            }
+            else -> Log.d("[TABS-FRAGMENT]", "observable not recognized $data")
+        }
+    }
+
+    fun initTabs() {
+        val container = view?.findViewById(R.id.container) as LinearLayout
+
+        // Clean ScrollView
+        container.removeAllViews()
+
+        val value = tabsObs.getValue()
+        val userInterests = (userProfileObs.getValue() as User).interests
+        Log.d("[TABS-FRAGMENT]", userInterests.toString())
+        Log.d("[TABS-FRAGMENT]", value.toString())
+        if (value is ArrayList<*>) {
+            val tabs: ArrayList<Tab> = ArrayList(value.filterIsInstance<Tab>())
+            Log.d("[TABS-FRAGMENT]", "observable TABS " + tabs.toString())
+            for (i in 0 until tabs.size) {
+                var linearLayout = LinearLayout(context)
+
+                if (i != 0) {
+                    // Get the last layout If childCount exists
+                    linearLayout = container.getChildAt(container.childCount - 1) as LinearLayout
+                }
+
+                if (linearLayout.childCount == 0 || linearLayout.childCount == 2) {
+                    // If last layout.childCount == 2 OR It's the first tab set new layout
+                    linearLayout = LinearLayout(context)
+                    var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    linearLayout.layoutParams = params
+                    linearLayout.orientation = LinearLayout.HORIZONTAL
+                    linearLayout.setPadding(5,5,5,5)
+                    container.addView(linearLayout)
+                }
+
+                var button = Button(context)
+                var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (100 * resources.displayMetrics.density + 0.5f).toInt(), 1F)
+                button.layoutParams = params
+                button.gravity = Gravity.CENTER
+
+                // button.setCompoundDrawablesWithIntrinsicBounds( 0, 0, 0, R.drawable.ic_star_border_black_24dp);
+
+                button.setBackgroundColor(Color.parseColor("#eeecec"))
+                button.setTextColor(Color.BLACK)
+                button.text = tabs[i].value
+                button.setTypeface(button.typeface, Typeface.ITALIC)
+
+                var selectedTab = false
+                for (j in 0 until userInterests.size) {
+                    if(userInterests[j] == tabs[i].id.toInt()) {
+                        selectedTab = true
+                        button.setBackgroundColor(Color.parseColor(flatPalette[i]))
+                        button.setTextColor(Color.parseColor("#EEECEC"))
+                        button.setAllCaps(false)
+                        button.setTypeface(button.typeface, Typeface.BOLD)
+                    }
+                }
+
+                button.setOnClickListener(View.OnClickListener { setTab(tabs[i], selectedTab) })
+                linearLayout.addView(button)
+            }
+        }
+    }
+
+    fun setTab(tab: Tab, value: Boolean) {
+        Log.d("[TABS-FRAGMENT]", "Clicked Tab ${tab} with User Value ${value}")
+        val user = userProfileObs.getValue() as User
+        if (!value) {
+            user.interests.add(tab.id.toInt())
+        } else {
+            for (i in 0 until user.interests.size) {
+                Log.e("[TABS-FRAGMENT]", user.interests[i].toString() + " " + tab.id)
+                if (user.interests[i] == tab.id.toInt()) {
+                    val result = user.interests.remove(user.interests[i])
+                    break
+                }
+            }
+        }
+        user.interests.sort()
+        Log.e("[TABS-FRAGMENT]", "Rimozione ${tab.id}" + TabController.toMutableMapForUser(user.interests).toString())
+        FirebaseUtils.setData("users/${user.id}/interests/",TabController.toMutableMapForUser(user.interests))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        userProfileObs.deleteObserver(this)
+        tabsObs.deleteObserver(this)
     }
 
     override fun onCreateView(

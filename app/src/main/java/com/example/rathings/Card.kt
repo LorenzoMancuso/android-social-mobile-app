@@ -1,6 +1,8 @@
 package com.example.rathings
 
-class Card() {
+import java.io.Serializable
+
+class Card(): Serializable {
     /**
      * LISTA MULTIMEDIA
      * DESCRIZIONE
@@ -11,28 +13,56 @@ class Card() {
      * LISTA CATEGORIE DI APPARTENENZA
      * LISTA VOTI RICEVUTI (OGGETTO VOTO CON UTENTE,VALORE)*/
 
+    // NOTA: Ogni oggetto è diventato Serializable, permettendoci così di passarlo come oggetto nei putExtra di un Intent
     public var id:String=""
     public var title:String=""
     public var description: String=""
     public var user: String=""
+    public var link: String=""
     public var timestamp: Int=0
     public var category: MutableList<Int> = ArrayList()
-    //public var multimedia: MutableList<Any> = ArrayList()
+    // public var categoryObj: MutableList<Tab> = ArrayList()
+    public var userObj:User=User()
+    public var multimedia: MutableList<String> = ArrayList()
+    public var comments: MutableList<Comment> = ArrayList()
+    public var ratings_users: MutableMap<String, Float> = mutableMapOf()
+    public var ratings_average: Float = 0.0F
+    public var ratings_count: Int = 0
 
-    public var likelihood:Double = 0.0;
+    public var likelihood:Double = 0.0
 
     constructor(id:String) :this() {}
-    constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>) : this(id) {}
+    constructor(id:String, title: String, description: String, user: String, timestamp: Int, category: MutableList<Int>, comments: MutableList<Any>, ratings_average: Float, ratings_count: Int, ratings_users: MutableMap<String, Float>) : this(id) {}
 
     override fun toString():String {
         var str="{"
         str+="'id': $id, "
         str+="'title': $title, "
         str+="'description': $description, "
-        str+="'user': $user, "
-        str+="'timestamp': $timestamp}"
-        str+="'category': $category}"
+        str+="'timestamp': $timestamp, "
+        str+="'category': $category, "
+        str+="'multimedia': $multimedia, "
+        str+="'comments': $comments, "
+        str+="'link': $link, "
+        str+="'user': $userObj} "
         return str
+    }
+
+    fun toMutableMap() :MutableMap<String,Any> {
+        val res:MutableMap<String,Any> = mutableMapOf<String,Any>();
+        res.set("id",id)
+        res.set("title",title)
+        res.set("description",description)
+        res.set("user",user)
+        res.set("timestamp",timestamp)
+        res.set("category",category)
+        res.set("multimedia",multimedia)
+        res.set("comments",comments)
+        res.set("ratings_users",ratings_users)
+        res.set("ratings_average",ratings_average)
+        res.set("ratings_count",ratings_count)
+        res.set("link",link)
+        return res
     }
 
 }

@@ -6,32 +6,28 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 object CardController: Observer {
-    /**FIREBASE UTILS OBSERVABLE VARIABLES*/
-    var interestCardsObservable=FirebaseUtils.interestCardsObservable
 
-    /**FIREBASE UTILS OBSERVABLE VARIABLES*/
+    var interestCardsObservable=FirebaseUtils.interestCardsObservable
     var interestCardObs:CustomObservable=CustomObservable()
 
     init {
         interestCardsObservable.addObserver(this)
     }
 
-    fun getCards(uid:String){
-        FirebaseUtils.getProfile(uid)
+    fun getUserCards(uid:String){
+        return FirebaseUtils.getUserCards(uid)
     }
 
     fun interestCards(cards: ArrayList<Card>){
-        var interestCards=ArrayList<Card>()
+        var interestCards: ArrayList<Card>
         if(FirebaseUtils.getLocalUser()!=null) {
-            val interests= FirebaseUtils.getLocalUser()!!.interests
+            val interests = FirebaseUtils.getLocalUser()!!.interests
 
-            interestCards=ArrayList(cards.filter{
-                Log.d("[DEBUG]", "interests $interests")
-                Log.d("[DEBUG]", "category ${it.category}")
-                var count:Double = 0.0
+            interestCards = ArrayList(cards.filter{
+                var count = 0.0
                 for (cat in it.category){
                     if (cat in interests){
-                        count=count+1
+                        count++
                         Log.d("[DEBUG]", "count $count")
                     }
                 }
@@ -39,11 +35,11 @@ object CardController: Observer {
                 Log.d("[DEBUG]", "likelihood ${it.likelihood}")
                 it.likelihood>0
             })
+
             interestCardObs.setValue(interestCards)
-            interestCards= ArrayList(interestCards.sortedWith(compareByDescending({ it.likelihood})))
+            interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ it.likelihood })))
         }
     }
-
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
@@ -51,12 +47,11 @@ object CardController: Observer {
                 val value = interestCardsObservable.getValue()
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
-
                     interestCards(cards)
-                    Log.d("[USER-CONTROLLER]", "observable " + cards?.toString())
+                    Log.d("[CARD-CONTROLLER]", "Observable " + cards?.toString())
                 }
             }
-            else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
+            else -> Log.d("[CARD-CONTROLLER]", "Observable not recognized $data")
         }
     }
 }

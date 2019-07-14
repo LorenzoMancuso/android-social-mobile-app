@@ -5,10 +5,43 @@
              android:layout_height="match_parent"
              tools:context=".TabsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollview">
+        <!--<TableLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:orientation="vertical"
+                tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="8dp">
+        </TableLayout>-->
+        <LinearLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="TABS"/>
-
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <Button
+                    android:id="@+id/textView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="TestBtn1"/>
+                <Button
+                    android:id="@+id/textView2"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:gravity="center"
+                    android:text="TestBtn2"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>
