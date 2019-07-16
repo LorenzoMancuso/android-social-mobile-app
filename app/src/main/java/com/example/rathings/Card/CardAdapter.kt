@@ -61,10 +61,13 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         }
 
         holder.itemView.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
-            val intent = Intent(holder.itemView.context, DetailedCardActivity::class.java)
+            /*val intent = Intent(holder.itemView.context, DetailedCardActivity::class.java)
             val cards: ArrayList<Card> = ArrayList()
             cards.add(mDataList[position])
             intent.putExtra("card", cards)
+            holder.itemView.context.startActivity(intent)*/
+            val intent = Intent(holder.itemView.context, DetailedCardActivity::class.java)
+            intent.putExtra("idCard", mDataList[position].id)
             holder.itemView.context.startActivity(intent)
         }
     }

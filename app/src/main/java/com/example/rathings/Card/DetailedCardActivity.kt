@@ -27,9 +27,8 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
     LinkPreviewFragment.OnFragmentInteractionListener {
 
     var tabsObs = TabController.tabsObs
+    var cardsObs = FirebaseUtils.interestCardsObservable
     var selectedCard: Card = Card()
-
-    var flatPalette: java.util.ArrayList<String> = java.util.ArrayList(Arrays.asList("#1abc9c","#16a085","#2ecc71","#27ae60","#3498db","#2980b9","#f1c40f","#f39c12","#e67e22","#d35400","#e74c3c","#c0392b","#9b59b6","#8e44ad"))
 
     override fun onFragmentInteraction(uri: Uri) {}
 
@@ -38,22 +37,30 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
         setContentView(R.layout.activity_detailed_card)
 
         tabsObs.addObserver(this)
+        cardsObs.addObserver(this)
 
-        initData()
+        FirebaseUtils.getInterestCards(null)
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
-            tabsObs -> {
-                initData()
+            cardsObs -> {
+                Log.e("[Detailed Cards]", "Update")
+                var valuesObs = cardsObs.getValue()
+                if (valuesObs is List<*>) {
+                    val cards: ArrayList<Card> = ArrayList(valuesObs.filterIsInstance<Card>())
+                    selectedCard = (cards.filter { it.id == intent.getStringExtra("idCard") })[0]
+                    Log.d("[SELECTED CARD]", selectedCard.toString())
+                    initData()
+                }
             }
             else -> Log.d("[DETAILED-CARD]", "observable not recognized $data")
         }
     }
 
     private fun initData() {
-        var cards: ArrayList<Card> = intent.getSerializableExtra("card") as ArrayList<Card>
-        selectedCard = cards[0]
+        // var cards: ArrayList<Card> = intent.getSerializableExtra("card") as ArrayList<Card>
+        // selectedCard = cards[0]
 
         // User Name
         (findViewById(R.id.user) as TextView).text = "${selectedCard.userObj.name} ${selectedCard.userObj.surname}"
@@ -185,7 +192,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
 
         publishComment.setOnClickListener(View.OnClickListener { addComment((findViewById( R.id.add_comment) as EditText).text.toString()) })
 
-        Log.d("[DETAILED-CARD]", "Card: " + cards[0])
+        // Log.d("[DETAILED-CARD]", "Card: " + cards[0])
 
         // Edit Card
         var localUser = FirebaseUtils.getLocalUser() as User
@@ -234,6 +241,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
     override fun onDestroy() {
         super.onDestroy()
         tabsObs.deleteObserver(this)
+        cardsObs.deleteObserver(this)
     }
 
 }

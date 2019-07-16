@@ -7,134 +7,173 @@
         android:layout_height="match_parent"
         tools:context=".Card.NewCardActivity"
         android:background="@color/whitePrimary">
-
-    <ScrollView
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/scrollView2">
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
             <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                <androidx.appcompat.widget.Toolbar
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/colorPrimary"
-                        android:theme="?attr/actionBarTheme"
-                        android:minHeight="?attr/actionBarSize"
-                        tools:layout_editor_absoluteY="0dp"
-                        android:backgroundTint="@color/redPrimary"
-                        tools:layout_editor_absoluteX="8dp"
-                        android:id="@+id/toolbar">
-                    <Button
-                            android:layout_gravity="right"
-                            android:text="Publish"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="?android:attr/borderlessButtonStyle"
-                            tools:layout_editor_absoluteX="322dp"
-                            android:id="@+id/publish_card"
-                            android:background="@color/redPrimary"
-                            android:textColor="@color/whitePrimary"/>
-                </androidx.appcompat.widget.Toolbar>
-            </LinearLayout>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="20dp">
-                <de.hdodenhof.circleimageview.CircleImageView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/profile_image"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:src="@drawable/default_avatar"
-                        app:civ_border_width="2dp"
-                        app:civ_border_color="#FFF"/>
+                    android:layout_height="match_parent">
                 <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                    <androidx.appcompat.widget.Toolbar
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/colorPrimary"
+                            android:theme="?attr/actionBarTheme"
+                            android:minHeight="?attr/actionBarSize"
+                            tools:layout_editor_absoluteY="0dp"
+                            android:backgroundTint="@color/redPrimary"
+                            tools:layout_editor_absoluteX="8dp"
+                            android:id="@+id/toolbar">
+                        <Button
+                                android:layout_gravity="right"
+                                android:text="Publish"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="?android:attr/borderlessButtonStyle"
+                                tools:layout_editor_absoluteX="322dp"
+                                android:id="@+id/publish_card"
+                                android:background="@color/redPrimary"
+                                android:textColor="@color/whitePrimary"/>
+                    </androidx.appcompat.widget.Toolbar>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="20dp">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/profile_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/default_avatar"
+                            app:civ_border_width="2dp"
+                            app:civ_border_color="#FFF"/>
+                    <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:id="@+id/user"
+                                android:text="Nome Utente"
+                                android:textSize="16sp"
+                                android:paddingLeft="10dp"
+                                android:textStyle="bold"/>
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:id="@+id/activity_title"
+                                android:text="Add a new Card"
+                                android:textSize="14sp"
+                                android:paddingLeft="10dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                        android:id="@+id/container"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="true"
+                        android:padding="20dp">
                     <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/user"
-                            android:text="Nome Utente"
-                            android:textSize="16sp"
+                            android:text="Make your card with his information"
+                            android:paddingBottom="5dp"/>
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:id="@+id/title_text"
+                            android:background="#fff"
+                            android:hint="Write your Card Title"
+                            android:padding="10dp"/>
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:id="@+id/desc_text"
+                            android:background="#fff"
+                            android:hint="Write your Card Description"
+                            android:layout_marginTop="10dp"
                             android:paddingLeft="10dp"
-                            android:textStyle="bold"/>
-                    <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/activity_title"
-                            android:text="Add a new Card"
-                            android:textSize="14sp"
-                            android:paddingLeft="10dp"/>
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="100dp"/>
                 </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                    android:id="@+id/container"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusableInTouchMode="true"
-                    android:padding="20dp">
-                <TextView
+                <LinearLayout
+                        android:id="@+id/container_categories"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Make your card with his information"
-                        android:paddingBottom="5dp"/>
-                <EditText
+                        android:orientation="vertical"
+                        android:layout_height="match_parent"
+                        android:padding="20dp">
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="horizontal"
+                                android:layout_height="match_parent">
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="List of categories"
+                                        android:gravity="left"
+                                        android:layout_gravity="center"/>
+                                <Space
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"/>
+                                <Button
+                                            android:fontFamily="sans-serif"
+                                            android:id="@+id/add_categories"
+                                            android:text="+ tabs"
+                                            android:textColor="@color/redPrimary"
+                                            android:textAllCaps="false"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:gravity="center"
+                                            android:layout_gravity="center"
+                                            style="?android:attr/borderlessButtonStyle"
+                                            android:textStyle="normal"
+                                            android:backgroundTint="@color/whitePrimary"/>
+                        </LinearLayout>
+                        <com.google.android.material.chip.ChipGroup
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/added_categories">
+                        </com.google.android.material.chip.ChipGroup>
+                </LinearLayout>
+                <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:id="@+id/title_text"
-                        android:background="#fff"
-                        android:hint="Write your Card Title"
-                        android:padding="10dp"/>
-                <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textMultiLine"
-                        android:id="@+id/desc_text"
-                        android:background="#fff"
-                        android:hint="Write your Card Description"
-                        android:layout_marginTop="10dp"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="100dp"/>
-            </LinearLayout>
-            <LinearLayout
-                    android:id="@+id/container_categories"
-                    android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent"
-                    android:padding="20dp">
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:orientation="horizontal"
-                            android:layout_height="match_parent">
-                            <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="List of categories"
-                                    android:gravity="left"
-                                    android:layout_gravity="center"/>
-                            <Space
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"/>
-                            <Button
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="20dp"
+                        android:id="@+id/container_link">
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="horizontal"
+                                android:layout_height="match_parent">
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="left"
+                                        android:text="Link to external source"
+                                        android:layout_gravity="center"/>
+                                <Space
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"/>
+                                <Button
                                         android:fontFamily="sans-serif"
-                                        android:id="@+id/add_categories"
-                                        android:text="+ tabs"
                                         android:textColor="@color/redPrimary"
                                         android:textAllCaps="false"
                                         android:layout_width="wrap_content"
@@ -143,105 +182,65 @@
                                         android:layout_gravity="center"
                                         style="?android:attr/borderlessButtonStyle"
                                         android:textStyle="normal"
-                                        android:backgroundTint="@color/whitePrimary"/>
-                    </LinearLayout>
-                    <com.google.android.material.chip.ChipGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/added_categories">
-                    </com.google.android.material.chip.ChipGroup>
-            </LinearLayout>
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:id="@+id/container_link">
+                                        android:backgroundTint="@color/whitePrimary"
+                                        android:id="@+id/link_btn"
+                                        android:text="+ link"/>
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="match_parent"
+                                      android:layout_height="match_parent"
+                                      android:orientation="vertical"
+                                      android:id="@+id/added_link">
+                        </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                        android:id="@+id/container_multimedia"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="20dp">
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
                             android:layout_height="match_parent">
-                            <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="left"
-                                    android:text="Link to external source"
-                                    android:layout_gravity="center"/>
-                            <Space
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"/>
-                            <Button
-                                    android:fontFamily="sans-serif"
-                                    android:textColor="@color/redPrimary"
-                                    android:textAllCaps="false"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:layout_gravity="center"
-                                    style="?android:attr/borderlessButtonStyle"
-                                    android:textStyle="normal"
-                                    android:backgroundTint="@color/whitePrimary"
-                                    android:id="@+id/link_btn"
-                                    android:text="+ link"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="match_parent"
-                                  android:layout_height="match_parent"
-                                  android:orientation="vertical"
-                                  android:id="@+id/added_link">
-                    </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                    android:id="@+id/container_multimedia"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_height="match_parent">
-                    <TextView
-                            android:text="Added multimedia"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:layout_gravity="center"/>
-                    <Space
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"/>
-                    <Button
-                            android:fontFamily="sans-serif"
-                            android:text="+ multimedia"
-                            android:textColor="@color/redPrimary"
-                            android:textAllCaps="false"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_gravity="center"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:textStyle="normal"
-                            android:backgroundTint="@color/whitePrimary"
-                            android:id="@+id/multimedia_btn"/>
-                </LinearLayout>
-                <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:id="@+id/added_multimedia">
-                        <LinearLayout
+                        <TextView
+                                android:text="Added multimedia"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="horizontal"/>
+                                android:gravity="left"
+                                android:layout_gravity="center"/>
+                        <Space
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"/>
+                        <Button
+                                android:fontFamily="sans-serif"
+                                android:text="+ multimedia"
+                                android:textColor="@color/redPrimary"
+                                android:textAllCaps="false"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_gravity="center"
+                                style="?android:attr/borderlessButtonStyle"
+                                android:textStyle="normal"
+                                android:backgroundTint="@color/whitePrimary"
+                                android:id="@+id/multimedia_btn"/>
+                    </LinearLayout>
+                    <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:id="@+id/added_multimedia">
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal"/>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
