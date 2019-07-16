@@ -1,8 +1,7 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,13 +12,18 @@ import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.example.rathings.*
+import com.example.rathings.Tab.Tab
+import com.example.rathings.Tab.TabController
+import com.example.rathings.User.User
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
-class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.OnFragmentInteractionListener {
+class DetailedCardActivity : AppCompatActivity(), Observer,
+    LinkPreviewFragment.OnFragmentInteractionListener {
 
     var tabsObs = TabController.tabsObs
     var selectedCard: Card = Card()
@@ -121,7 +125,10 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                     finalRatingBar.visibility = View.VISIBLE
 
                     // Save data in Firebase
-                    FirebaseUtils.updateData("cards/${selectedCard.id}/",selectedCard.toMutableMap())
+                    FirebaseUtils.updateData(
+                        "cards/${selectedCard.id}/",
+                        selectedCard.toMutableMap()
+                    )
                 }
                 Log.d("[RATING-BAR]", "New value = ${value} , fromUser = ${fromUser}")
             }
@@ -171,10 +178,13 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             false
         )
         cardRecyclerView?.layoutManager = mLayoutManager
-        var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
+        var commentAdapter =
+            CommentAdapter(selectedCard.comments as ArrayList<Comment>)
         cardRecyclerView?.adapter = commentAdapter
 
-        publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(R.id.add_comment) as EditText).text.toString()) })
+        publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(
+            R.id.add_comment
+        ) as EditText).text.toString()) })
 
         Log.d("[DETAILED-CARD]", "Card: " + cards[0])
 
@@ -216,7 +226,10 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         newComment.text = text
         newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
         Log.d("[ADD-COMMENT]", newComment.toString())
-        FirebaseUtils.updateData("cards/${idCard}/comments/${idNewComment}",newComment.toMutableMap())
+        FirebaseUtils.updateData(
+            "cards/${idCard}/comments/${idNewComment}",
+            newComment.toMutableMap()
+        )
     }
 
     override fun onDestroy() {

@@ -1,27 +1,27 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.content.Intent
-import android.media.Image
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import com.example.rathings.*
+import com.example.rathings.User.ProfileActivity
+import com.example.rathings.utils.CustomObservable
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.fragment_profile.*
-import org.w3c.dom.Text
 import java.util.*
 import kotlin.collections.ArrayList
 
 class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
-    var internalObservableCard :CustomObservable=CustomObservable()
+    var internalObservableCard : CustomObservable =
+        CustomObservable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card, parent, false)

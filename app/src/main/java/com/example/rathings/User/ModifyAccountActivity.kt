@@ -1,17 +1,20 @@
-package com.example.rathings
+package com.example.rathings.User
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.HomeActivity
+import com.example.rathings.R
 import kotlinx.android.synthetic.main.activity_modify_account.*
 import java.util.*
 
 class ModifyAccountActivity : AppCompatActivity(), Observer {
 
-    var localUserProfileObservable=FirebaseUtils.userProfileObservable
-    var user:User=User()
+    var localUserProfileObservable= FirebaseUtils.userProfileObservable
+    var user: User = User()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
             user.profession = txt_profession?.text.toString()
 
             //send hash map of user object for firebase update
-            FirebaseUtils.updateData("users/${user.id}/",user.toMutableMap())
+            FirebaseUtils.updateData("users/${user.id}/", user.toMutableMap())
             val intent = Intent(this, HomeActivity::class.java)
             intent.putExtra("mode", "profile");
             startActivity(intent)

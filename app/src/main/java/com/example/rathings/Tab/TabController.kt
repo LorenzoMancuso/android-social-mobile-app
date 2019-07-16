@@ -1,11 +1,13 @@
-package com.example.rathings
+package com.example.rathings.Tab
 
 import android.util.Log
+import com.example.rathings.utils.CustomObservable
+import com.example.rathings.FirebaseUtils
 import java.util.*
 
 object TabController: Observer {
 
-    var tabsObservable=FirebaseUtils.tabsObservable
+    var tabsObservable= FirebaseUtils.tabsObservable
     var tabsObs: CustomObservable = CustomObservable()
 
     init {

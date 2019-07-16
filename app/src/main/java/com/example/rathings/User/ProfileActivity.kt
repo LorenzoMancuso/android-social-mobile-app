@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.User
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,16 +7,20 @@ import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import com.example.rathings.Card.Card
+import com.example.rathings.Card.CardAdapter
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.R
 import java.util.*
 
 class ProfileActivity : AppCompatActivity(), Observer {
 
-    var localPrimaryUserProfileObservable=FirebaseUtils.primaryUserProfileObservable
-    var localUserProfileObservable=FirebaseUtils.userProfileObservable
-    var localUserCardsObservable=FirebaseUtils.userCardsObservable
+    var localPrimaryUserProfileObservable= FirebaseUtils.primaryUserProfileObservable
+    var localUserProfileObservable= FirebaseUtils.userProfileObservable
+    var localUserCardsObservable= FirebaseUtils.userCardsObservable
 
-    private var localUserProfile:User=User()
-    private var localPrimaryUserProfile:User=User()
+    private var localUserProfile: User = User()
+    private var localPrimaryUserProfile: User = User()
 
     private var cardRecyclerView: RecyclerView? = null
     private var cardAdapter: RecyclerView.Adapter<*>? = null
@@ -48,8 +52,14 @@ class ProfileActivity : AppCompatActivity(), Observer {
             /**UPDATE FOLLOWERS OF OTHER USER*/
             localUserProfile.followers.add(localPrimaryUserProfile.id)
 
-            FirebaseUtils.updateData("users/${localPrimaryUserProfile.id}/",localPrimaryUserProfile.toMutableMap())
-            FirebaseUtils.updateData("users/${localUserProfile.id}/",localUserProfile.toMutableMap())
+            FirebaseUtils.updateData(
+                "users/${localPrimaryUserProfile.id}/",
+                localPrimaryUserProfile.toMutableMap()
+            )
+            FirebaseUtils.updateData(
+                "users/${localUserProfile.id}/",
+                localUserProfile.toMutableMap()
+            )
         }
         Log.d("[PROFILE-ACTIVITY]", "users/${localPrimaryUserProfile.id}/")
         Log.d("[PROFILE-ACTIVITY]", "users/${localUserProfile.id}/")

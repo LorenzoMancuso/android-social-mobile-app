@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.User
 
 import android.content.Context
 import android.content.Intent
@@ -12,6 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.example.rathings.Card.Card
+import com.example.rathings.Card.CardAdapter
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
@@ -32,8 +36,8 @@ private const val ARG_PARAM2 = "param2"
  */
 class ProfileFragment : Fragment(), Observer {
 
-    var localUserProfileObservable=FirebaseUtils.userProfileObservable
-    var localUserCardsObservable=FirebaseUtils.userCardsObservable
+    var localUserProfileObservable= FirebaseUtils.userProfileObservable
+    var localUserCardsObservable= FirebaseUtils.userCardsObservable
 
     private var cardRecyclerView: RecyclerView? = null
     private var cardAdapter: RecyclerView.Adapter<*>? = null

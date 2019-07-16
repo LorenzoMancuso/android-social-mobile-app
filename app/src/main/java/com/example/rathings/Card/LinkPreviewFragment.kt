@@ -1,8 +1,7 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.rathings.R
 import com.squareup.picasso.Picasso
 import io.github.ponnamkarthik.richlinkpreview.MetaData
 import io.github.ponnamkarthik.richlinkpreview.ResponseListener
@@ -56,7 +56,9 @@ class LinkPreviewFragment : Fragment() {
                 if (metaData.imageurl != null && metaData.imageurl != "") {
                     Picasso.get().load(metaData.imageurl).into(view?.findViewById(R.id.image) as ImageView)
                 } else {
-                    Picasso.get().load(R.drawable.ic_broken_image_black_24dp).into(view?.findViewById(R.id.image) as ImageView)
+                    Picasso.get().load(R.drawable.ic_broken_image_black_24dp).into(view?.findViewById(
+                        R.id.image
+                    ) as ImageView)
                 }
                 (view?.findViewById(R.id.title) as TextView)?.text = if (metaData.title.length > 32) metaData.title.substring(0, 30) + "..." else metaData.title
                 (view?.findViewById(R.id.description) as TextView)?.text = if (metaData.description.length > 32) metaData.description.substring(0, 55) + "..." else metaData.description
