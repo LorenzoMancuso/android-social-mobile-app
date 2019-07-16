@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

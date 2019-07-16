@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.content.Context
 import android.net.Uri
@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.R
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,18 +30,18 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class CardsPopularFragment : Fragment(), Observer {
+class CardsInterestFragment : Fragment(), Observer {
 
     private var listener: OnFragmentInteractionListener? = null
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
 
-    var popularCardObs = CardController.popularCardObs
+    var interestCardsObs = CardController.interestCardObs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
-        popularCardObs.addObserver(this)
+        interestCardsObs.addObserver(this)
 
     }
 
@@ -57,24 +59,24 @@ class CardsPopularFragment : Fragment(), Observer {
 
     override fun onDestroy() {
         super.onDestroy()
-        popularCardObs.deleteObserver(this)
+        interestCardsObs.deleteObserver(this)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            popularCardObs.addObserver(this)
+            interestCardsObs.addObserver(this)
         }
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
-            popularCardObs -> {
-                val value = popularCardObs.getValue()
+            interestCardsObs -> {
+                val value = interestCardsObs.getValue()
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     updateCardFragment(cards)
-                    popularCardObs.deleteObserver(this)
+                    interestCardsObs.deleteObserver(this)
                     Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards.toString())
                 }
             }

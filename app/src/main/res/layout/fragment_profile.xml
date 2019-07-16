@@ -38,19 +38,19 @@
                     android:background="#FFF"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp">
-                <com.example.rathings.CapitalizedTextView
+                <com.example.rathings.utils.CapitalizedTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:id="@+id/txt_name"
                         android:textSize="20sp"
                         android:textStyle="bold"/>
-                <com.example.rathings.CapitalizedTextView
+                <com.example.rathings.utils.CapitalizedTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:id="@+id/txt_profession"/>
-                <com.example.rathings.CapitalizedTextView
+                <com.example.rathings.utils.CapitalizedTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"

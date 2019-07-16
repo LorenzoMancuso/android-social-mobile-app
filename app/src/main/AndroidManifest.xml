@@ -15,12 +15,12 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/MaterialTheme">
-        <activity android:name=".EditCardActivity"></activity>
-        <activity android:name=".TabsActivity"></activity>
-        <activity android:name=".DetailedCardActivity"></activity>
-        <activity android:name=".NewCardActivity"></activity>
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".ModifyAccountActivity"></activity>
+        <activity android:name=".Card.EditCardActivity"></activity>
+        <activity android:name=".Tab.TabsActivity"></activity>
+        <activity android:name=".Card.DetailedCardActivity"></activity>
+        <activity android:name=".Card.NewCardActivity"></activity>
+        <activity android:name=".User.ProfileActivity"></activity>
+        <activity android:name=".User.ModifyAccountActivity"></activity>
         <activity android:name=".HomeActivity"></activity>
         <activity android:name=".LoginActivity" android:label="@string/title_activity_login"></activity>
         <activity android:name=".MainActivity">

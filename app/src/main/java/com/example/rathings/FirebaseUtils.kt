@@ -1,6 +1,10 @@
 package com.example.rathings
 
 import android.util.Log
+import com.example.rathings.Card.Card
+import com.example.rathings.Tab.Tab
+import com.example.rathings.User.User
+import com.example.rathings.utils.CustomObservable
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DatabaseError
@@ -11,11 +15,14 @@ import com.google.firebase.database.ValueEventListener
 
 object FirebaseUtils {
 
-    var primaryUserProfileObservable: CustomObservable = CustomObservable()
-    var userProfileObservable: CustomObservable = CustomObservable()
+    var primaryUserProfileObservable: CustomObservable =
+        CustomObservable()
+    var userProfileObservable: CustomObservable =
+        CustomObservable()
 
     var userCardsObservable: CustomObservable = CustomObservable()
-    var interestCardsObservable: CustomObservable = CustomObservable()
+    var interestCardsObservable: CustomObservable =
+        CustomObservable()
 
     var tabsObservable: CustomObservable = CustomObservable()
 
@@ -81,7 +88,7 @@ object FirebaseUtils {
         return false
     }
 
-    fun getLocalUser():User? {return localUserProfile}
+    fun getLocalUser(): User? {return localUserProfile}
 
 
     // ---------------------------------
@@ -91,7 +98,7 @@ object FirebaseUtils {
         val uid=FirebaseAuth.getInstance().currentUser!!.uid
 
         val ref = FirebaseUtils.database.child("users")
-        var user:User?
+        var user: User?
         val phoneQuery = ref.orderByChild("id").equalTo(uid)
 
         val postListener = object : ValueEventListener {
@@ -119,7 +126,7 @@ object FirebaseUtils {
             id_user=FirebaseAuth.getInstance().currentUser!!.uid
 
         val ref = FirebaseUtils.database.child("users")
-        var user:User?
+        var user: User?
         val phoneQuery = ref.orderByChild("id").equalTo(id_user)
 
         val postListener = object : ValueEventListener {
@@ -149,10 +156,10 @@ object FirebaseUtils {
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val tempArray: ArrayList<Tab> = ArrayList()
+                val tempArray: ArrayList<Tab?> = ArrayList()
                 for (singleSnapshot in dataSnapshot.children) {
                     Log.e("[FIREBASE-UTILS] Data", singleSnapshot.key + ' ' + singleSnapshot.getValue())
-                    val tab = Tab(singleSnapshot.key as String, singleSnapshot.getValue() as String)
+                    val tab = singleSnapshot.getValue(Tab::class.java)
                     tempArray.add(tab)
                 }
                 tabsObservable.setValue(tempArray)

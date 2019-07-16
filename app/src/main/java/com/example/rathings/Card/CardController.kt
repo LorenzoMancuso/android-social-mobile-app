@@ -1,16 +1,17 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.util.Log
-import com.google.firebase.auth.FirebaseAuth
+import com.example.rathings.utils.CustomObservable
+import com.example.rathings.FirebaseUtils
 import java.util.*
 import kotlin.collections.ArrayList
 
 object CardController: Observer {
 
-    var interestCardsObservable=FirebaseUtils.interestCardsObservable
+    var interestCardsObservable= FirebaseUtils.interestCardsObservable
 
-    var interestCardObs:CustomObservable=CustomObservable()
-    var popularCardObs:CustomObservable=CustomObservable()
+    var interestCardObs: CustomObservable = CustomObservable()
+    var popularCardObs: CustomObservable = CustomObservable()
 
     init {
         interestCardsObservable.addObserver(this)
@@ -22,7 +23,7 @@ object CardController: Observer {
 
     fun popularCards(cards: ArrayList<Card>){
         var popularCards: ArrayList<Card>
-        if(FirebaseUtils.getLocalUser()!=null) {
+        if(FirebaseUtils.getLocalUser() !=null) {
             val interests = FirebaseUtils.getLocalUser()!!.interests
 
             popularCards = ArrayList(cards.filter{
@@ -44,7 +45,7 @@ object CardController: Observer {
 
     fun interestCards(cards: ArrayList<Card>){
         var interestCards: ArrayList<Card>
-        if(FirebaseUtils.getLocalUser()!=null) {
+        if(FirebaseUtils.getLocalUser() !=null) {
             val interests = FirebaseUtils.getLocalUser()!!.interests
             val followed = FirebaseUtils.getLocalUser()!!.followed
 

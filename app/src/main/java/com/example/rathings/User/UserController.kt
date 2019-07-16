@@ -1,6 +1,7 @@
-package com.example.rathings
+package com.example.rathings.User
 
 import android.util.Log
+import com.example.rathings.FirebaseUtils
 import com.google.firebase.auth.FirebaseAuth
 import java.util.*
 
@@ -22,7 +23,7 @@ object UserController: Observer {
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
-            userProfileObservable-> {
+            userProfileObservable -> {
                 val user = userProfileObservable.getValue()
                 Log.d("[USER-CONTROLLER]", "observable " + user?.toString())
             }

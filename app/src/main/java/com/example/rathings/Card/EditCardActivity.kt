@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.content.DialogInterface
 import android.content.Intent
@@ -12,11 +12,14 @@ import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.example.rathings.*
+import com.example.rathings.Tab.Tab
+import com.example.rathings.Tab.TabController
+import com.example.rathings.Tab.TabsActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_card.*
-import kotlinx.android.synthetic.main.activity_modify_account.*
 import kotlinx.android.synthetic.main.activity_modify_account.confirm_button
 import java.util.ArrayList
 

@@ -8,13 +8,22 @@ import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.util.Log
 import android.view.View
+import com.example.rathings.Card.CardsFragment
+import com.example.rathings.Card.CardsInterestFragment
+import com.example.rathings.Card.CardsPopularFragment
+import com.example.rathings.Card.NewCardActivity
+import com.example.rathings.Tab.TabController
+import com.example.rathings.Tab.TabsFragment
+import com.example.rathings.User.ProfileFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionListener,TabsFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener,
+class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionListener,
+    TabsFragment.OnFragmentInteractionListener,
+    ProfileFragment.OnFragmentInteractionListener,
     CardsPopularFragment.OnFragmentInteractionListener, CardsInterestFragment.OnFragmentInteractionListener {
 
     private lateinit var auth: FirebaseAuth
