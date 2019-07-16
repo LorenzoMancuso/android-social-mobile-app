@@ -69,6 +69,8 @@ class ProfileFragment : Fragment(), Observer {
         FirebaseUtils.getProfile(null)
         //call for get card of current user
         FirebaseUtils.getUserCards(null)
+        user_cards_recycler_view.isNestedScrollingEnabled = false
+
     }
 
     override fun onCreateView(
@@ -124,7 +126,7 @@ class ProfileFragment : Fragment(), Observer {
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(
                         super.getContext(),
-                        LinearLayoutManager.VERTICAL,
+                        RecyclerView.VERTICAL,
                         false
                     )
                     cardRecyclerView?.layoutManager = mLayoutManager
