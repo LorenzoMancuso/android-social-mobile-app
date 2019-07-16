@@ -182,6 +182,14 @@
                     android:layout_marginTop="20dp"
                     android:focusableInTouchMode="true"
                     android:id="@+id/container_comments">
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_comments"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginTop="10dp"/>
                     <TextView
                             android:padding="15dp"
                             android:fontFamily="sans-serif"
@@ -221,14 +229,6 @@
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:textColor="@color/whitePrimary"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_comments"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="10dp"/>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
