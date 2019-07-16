@@ -11,12 +11,11 @@
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/scrollView2"
-            android:paddingBottom="50dp">
+            android:id="@+id/scrollView2">
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
