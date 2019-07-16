@@ -37,7 +37,7 @@ object CardController: Observer {
                 Log.d("[DEBUG]", "likelihood ${it.likelihood}")
                 it.likelihood>0
             })
-            popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count * (it.timestamp / 86400) * it.likelihood })))
+            popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
             popularCardObs.setValue(popularCards)
         }
     }
@@ -64,7 +64,7 @@ object CardController: Observer {
             })
             interestCards = ArrayList(cards.filter { it.likelihood <= 0})
 
-            interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count * (it.timestamp / 86400) * it.likelihood })))
+            interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
             interestCardObs.setValue(interestCards)
         }
     }
