@@ -36,6 +36,7 @@
         android:id="@+id/add_new_card"
         app:backgroundTint="@color/redPrimary"
         android:tint="#FFF"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         app:layout_constraintEnd_toEndOf="@id/container"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="10dp"
