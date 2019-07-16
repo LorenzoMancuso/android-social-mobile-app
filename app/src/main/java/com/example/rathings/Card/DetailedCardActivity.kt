@@ -1,6 +1,7 @@
 package com.example.rathings.Card
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -76,7 +77,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
                 if (selectedCard.category[i] == tabs[j].id.toInt()) {
                     var chip = Chip(this)
                     chip.text = tabs[j].value
-                    chip.setChipBackgroundColorResource(R.color.bluePrimary)
+                    chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
                     chip.setTextColor(Color.WHITE)
                     containerCategories.addView(chip)
                 }
