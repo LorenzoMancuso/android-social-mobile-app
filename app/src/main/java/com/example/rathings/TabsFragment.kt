@@ -119,8 +119,6 @@ class TabsFragment : Fragment(), Observer {
                         selectedTab = true
                         button.setBackgroundColor(Color.parseColor(flatPalette[i]))
                         button.setTextColor(Color.parseColor("#EEECEC"))
-                        button.setAllCaps(false)
-                        button.setTypeface(button.typeface, Typeface.BOLD)
                     }
                 }
 

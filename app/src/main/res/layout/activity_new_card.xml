@@ -153,53 +153,6 @@
                     </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
             <LinearLayout
-                    android:id="@+id/container_multimedia"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:orientation="horizontal"
-                            android:layout_height="match_parent">
-                            <TextView
-                                    android:text="Added multimedia"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="left"
-                                    android:layout_gravity="center"/>
-                            <Space
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"/>
-                            <Button
-                                    android:fontFamily="sans-serif"
-                                    android:text="+ multimedia"
-                                    android:textColor="@color/redPrimary"
-                                    android:textAllCaps="false"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:layout_gravity="center"
-                                    style="?android:attr/borderlessButtonStyle"
-                                    android:textStyle="normal"
-                                    android:backgroundTint="@color/whitePrimary"
-                                    android:id="@+id/multimedia_btn"/>
-                    </LinearLayout>
-                    <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:id="@+id/added_multimedia">
-                            <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="horizontal"/>
-                    </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -240,6 +193,50 @@
                                   android:orientation="vertical"
                                   android:id="@+id/added_link">
                     </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/container_multimedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="match_parent">
+                    <TextView
+                            android:text="Added multimedia"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:layout_gravity="center"/>
+                    <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+                    <Button
+                            android:fontFamily="sans-serif"
+                            android:text="+ multimedia"
+                            android:textColor="@color/redPrimary"
+                            android:textAllCaps="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:textStyle="normal"
+                            android:backgroundTint="@color/whitePrimary"
+                            android:id="@+id/multimedia_btn"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:id="@+id/added_multimedia">
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

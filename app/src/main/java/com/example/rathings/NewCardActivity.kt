@@ -24,6 +24,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.card.*
 
 
 class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentInteractionListener {
@@ -317,23 +318,51 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
 
     fun publishCard() {
         val context = getApplicationContext()
+        val titleText = (findViewById(R.id.title_text) as EditText).text.toString()
+        val descriptionText = (findViewById(R.id.desc_text) as EditText).text.toString()
+        if (titleText != "" && descriptionText != "" && listOfTabsIds.size != 0) {
+            card.title = (findViewById(R.id.title_text) as EditText).text.toString()
+            card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
+            card.category = listOfTabsIds
+            card.multimedia = listOfDownloadUri
+            card.ratings_average = 0.0F
+            card.ratings_count = 0
 
-        card.title = (findViewById(R.id.title_text) as EditText).text.toString()
-        card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
-        card.category = listOfTabsIds
-        card.multimedia = listOfDownloadUri
-        card.ratings_average = 0.0F
-        card.ratings_count = 0
+            if (addedLink != "") {
+                card.link = addedLink
+            }
 
-        if (addedLink != "") {
-            card.link = addedLink
+            //send hash map of card object for firebase update
+            println(card.multimedia)
+            println(card.toMutableMap())
+            FirebaseUtils.updateData("cards/${card.id}/",card.toMutableMap())
+            Toast.makeText(context, "Card published.", Toast.LENGTH_SHORT).show()
+            finish()
+        } else {
+            var errorMessage = "You can't publish new card because "
+            var listOfErrors: ArrayList<Any> = ArrayList()
+
+            if (titleText == "") listOfErrors.add("Title")
+            if (descriptionText == "") listOfErrors.add("Description")
+            if (listOfTabsIds.size == 0) listOfErrors.add("Tab")
+
+            for (i in listOfErrors.indices) {
+                if (i == 0) {
+                    errorMessage += listOfErrors[i]
+                } else if (i == listOfErrors.size-1) {
+                    errorMessage += " and " + listOfErrors[i]
+                } else {
+                    errorMessage += ", " + listOfErrors[i]
+                }
+            }
+
+            if (listOfErrors.size > 1) {
+                errorMessage += " are mandatory."
+            } else {
+                errorMessage += " is mandatory."
+            }
+
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
         }
-
-        //send hash map of card object for firebase update
-        println(card.multimedia)
-        println(card.toMutableMap())
-        FirebaseUtils.updateData("cards/${card.id}/",card.toMutableMap())
-        Toast.makeText(context, "Card published.", Toast.LENGTH_SHORT).show()
-        finish()
     }
 }
