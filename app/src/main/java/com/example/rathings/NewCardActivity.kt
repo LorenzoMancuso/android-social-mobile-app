@@ -15,10 +15,8 @@ import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
 import android.graphics.Color
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.InputType
 import android.util.Log
-import android.view.MenuItem
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
@@ -26,12 +24,6 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import io.github.ponnamkarthik.richlinkpreview.ViewListener
-import io.github.ponnamkarthik.richlinkpreview.RichLinkView
-import io.github.ponnamkarthik.richlinkpreview.RichLinkViewTwitter
-import kotlinx.android.synthetic.main.activity_new_card.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import java.net.MalformedURLException
 
 
 class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentInteractionListener {
@@ -125,13 +117,13 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val linkPreviewFragment = LinkPreviewFragment()
                 val arguments = Bundle()
-                var containerLink = findViewById(R.id.container_link) as LinearLayout
-                containerLink.removeAllViews()
+                var addedLinkLayout = findViewById(R.id.added_link) as LinearLayout
+                addedLinkLayout.removeAllViews()
                 arguments.putString("URL", taskEditText.text.toString())
                 linkPreviewFragment.setArguments(arguments)
                 fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
                 fragmentTransaction.commit()
-                containerLink.requestFocus()
+                addedLinkLayout.requestFocus()
                 addedLink = taskEditText.text.toString()
             }
         })
@@ -207,8 +199,8 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
         } else { // CASE Add Multimedia
             if (data != null) {
                 val context = getApplicationContext()
-                val containerMultimedia = findViewById(R.id.container_multimedia) as LinearLayout
-                var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
+                val addedMultimediaLayout = findViewById(R.id.added_multimedia) as LinearLayout
+                var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
                 val scale = resources.displayMetrics.density
 
                 if (row.childCount == 2) {
@@ -216,7 +208,7 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
                     var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
                     row.layoutParams = params
                     row.orientation = LinearLayout.HORIZONTAL
-                    containerMultimedia.addView(row)
+                    addedMultimediaLayout.addView(row)
                 }
 
                 if (requestCode == 1 || requestCode == 3) {
