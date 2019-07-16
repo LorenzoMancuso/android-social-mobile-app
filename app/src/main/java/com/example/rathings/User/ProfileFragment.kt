@@ -126,7 +126,7 @@ class ProfileFragment : Fragment(), Observer {
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(
                         super.getContext(),
-                        LinearLayoutManager.VERTICAL,
+                        RecyclerView.VERTICAL,
                         false
                     )
                     cardRecyclerView?.layoutManager = mLayoutManager
