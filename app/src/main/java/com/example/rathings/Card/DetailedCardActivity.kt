@@ -175,7 +175,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
 
         val mLayoutManager = LinearLayoutManager(
             this,
-            LinearLayoutManager.VERTICAL,
+            RecyclerView.VERTICAL,
             false
         )
         cardRecyclerView?.layoutManager = mLayoutManager
@@ -183,9 +183,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
             CommentAdapter(selectedCard.comments as ArrayList<Comment>)
         cardRecyclerView?.adapter = commentAdapter
 
-        publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(
-            R.id.add_comment
-        ) as EditText).text.toString()) })
+        publishComment.setOnClickListener(View.OnClickListener { addComment((findViewById( R.id.add_comment) as EditText).text.toString()) })
 
         Log.d("[DETAILED-CARD]", "Card: " + cards[0])
 
@@ -219,16 +217,16 @@ class DetailedCardActivity : AppCompatActivity(), Observer,
         }
     }
 
-    fun addComment(idNewComment: String, idCard: String, text: String) {
+    fun addComment(text: String) {
         var newComment = Comment()
-        newComment.id = idNewComment.toLong()
+        newComment.id = selectedCard.comments.size.toLong()
         newComment.userObj = FirebaseUtils.getLocalUser() as User
         newComment.user = newComment.userObj.id
         newComment.text = text
         newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
         Log.d("[ADD-COMMENT]", newComment.toString())
         FirebaseUtils.updateData(
-            "cards/${idCard}/comments/${idNewComment}",
+            "cards/${selectedCard.id}/comments/${newComment.id }",
             newComment.toMutableMap()
         )
     }
