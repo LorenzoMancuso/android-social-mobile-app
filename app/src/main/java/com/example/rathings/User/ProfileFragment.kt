@@ -69,6 +69,8 @@ class ProfileFragment : Fragment(), Observer {
         FirebaseUtils.getProfile(null)
         //call for get card of current user
         FirebaseUtils.getUserCards(null)
+        user_cards_recycler_view.isNestedScrollingEnabled = false
+
     }
 
     override fun onCreateView(
