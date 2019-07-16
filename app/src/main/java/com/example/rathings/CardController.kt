@@ -8,7 +8,9 @@ import kotlin.collections.ArrayList
 object CardController: Observer {
 
     var interestCardsObservable=FirebaseUtils.interestCardsObservable
+
     var interestCardObs:CustomObservable=CustomObservable()
+    var popularCardObs:CustomObservable=CustomObservable()
 
     init {
         interestCardsObservable.addObserver(this)
@@ -18,12 +20,12 @@ object CardController: Observer {
         return FirebaseUtils.getUserCards(uid)
     }
 
-    fun interestCards(cards: ArrayList<Card>){
-        var interestCards: ArrayList<Card>
+    fun popularCards(cards: ArrayList<Card>){
+        var popularCards: ArrayList<Card>
         if(FirebaseUtils.getLocalUser()!=null) {
             val interests = FirebaseUtils.getLocalUser()!!.interests
 
-            interestCards = ArrayList(cards.filter{
+            popularCards = ArrayList(cards.filter{
                 var count = 0.0
                 for (cat in it.category){
                     if (cat in interests){
@@ -35,9 +37,35 @@ object CardController: Observer {
                 Log.d("[DEBUG]", "likelihood ${it.likelihood}")
                 it.likelihood>0
             })
+            popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count * (it.timestamp / 86400) * it.likelihood })))
+            popularCardObs.setValue(popularCards)
+        }
+    }
 
+    fun interestCards(cards: ArrayList<Card>){
+        var interestCards: ArrayList<Card>
+        if(FirebaseUtils.getLocalUser()!=null) {
+            val interests = FirebaseUtils.getLocalUser()!!.interests
+            val followed = FirebaseUtils.getLocalUser()!!.followed
+
+            interestCards = ArrayList(cards.filter { followed.contains(it.user)})
+
+            interestCards = ArrayList(interestCards.filter{
+                var count = 0.0
+                for (cat in it.category){
+                    if (cat in interests){
+                        count++
+                        Log.d("[DEBUG]", "count $count")
+                    }
+                }
+                it.likelihood= count/( interests.size + it.category.size)
+                Log.d("[DEBUG]", "likelihood ${it.likelihood}")
+                it.likelihood>0
+            })
+            interestCards = ArrayList(cards.filter { it.likelihood <= 0})
+
+            interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count * (it.timestamp / 86400) * it.likelihood })))
             interestCardObs.setValue(interestCards)
-            interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ it.likelihood })))
         }
     }
 
@@ -47,6 +75,7 @@ object CardController: Observer {
                 val value = interestCardsObservable.getValue()
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
+                    popularCards(cards)
                     interestCards(cards)
                     Log.d("[CARD-CONTROLLER]", "Observable " + cards?.toString())
                 }

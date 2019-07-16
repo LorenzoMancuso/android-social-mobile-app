@@ -4,14 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import java.util.*
-import kotlin.collections.ArrayList
+import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.fragment_cards.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -28,20 +25,20 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class CardsFragment : Fragment(), Observer {
+class CardsFragment : Fragment(){
 
-    private var listener: OnFragmentInteractionListener? = null
-    private var mRecyclerView: RecyclerView? = null
-    private var mAdapter: RecyclerView.Adapter<*>? = null
-
-    var interestCardsObs = CardController.interestCardObs
+    private var mListener: OnFragmentInteractionListener? = null
+    private var childFragments: Array<Fragment> = arrayOf(CardsPopularFragment(),CardsInterestFragment())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
-        interestCardsObs.addObserver(this)
 
+        val childFragment: Fragment = childFragments[0]
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.replace(R.id.container_card, childFragment).commit()
     }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -49,68 +46,38 @@ class CardsFragment : Fragment(), Observer {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        // Start process to Initialize Data
-        FirebaseUtils.getInterestCards(null)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        interestCardsObs.deleteObserver(this)
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            interestCardsObs.addObserver(this)
-        }
-    }
-
-    override fun update(observableObj: Observable?, data: Any?) {
-        when(observableObj) {
-            interestCardsObs -> {
-                val value = interestCardsObs.getValue()
-                if (value is List<*>) {
-                    val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
-                    updateCardFragment(cards)
-                    interestCardsObs.deleteObserver(this)
-                    Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards.toString())
-                }
+        upper_navigation.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val childFragment: Fragment = childFragments[tab.position]
+                val transaction = childFragmentManager.beginTransaction()
+                transaction.replace(R.id.container_card, childFragment).commit()
             }
-            else -> Log.d("[CARD-FRAGMENT]", "observable not recognized $data")
-        }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
     }
 
-    fun updateCardFragment(cards:ArrayList<Card>){
-        mRecyclerView = view?.findViewById(R.id.my_recycler_view)
-        val mLayoutManager = LinearLayoutManager(
-            super.getContext(),
-            RecyclerView.VERTICAL,
-            false
-        )
-        mRecyclerView?.layoutManager = mLayoutManager
-        mAdapter = CardAdapter(cards)
-        mRecyclerView?.adapter = mAdapter
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        listener?.onCardsFragmentInteraction(uri)
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
-            listener = context
+            mListener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
     }
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        mListener = null
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     /**
@@ -127,25 +94,5 @@ class CardsFragment : Fragment(), Observer {
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onCardsFragmentInteraction(uri: Uri)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CardsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CardsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
