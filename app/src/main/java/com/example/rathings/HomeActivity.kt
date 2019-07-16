@@ -14,7 +14,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionListener,TabsFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener {
+class HomeActivity : AppCompatActivity(),CardsFragment.OnFragmentInteractionListener,TabsFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener,
+    CardsPopularFragment.OnFragmentInteractionListener, CardsInterestFragment.OnFragmentInteractionListener {
+
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
