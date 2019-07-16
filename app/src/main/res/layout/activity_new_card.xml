@@ -11,12 +11,11 @@
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/scrollView2"
-            android:paddingBottom="50dp">
+            android:id="@+id/scrollView2">
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -80,24 +79,17 @@
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
-                android:id="@+id/container_categories"
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-                <com.google.android.material.chip.ChipGroup
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/added_categories">
-                </com.google.android.material.chip.ChipGroup>
-            </LinearLayout>
-            <LinearLayout
                     android:id="@+id/container"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusableInTouchMode="true"
                     android:padding="20dp">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Make your card with his information"
+                        android:paddingBottom="5dp"/>
                 <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -120,89 +112,136 @@
                         android:paddingBottom="100dp"/>
             </LinearLayout>
             <LinearLayout
-                    android:id="@+id/container_multimedia"
+                    android:id="@+id/container_categories"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent"
+                    android:padding="20dp">
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_height="match_parent">
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="List of categories"
+                                    android:gravity="left"
+                                    android:layout_gravity="center"/>
+                            <Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                            <Button
+                                        android:fontFamily="sans-serif"
+                                        android:id="@+id/add_categories"
+                                        android:text="+ tabs"
+                                        android:textColor="@color/redPrimary"
+                                        android:textAllCaps="false"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:layout_gravity="center"
+                                        style="?android:attr/borderlessButtonStyle"
+                                        android:textStyle="normal"
+                                        android:backgroundTint="@color/whitePrimary"/>
+                    </LinearLayout>
+                    <com.google.android.material.chip.ChipGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/added_categories">
+                    </com.google.android.material.chip.ChipGroup>
+            </LinearLayout>
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:id="@+id/container_link">
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_height="match_parent">
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="left"
+                                    android:text="Link to external source"
+                                    android:layout_gravity="center"/>
+                            <Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                            <Button
+                                    android:fontFamily="sans-serif"
+                                    android:textColor="@color/redPrimary"
+                                    android:textAllCaps="false"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:layout_gravity="center"
+                                    style="?android:attr/borderlessButtonStyle"
+                                    android:textStyle="normal"
+                                    android:backgroundTint="@color/whitePrimary"
+                                    android:id="@+id/link_btn"
+                                    android:text="+ link"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="match_parent"
+                                  android:orientation="vertical"
+                                  android:id="@+id/added_link">
+                    </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/container_multimedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="match_parent">
+                    <TextView
+                            android:text="Added multimedia"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:layout_gravity="center"/>
+                    <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+                    <Button
+                            android:fontFamily="sans-serif"
+                            android:text="+ multimedia"
+                            android:textColor="@color/redPrimary"
+                            android:textAllCaps="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:textStyle="normal"
+                            android:backgroundTint="@color/whitePrimary"
+                            android:id="@+id/multimedia_btn"/>
+                </LinearLayout>
                 <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:id="@+id/added_multimedia">
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="horizontal"/>
                 </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                    android:id="@+id/container_link"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusableInTouchMode="true"
-                    android:padding="10dp">
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFF"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <androidx.appcompat.widget.Toolbar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:theme="?attr/actionBarTheme"
-                    android:minHeight="?attr/actionBarSize"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/container_buttons">
-                    <Button
-                            android:fontFamily="sans-serif"
-                            android:id="@+id/add_categories"
-                            android:text="Tabs"
-                            android:textColor="@color/redPrimary"
-                            android:textAllCaps="false"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_gravity="center_horizontal"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:textStyle="normal"
-                            android:backgroundTint="#FFF"
-                            android:drawablePadding="7dp"
-                            android:drawableLeft="@drawable/ic_widgets_black_24dp"
-                            android:drawableTint="@color/redPrimary"/>
-                    <Button
-                            android:fontFamily="sans-serif"
-                            android:id="@+id/multimedia_btn"
-                            android:text="Multimedia"
-                            android:textColor="@color/redPrimary"
-                            android:textAllCaps="false"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_gravity="center_horizontal"
-                            android:textStyle="normal"
-                            android:backgroundTint="#FFF"
-                            android:drawablePadding="7dp"
-                            android:drawableLeft="@drawable/ic_video_library_black_24dp"
-                            android:drawableTint="@color/redPrimary"/>
-                    <Button
-                            android:fontFamily="sans-serif"
-                            android:id="@+id/link_btn"
-                            android:text="Link"
-                            android:textColor="@color/redPrimary"
-                            android:textAllCaps="false"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="#FFF"
-                            android:gravity="center_vertical"
-                            android:layout_gravity="center_horizontal"
-                            android:textStyle="normal"
-                            android:drawablePadding="7dp"
-                            android:drawableLeft="@drawable/ic_bookmark_black_24dp"
-                            android:drawableTint="@color/redPrimary"/>
-            </androidx.appcompat.widget.Toolbar>
-    </HorizontalScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
