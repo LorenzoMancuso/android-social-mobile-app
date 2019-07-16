@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.content.Context
 import android.net.Uri
@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.rathings.R
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_cards.*
 
@@ -28,7 +29,10 @@ private const val ARG_PARAM2 = "param2"
 class CardsFragment : Fragment(){
 
     private var mListener: OnFragmentInteractionListener? = null
-    private var childFragments: Array<Fragment> = arrayOf(CardsPopularFragment(),CardsInterestFragment())
+    private var childFragments: Array<Fragment> = arrayOf(
+        CardsPopularFragment(),
+        CardsInterestFragment()
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

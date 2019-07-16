@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.User
 
 import java.io.Serializable
 

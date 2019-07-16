@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.utils
 
 import android.content.Context
 import android.util.AttributeSet

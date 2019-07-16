@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        tools:context=".ModifyAccountActivity">
+        tools:context=".User.ModifyAccountActivity">
 
     <ScrollView
             android:id="@+id/login_form"

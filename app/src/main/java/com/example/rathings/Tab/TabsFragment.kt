@@ -1,9 +1,8 @@
-package com.example.rathings
+package com.example.rathings.Tab
 
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,6 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.R
+import com.example.rathings.User.User
 import java.util.*
 
 
@@ -144,7 +146,10 @@ class TabsFragment : Fragment(), Observer {
         }
         user.interests.sort()
         Log.e("[TABS-FRAGMENT]", "Rimozione ${tab.id}" + TabController.toMutableMapForUser(user.interests).toString())
-        FirebaseUtils.setData("users/${user.id}/interests/",TabController.toMutableMapForUser(user.interests))
+        FirebaseUtils.setData(
+            "users/${user.id}/interests/",
+            TabController.toMutableMapForUser(user.interests)
+        )
     }
 
     override fun onDestroy() {

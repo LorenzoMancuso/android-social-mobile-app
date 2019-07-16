@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,6 +17,9 @@ import android.app.ProgressDialog
 import android.graphics.Color
 import android.text.InputType
 import android.util.Log
+import com.example.rathings.*
+import com.example.rathings.Tab.Tab
+import com.example.rathings.Tab.TabsActivity
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
@@ -24,10 +27,9 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.card.*
 
 
-class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentInteractionListener {
+class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInteractionListener {
 
     var listOfDownloadUri: MutableList<String> = ArrayList()
     var card = Card()
@@ -335,7 +337,7 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
             //send hash map of card object for firebase update
             println(card.multimedia)
             println(card.toMutableMap())
-            FirebaseUtils.updateData("cards/${card.id}/",card.toMutableMap())
+            FirebaseUtils.updateData("cards/${card.id}/", card.toMutableMap())
             Toast.makeText(context, "Card published.", Toast.LENGTH_SHORT).show()
             finish()
         } else {

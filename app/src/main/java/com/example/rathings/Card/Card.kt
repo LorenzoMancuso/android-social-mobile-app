@@ -1,5 +1,6 @@
-package com.example.rathings
+package com.example.rathings.Card
 
+import com.example.rathings.User.User
 import java.io.Serializable
 
 class Card(): Serializable {
@@ -22,7 +23,7 @@ class Card(): Serializable {
     public var timestamp: Int=0
     public var category: MutableList<Int> = ArrayList()
     // public var categoryObj: MutableList<Tab> = ArrayList()
-    public var userObj:User=User()
+    public var userObj: User = User()
     public var multimedia: MutableList<String> = ArrayList()
     public var comments: MutableList<Comment> = ArrayList()
     public var ratings_users: MutableMap<String, Float> = mutableMapOf()

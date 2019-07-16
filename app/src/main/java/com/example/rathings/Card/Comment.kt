@@ -1,5 +1,6 @@
-package com.example.rathings
+package com.example.rathings.Card
 
+import com.example.rathings.User.User
 import java.io.Serializable
 
 class Comment(): Serializable {
@@ -7,7 +8,7 @@ class Comment(): Serializable {
     public var text:String=""
     public var timestamp:Int=0
     public var user:String=""
-    public var userObj:User=User()
+    public var userObj: User = User()
 
     constructor(id:String) :this() {}
     constructor(id:String, text: String, timestamp: String, user: String) : this(id) {}

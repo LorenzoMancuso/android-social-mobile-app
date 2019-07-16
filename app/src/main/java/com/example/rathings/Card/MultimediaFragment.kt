@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.Card
 
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import android.widget.*
+import com.example.rathings.R
 
 class MultimediaFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
