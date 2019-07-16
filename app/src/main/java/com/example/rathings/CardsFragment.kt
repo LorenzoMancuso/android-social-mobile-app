@@ -60,16 +60,11 @@ class CardsFragment : Fragment(), Observer {
         interestCardsObs.deleteObserver(this)
     }
 
-    fun updateCardFragment(cards:ArrayList<Card>){
-        mRecyclerView = view?.findViewById(R.id.my_recycler_view)
-        val mLayoutManager = LinearLayoutManager(
-            super.getContext(),
-            LinearLayoutManager.VERTICAL,
-            false
-        )
-        mRecyclerView?.layoutManager = mLayoutManager
-        mAdapter = CardAdapter(cards)
-        mRecyclerView?.adapter = mAdapter
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            interestCardsObs.addObserver(this)
+        }
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
@@ -79,11 +74,24 @@ class CardsFragment : Fragment(), Observer {
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     updateCardFragment(cards)
+                    interestCardsObs.deleteObserver(this)
                     Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards.toString())
                 }
             }
             else -> Log.d("[CARD-FRAGMENT]", "observable not recognized $data")
         }
+    }
+
+    fun updateCardFragment(cards:ArrayList<Card>){
+        mRecyclerView = view?.findViewById(R.id.my_recycler_view)
+        val mLayoutManager = LinearLayoutManager(
+            super.getContext(),
+            RecyclerView.VERTICAL,
+            false
+        )
+        mRecyclerView?.layoutManager = mLayoutManager
+        mAdapter = CardAdapter(cards)
+        mRecyclerView?.adapter = mAdapter
     }
 
     // TODO: Rename method, update argument and hook method into UI event

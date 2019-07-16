@@ -19,13 +19,13 @@
                 <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:icon="@drawable/ic_star_border_red_24dp"
-                        android:text="Interest Cards"/>
+                        android:icon="@drawable/ic_language_red_24dp"
+                        android:text="Popular Cards"/>
                 <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:icon="@drawable/ic_language_red_24dp"
-                        android:text="Popular Cards"/>
+                        android:icon="@drawable/ic_star_border_red_24dp"
+                        android:text="Interest Cards"/>
         </com.google.android.material.tabs.TabLayout>
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/my_recycler_view"
