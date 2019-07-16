@@ -68,7 +68,9 @@ class TabsActivity : AppCompatActivity() {
                 var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (100 * resources.displayMetrics.density + 0.5f).toInt(), 1F)
                 button.layoutParams = params
                 button.gravity = Gravity.CENTER
+
                 button.setBackgroundColor(Color.parseColor("#eeecec"))
+                button.setTextColor(Color.BLACK)
                 button.text = tabs[i].value
                 button.setTypeface(button.typeface, Typeface.ITALIC)
 
@@ -77,8 +79,7 @@ class TabsActivity : AppCompatActivity() {
                     if(listOfSelectedTabs[j].id.toInt() == tabs[i].id.toInt()) {
                         selectedTab = true
                         button.setBackgroundColor(Color.parseColor(flatPalette[i]))
-                        button.setAllCaps(false)
-                        button.setTypeface(button.typeface, Typeface.BOLD)
+                        button.setTextColor(Color.parseColor("#EEECEC"))
                     }
                 }
 

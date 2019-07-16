@@ -15,10 +15,8 @@ import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
 import android.graphics.Color
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.InputType
 import android.util.Log
-import android.view.MenuItem
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
@@ -26,12 +24,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import io.github.ponnamkarthik.richlinkpreview.ViewListener
-import io.github.ponnamkarthik.richlinkpreview.RichLinkView
-import io.github.ponnamkarthik.richlinkpreview.RichLinkViewTwitter
-import kotlinx.android.synthetic.main.activity_new_card.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import java.net.MalformedURLException
+import kotlinx.android.synthetic.main.card.*
 
 
 class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentInteractionListener {
@@ -125,13 +118,13 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val linkPreviewFragment = LinkPreviewFragment()
                 val arguments = Bundle()
-                var containerLink = findViewById(R.id.container_link) as LinearLayout
-                containerLink.removeAllViews()
+                var addedLinkLayout = findViewById(R.id.added_link) as LinearLayout
+                addedLinkLayout.removeAllViews()
                 arguments.putString("URL", taskEditText.text.toString())
                 linkPreviewFragment.setArguments(arguments)
                 fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
                 fragmentTransaction.commit()
-                containerLink.requestFocus()
+                addedLinkLayout.requestFocus()
                 addedLink = taskEditText.text.toString()
             }
         })
@@ -207,8 +200,8 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
         } else { // CASE Add Multimedia
             if (data != null) {
                 val context = getApplicationContext()
-                val containerMultimedia = findViewById(R.id.container_multimedia) as LinearLayout
-                var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
+                val addedMultimediaLayout = findViewById(R.id.added_multimedia) as LinearLayout
+                var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
                 val scale = resources.displayMetrics.density
 
                 if (row.childCount == 2) {
@@ -216,7 +209,7 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
                     var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
                     row.layoutParams = params
                     row.orientation = LinearLayout.HORIZONTAL
-                    containerMultimedia.addView(row)
+                    addedMultimediaLayout.addView(row)
                 }
 
                 if (requestCode == 1 || requestCode == 3) {
@@ -325,23 +318,51 @@ class NewCardActivity : AppCompatActivity(),LinkPreviewFragment.OnFragmentIntera
 
     fun publishCard() {
         val context = getApplicationContext()
+        val titleText = (findViewById(R.id.title_text) as EditText).text.toString()
+        val descriptionText = (findViewById(R.id.desc_text) as EditText).text.toString()
+        if (titleText != "" && descriptionText != "" && listOfTabsIds.size != 0) {
+            card.title = (findViewById(R.id.title_text) as EditText).text.toString()
+            card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
+            card.category = listOfTabsIds
+            card.multimedia = listOfDownloadUri
+            card.ratings_average = 0.0F
+            card.ratings_count = 0
 
-        card.title = (findViewById(R.id.title_text) as EditText).text.toString()
-        card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
-        card.category = listOfTabsIds
-        card.multimedia = listOfDownloadUri
-        card.ratings_average = 0.0F
-        card.ratings_count = 0
+            if (addedLink != "") {
+                card.link = addedLink
+            }
 
-        if (addedLink != "") {
-            card.link = addedLink
+            //send hash map of card object for firebase update
+            println(card.multimedia)
+            println(card.toMutableMap())
+            FirebaseUtils.updateData("cards/${card.id}/",card.toMutableMap())
+            Toast.makeText(context, "Card published.", Toast.LENGTH_SHORT).show()
+            finish()
+        } else {
+            var errorMessage = "You can't publish new card because "
+            var listOfErrors: ArrayList<Any> = ArrayList()
+
+            if (titleText == "") listOfErrors.add("Title")
+            if (descriptionText == "") listOfErrors.add("Description")
+            if (listOfTabsIds.size == 0) listOfErrors.add("Tab")
+
+            for (i in listOfErrors.indices) {
+                if (i == 0) {
+                    errorMessage += listOfErrors[i]
+                } else if (i == listOfErrors.size-1) {
+                    errorMessage += " and " + listOfErrors[i]
+                } else {
+                    errorMessage += ", " + listOfErrors[i]
+                }
+            }
+
+            if (listOfErrors.size > 1) {
+                errorMessage += " are mandatory."
+            } else {
+                errorMessage += " is mandatory."
+            }
+
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
         }
-
-        //send hash map of card object for firebase update
-        println(card.multimedia)
-        println(card.toMutableMap())
-        FirebaseUtils.updateData("cards/${card.id}/",card.toMutableMap())
-        Toast.makeText(context, "Card published.", Toast.LENGTH_SHORT).show()
-        finish()
     }
 }

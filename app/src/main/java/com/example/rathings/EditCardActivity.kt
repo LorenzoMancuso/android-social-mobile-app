@@ -74,28 +74,28 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
             val fragmentTransaction = fragmentManager.beginTransaction()
             val linkPreviewFragment = LinkPreviewFragment()
             val arguments = Bundle()
-            var containerLink = findViewById(R.id.container_link) as LinearLayout
-            containerLink.removeAllViews()
+            var addedLinkLayout = findViewById(R.id.added_link) as LinearLayout
+            addedLinkLayout.removeAllViews()
             arguments.putString("URL", selectedCard.link)
             linkPreviewFragment.setArguments(arguments)
-            fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
+            fragmentTransaction.add(R.id.added_link, linkPreviewFragment)
             fragmentTransaction.commit()
         }
 
         // Multimedia
         if (selectedCard.multimedia.size > 0) {
-            val containerMultimedia = findViewById(R.id.container_multimedia) as LinearLayout
+            val addedMultimediaLayout = findViewById(R.id.added_multimedia) as LinearLayout
             val scale = resources.displayMetrics.density
 
             for (link in selectedCard.multimedia) {
-                var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
+                var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
 
                 if (row.childCount == 2) {
                     row = LinearLayout(this)
                     var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
                     row.layoutParams = params
                     row.orientation = LinearLayout.HORIZONTAL
-                    containerMultimedia.addView(row)
+                    addedMultimediaLayout.addView(row)
                 }
 
                 var imageView = ImageView(this)
