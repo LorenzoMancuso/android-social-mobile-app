@@ -169,6 +169,8 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
                     // Save data in Firebase
                     FirebaseUtils.updateData("cards/${selectedCard.id}/",selectedCard.toMutableMap())
+
+                    addNotification(user, selectedCard, "rating")
                 }
                 Log.d("[RATING-BAR]", "New value = ${value} , fromUser = ${fromUser}")
             }
@@ -320,9 +322,33 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             Toast.makeText(this, "Add Comment done.", Toast.LENGTH_SHORT)
 
             comment.setText("")
+
+            addNotification(user, selectedCard, "comment")
+
         } else {
             Toast.makeText(this, "Comment is mandatory.", Toast.LENGTH_SHORT)
         }
+    }
+
+    fun addNotification(userProfile: User, card: Card, type:String){
+        val otherUserProfile = card.userObj
+
+        val timestamp = System.currentTimeMillis() / 1000L
+        val split = userProfile.id.length/2
+
+        val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
+            userProfile.id,
+            "${userProfile.name} ${userProfile.surname} added a ${type} to your card.",
+            timestamp,
+            false,
+            "card",
+            card.id)
+
+        otherUserProfile.notifications.add(tmp)
+        FirebaseUtils.updateData(
+            "users/${otherUserProfile.id}/",
+            otherUserProfile.toMutableMap()
+        )
     }
 
     override fun onDestroy() {

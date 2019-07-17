@@ -107,7 +107,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
             "profile",
             userProfile.id)
 
-        userProfile.notifiacations.add(tmp)
+        userProfile.notifications.add(tmp)
         FirebaseUtils.updateData(
             "users/${userProfile.id}/",
             localUserProfile.toMutableMap()
