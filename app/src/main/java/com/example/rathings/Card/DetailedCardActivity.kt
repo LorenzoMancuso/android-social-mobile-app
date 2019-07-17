@@ -24,7 +24,9 @@ import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
@@ -204,22 +206,14 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     fun setComments() {
         var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
-        val publishComment = findViewById(R.id.publish_comment) as Button
-        var commentsTitle = findViewById(R.id.comments_title) as TextView
+        val publishComment = findViewById(R.id.publish_comment) as ImageButton
 
-        commentsTitle.setOnClickListener(View.OnClickListener { enableComments() })
-
-        val mLayoutManager = LinearLayoutManager(
-            this,
-            RecyclerView.VERTICAL,
-            false
-        )
+        val mLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL,false)
         cardRecyclerView?.layoutManager = mLayoutManager
-        var commentAdapter =
-            CommentAdapter(selectedCard.comments as ArrayList<Comment>)
+        var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
         cardRecyclerView?.adapter = commentAdapter
 
-        publishComment.setOnClickListener(View.OnClickListener { addComment((findViewById( R.id.add_comment) as EditText).text.toString()) })
+        publishComment.setOnClickListener(View.OnClickListener { addComment() })
     }
 
     fun setCategories() {
@@ -261,33 +255,23 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         initData()
     }
 
-    fun enableComments() {
-        var commentsTitle = findViewById(R.id.comments_title) as TextView
-        var addComment = findViewById(R.id.add_comment) as EditText
-        val publishComment = findViewById(R.id.publish_comment) as Button
-        if (commentsTitle.text == "Comments") {
-            commentsTitle.text = "Click here to add a comment"
-            addComment.visibility = View.GONE
-            publishComment.visibility = View.GONE
-        } else {
-            commentsTitle.text = "Comments"
-            addComment.visibility = View.VISIBLE
-            publishComment.visibility = View.VISIBLE
-        }
-    }
+    fun addComment() {
+        var comment = (findViewById( R.id.added_comment) as EditText)
+        if (comment.text.toString() != "") {
+            var newComment = Comment()
+            newComment.id = selectedCard.comments.size.toLong()
+            newComment.userObj = FirebaseUtils.getLocalUser() as User
+            newComment.user = newComment.userObj.id
+            newComment.text = comment.text.toString()
+            newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
 
-    fun addComment(text: String) {
-        var newComment = Comment()
-        newComment.id = selectedCard.comments.size.toLong()
-        newComment.userObj = FirebaseUtils.getLocalUser() as User
-        newComment.user = newComment.userObj.id
-        newComment.text = text
-        newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
-        Log.d("[ADD-COMMENT]", newComment.toString())
-        FirebaseUtils.updateData(
-            "cards/${selectedCard.id}/comments/${newComment.id }",
-            newComment.toMutableMap()
-        )
+            FirebaseUtils.updateData("cards/${selectedCard.id}/comments/${newComment.id }", newComment.toMutableMap())
+            Toast.makeText(this, "Add Comment done.", Toast.LENGTH_SHORT)
+
+            comment.setText("")
+        } else {
+            Toast.makeText(this, "Comment is mandatory.", Toast.LENGTH_SHORT)
+        }
     }
 
     override fun onDestroy() {
