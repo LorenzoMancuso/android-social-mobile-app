@@ -23,8 +23,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
-class DetailedCardActivity : AppCompatActivity(), Observer,
-    LinkPreviewFragment.OnFragmentInteractionListener {
+class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.OnFragmentInteractionListener {
 
     var tabsObs = TabController.tabsObs
     var cardsObs = FirebaseUtils.interestCardsObservable

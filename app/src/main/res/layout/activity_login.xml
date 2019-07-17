@@ -95,11 +95,6 @@
                     android:textColor="#FFFFFF"
                     android:background="#D84B37"
                     android:textStyle="bold"/>
-            <TextView
-                    android:id="@+id/text_signin_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

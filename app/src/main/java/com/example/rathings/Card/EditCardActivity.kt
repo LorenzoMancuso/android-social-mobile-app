@@ -135,22 +135,18 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
             .setView(taskEditText)
             .setPositiveButton("Add", DialogInterface.OnClickListener() { dialog, which ->
                 Log.d("[DIALOG]", taskEditText.text.toString())
-                if (!taskEditText.text.contains("http://") && !taskEditText.text.contains("https://")) {
-                    Log.e("[DIALOG]", "Malformed URL")
-                    Toast.makeText(this, "Malformed URL. Try to add 'http://' in your link.", Toast.LENGTH_LONG).show()
-                } else {
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    val linkPreviewFragment = LinkPreviewFragment()
-                    val arguments = Bundle()
-                    var containerLink = findViewById(R.id.container_link) as LinearLayout
-                    containerLink.removeAllViews()
-                    arguments.putString("URL", taskEditText.text.toString())
-                    linkPreviewFragment.setArguments(arguments)
-                    fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
-                    fragmentTransaction.commit()
-                    selectedCard.link = taskEditText.text.toString()
-                }
+
+                val fragmentManager = supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                val linkPreviewFragment = LinkPreviewFragment()
+                val arguments = Bundle()
+                var containerLink = findViewById(R.id.container_link) as LinearLayout
+                containerLink.removeAllViews()
+                arguments.putString("URL", taskEditText.text.toString())
+                linkPreviewFragment.setArguments(arguments)
+                fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
+                fragmentTransaction.commit()
+                selectedCard.link = taskEditText.text.toString()
             })
             .setNegativeButton("Cancel", null)
             .create()

@@ -46,10 +46,24 @@ class LinkPreviewFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        this.getLink(this.URL)
+        return inflater.inflate(R.layout.fragment_link_preview, container, false)
+    }
+
+    fun getLink(URL:String?, time:Int=0){
         var data: MetaData
 
-        val richPreview = RichPreview(object : ResponseListener {
-            // TODO: Gestire il caso in cui il link non rimandi a nulla mettendo dei dati di errore
+        var link = URL
+        if(!(link!!.contains("http://") || link!!.contains("https://"))){
+            link="http://$link"
+        }
+
+        if(!(link.contains("www."))){
+            val tmp = link.split("://")
+            link = tmp[0]+"://www."+tmp[1]
+        }
+
+        val listener = object : ResponseListener {
             override fun onData(metaData: MetaData) {
                 data = metaData
                 Log.d("[RICH-PREVIEW]", metaData.imageurl)
@@ -67,14 +81,19 @@ class LinkPreviewFragment : Fragment() {
             }
             override fun onError(e: Exception) {
                 //handle error
+                Log.d("[LINK-FRAGMENT]", e.toString())
+                if(time==0) {
+                    getLink(link.replace("http://","https://"),1)
+                }
             }
-        })
+        }
 
-        Log.d("[LINK-PREVIEW]", URL)
-        richPreview.getPreview(URL)
+        val richPreview = RichPreview(listener)
 
-        return inflater.inflate(R.layout.fragment_link_preview, container, false)
+        Log.d("[LINK-PREVIEW]", link)
+        richPreview.getPreview(link)
     }
+
 
     fun openLink() {
         var uri = Uri.parse(URL)

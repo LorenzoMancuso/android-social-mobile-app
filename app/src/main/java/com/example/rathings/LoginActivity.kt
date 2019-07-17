@@ -13,6 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -58,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            //text_signin_status.text = "User ID: $currentUser.uid"
             goToHome()
         }
     }
@@ -86,9 +86,8 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    text_signin_status.text = "Error: sign in failed"
+                    // Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(login_form, "Authentication Failed:  ${task.exception.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
                 }
             }
     }
@@ -111,9 +110,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    text_signin_status.text = "Error: Authentication failed"
+                    Snackbar.make(login_form, "Signup Failed:  ${task.exception.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
                 }
             }
     }
@@ -136,6 +133,8 @@ class LoginActivity : AppCompatActivity() {
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
+                Snackbar.make(login_form, "Authentication Failed:  ${e.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
+
             }
         }
     }
@@ -154,8 +153,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed with Google.",
-                        Toast.LENGTH_SHORT).show()
+                    Snackbar.make(login_form, "Authentication Failed:  ${task.exception.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
                 }
             }
     }

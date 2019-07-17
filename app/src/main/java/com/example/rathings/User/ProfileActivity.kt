@@ -11,6 +11,8 @@ import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.R
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
 class ProfileActivity : AppCompatActivity(), Observer {
@@ -33,8 +35,9 @@ class ProfileActivity : AppCompatActivity(), Observer {
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
-        findViewById<Button>(R.id.btn_follow).isEnabled=false
+        findViewById<Button>(R.id.btn_follow).isEnabled=true
         findViewById<Button>(R.id.btn_follow)!!.setOnClickListener {addFollower()}
+        user_cards_recycler_view.isNestedScrollingEnabled = false
 
         val user=intent.getStringExtra("user");
         FirebaseUtils.getPrimaryProfile()
@@ -66,8 +69,11 @@ class ProfileActivity : AppCompatActivity(), Observer {
     }
 
     fun checkFollowRelation(){
-        if(!(localUserProfile.id in localPrimaryUserProfile.followed))
-            findViewById<Button>(R.id.btn_follow).isEnabled=true
+        Log.d("[PROFILE-ACTIVITY]", "check follow relation")
+        if(localPrimaryUserProfile.followed.contains(localUserProfile.id)) {
+            Log.d("[PROFILE-ACTIVITY]", "check follow relation is true")
+            findViewById<Button>(R.id.btn_follow).isEnabled = false
+        }
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
@@ -77,12 +83,16 @@ class ProfileActivity : AppCompatActivity(), Observer {
                 if(value is User){
                     val user= value
                     localUserProfile=user
-                    if(localPrimaryUserProfile.id!=""){checkFollowRelation()}
+                    if(localPrimaryUserProfile.id!=""){
+                        checkFollowRelation()
+                    }
                     findViewById<TextView>(R.id.txt_name).text = "${user.name} ${user.surname}"
                     findViewById<TextView>(R.id.txt_profession).text = "${user.profession}"
                     findViewById<TextView>(R.id.txt_country).text = "${user.city}, ${user.country}"
                     findViewById<TextView>(R.id.txt_followers).text = "Followers: ${user.followers.size}"
                     findViewById<TextView>(R.id.txt_followed).text = "Followed: ${user.followed.size}"
+                    if(profile_image!=null && user.profile_image != "")
+                        Picasso.get().load(user.profile_image).into(profile_image)
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
 
