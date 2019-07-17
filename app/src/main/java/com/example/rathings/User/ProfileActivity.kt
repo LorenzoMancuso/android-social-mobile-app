@@ -14,10 +14,11 @@ import com.example.rathings.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ProfileActivity : AppCompatActivity(), Observer {
 
-    var localPrimaryUserProfileObservable= FirebaseUtils.primaryUserProfileObservable
+    var primaryUserProfileObservable= FirebaseUtils.getPrimaryProfile()
     var localUserProfileObservable= FirebaseUtils.userProfileObservable
     var localUserCardsObservable= FirebaseUtils.userCardsObservable
 
@@ -31,11 +32,11 @@ class ProfileActivity : AppCompatActivity(), Observer {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        localPrimaryUserProfileObservable.addObserver(this)
+        primaryUserProfileObservable.addObserver(this)
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
-        findViewById<Button>(R.id.btn_follow).isEnabled=true
+        findViewById<Button>(R.id.btn_follow).isEnabled=false
         findViewById<Button>(R.id.btn_follow)!!.setOnClickListener {addFollower()}
         user_cards_recycler_view.isNestedScrollingEnabled = false
 
@@ -68,14 +69,6 @@ class ProfileActivity : AppCompatActivity(), Observer {
         Log.d("[PROFILE-ACTIVITY]", "users/${localUserProfile.id}/")
     }
 
-    fun checkFollowRelation(){
-        Log.d("[PROFILE-ACTIVITY]", "check follow relation")
-        if(localPrimaryUserProfile.followed.contains(localUserProfile.id)) {
-            Log.d("[PROFILE-ACTIVITY]", "check follow relation is true")
-            findViewById<Button>(R.id.btn_follow).isEnabled = false
-        }
-    }
-
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             localUserProfileObservable -> {
@@ -102,7 +95,16 @@ class ProfileActivity : AppCompatActivity(), Observer {
                 val value = localUserCardsObservable.getValue()
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
+                    Log.d("[PROFILE-FRAGMENT]", "CARDS observable lenght ${cards.size}")
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
+
+                    findViewById<TextView>(R.id.txt_post).text = "${cards.size} cards"
+
+                    val tmp = ArrayList(cards.filter { it.ratings_average > 0 })
+                    val avg = tmp.map { card -> card.ratings_average }.average().toFloat()
+
+                    findViewById<TextView>(R.id.txt_score).text = "Rathing ${Math.round((avg) * 10.0) / 10.0}"
+
                     cardRecyclerView = findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
                     cardRecyclerView?.layoutManager = mLayoutManager
@@ -110,12 +112,14 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     cardRecyclerView?.adapter = cardAdapter
                 }
             }
-            localPrimaryUserProfileObservable-> {
-                val value=localUserProfileObservable.getValue()
+            primaryUserProfileObservable-> {
+                val value=primaryUserProfileObservable.getValue()
                 if(value is User){
                     val user= value
                     localPrimaryUserProfile=user
-                    if(localUserProfile.id!=""){checkFollowRelation()}
+                    if(localUserProfile.id!=""){
+                        checkFollowRelation()
+                    }
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
             }
@@ -123,10 +127,23 @@ class ProfileActivity : AppCompatActivity(), Observer {
         }
     }
 
+    fun checkFollowRelation(){
+        Log.d("[PROFILE-ACTIVITY]", "check follow relation")
+        Log.d("[PROFILE-ACTIVITY]", "PRIMARY $localPrimaryUserProfile")
+        Log.d("[PROFILE-ACTIVITY]", "OTHER $localUserProfile")
+        if(localPrimaryUserProfile.followed.contains(localUserProfile.id)) {
+            Log.d("[PROFILE-ACTIVITY]", "check follow relation is true")
+            findViewById<Button>(R.id.btn_follow).isEnabled = false
+        } else {
+            Log.d("[PROFILE-ACTIVITY]", "check follow relation is false")
+            findViewById<Button>(R.id.btn_follow).isEnabled = true
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         localUserProfileObservable.deleteObserver(this)
         localUserCardsObservable.deleteObserver(this)
-        localPrimaryUserProfileObservable.deleteObserver(this)
+        primaryUserProfileObservable.deleteObserver(this)
     }
 }

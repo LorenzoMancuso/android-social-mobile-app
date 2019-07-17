@@ -194,8 +194,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         // Log.d("[DETAILED-CARD]", "Card: " + cards[0])
 
         // Edit Card
-        var localUser = FirebaseUtils.getLocalUser() as User
-        if (selectedCard.userObj.id == localUser.id) {
+        if (FirebaseUtils.isCurrentUser(selectedCard.userObj.id)) {
             (findViewById(R.id.edit_card) as FloatingActionButton).visibility = View.VISIBLE
         }
 
