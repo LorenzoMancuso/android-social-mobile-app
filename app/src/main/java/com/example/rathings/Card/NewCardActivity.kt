@@ -18,6 +18,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.InputType
 import android.util.Log
+import android.view.MenuItem
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabsActivity
@@ -55,6 +56,12 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         userObs = FirebaseUtils.getPrimaryProfile()
         userObs.addObserver(this)
 
+        /**SET TOOLBAR OPTION*/
+        val toolbar = findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        /**-----------------*/
 
         // Set Card info
         card.timestamp = (System.currentTimeMillis() / 1000).toInt()
@@ -87,6 +94,16 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             popup.show()
         })
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     override fun update(o: Observable?, arg: Any?) {
@@ -306,7 +323,8 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         val context = getApplicationContext()
         val titleText = (findViewById(R.id.title_text) as EditText).text.toString()
         val descriptionText = (findViewById(R.id.desc_text) as EditText).text.toString()
-        if (titleText != "" && descriptionText != "" && listOfTabsIds.size != 0) {
+
+        if ((titleText != "" || descriptionText != "") && listOfTabsIds.size != 0) {
             card.title = (findViewById(R.id.title_text) as EditText).text.toString()
             card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
             card.category = listOfTabsIds
@@ -324,7 +342,9 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             FirebaseUtils.updateData("cards/${card.id}/", card.toMutableMap())
             Toast.makeText(context, "Card published.", Toast.LENGTH_SHORT).show()
             finish()
+
         } else {
+
             var errorMessage = "You can't publish new card because "
             var listOfErrors: ArrayList<Any> = ArrayList()
 

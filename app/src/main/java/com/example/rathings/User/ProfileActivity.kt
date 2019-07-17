@@ -6,6 +6,8 @@ import android.util.Half.toFloat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.example.rathings.Card.Card
@@ -33,6 +35,13 @@ class ProfileActivity : AppCompatActivity(), Observer {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        /**SET TOOLBAR OPTION*/
+        val toolbar = findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        /**-----------------*/
+
         primaryUserProfileObservable.addObserver(this)
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
@@ -47,6 +56,16 @@ class ProfileActivity : AppCompatActivity(), Observer {
         FirebaseUtils.getProfile(user)
         //call for get card of current user
         FirebaseUtils.getUserCards(user)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     fun addFollower(){
@@ -85,9 +104,13 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     findViewById<TextView>(R.id.txt_country).text = "${user.city}, ${user.country}"
                     findViewById<TextView>(R.id.txt_followers).text = "Followers: ${user.followers.size}"
                     findViewById<TextView>(R.id.txt_followed).text = "Followed: ${user.followed.size}"
+
+                    val scale = resources.displayMetrics.density
+
                     if(profile_image!=null && user.profile_image != "") {
-                        val scale = resources.displayMetrics.density
                         Picasso.get().load(user.profile_image).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
+                    } else {
+                        Picasso.get().load(R.drawable.default_avatar).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
                     }
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
