@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
@@ -111,8 +112,10 @@ class ProfileFragment : Fragment(), Observer {
                     txt_country?.text = "${user.city}, ${user.country}"
                     txt_followers?.text = "Followers: ${user.followers.size}"
                     txt_followed?.text = "Followed: ${user.followed.size}"
-                    if(profile_image!=null && user.profile_image != "")
-                        Picasso.get().load(user.profile_image).into(profile_image)
+                    if(profile_image!=null && user.profile_image != "") {
+                        val scale = resources.displayMetrics.density
+                        Picasso.get().load(user.profile_image).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
+                    }
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
             }
@@ -121,6 +124,14 @@ class ProfileFragment : Fragment(), Observer {
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
+
+                    txt_post.text = "${cards.size} cards"
+
+                    val tmp = ArrayList(cards.filter { it.ratings_average > 0 })
+                    val avg = tmp.map { card -> card.ratings_average }.average().toFloat()
+
+                    txt_score.text = "Rathing ${Math.round((avg) * 10.0) / 10.0}"
+
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(super.getContext(),RecyclerView.VERTICAL,false)
                     cardRecyclerView?.layoutManager = mLayoutManager

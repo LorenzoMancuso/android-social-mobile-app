@@ -28,7 +28,8 @@
                             tools:layout_editor_absoluteY="0dp"
                             android:backgroundTint="@color/redPrimary"
                             tools:layout_editor_absoluteX="8dp"
-                            android:id="@+id/toolbar">
+                            android:id="@+id/toolbar"
+                            app:theme="@style/ToolbarTheme">
                         <Button
                                 android:layout_gravity="right"
                                 android:text="Publish"

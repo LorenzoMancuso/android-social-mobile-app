@@ -3,6 +3,8 @@ package com.example.rathings.Card
 import android.util.Log
 import com.example.rathings.utils.CustomObservable
 import com.example.rathings.FirebaseUtils
+import com.example.rathings.User.User
+import io.github.ponnamkarthik.richlinkpreview.ResponseListener
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -22,48 +24,58 @@ object CardController: Observer {
     }
 
     fun popularCards(cards: ArrayList<Card>){
-        var popularCards: ArrayList<Card>
-        if(FirebaseUtils.getLocalUser() !=null) {
-            val interests = FirebaseUtils.getLocalUser()!!.interests
 
-            popularCards = ArrayList(cards.filter{
-                var count = 0.0
-                for (cat in it.category){
-                    if (cat in interests){
-                        count++
+        FirebaseUtils.getPrimaryProfile().addObserver( object: Observer{
+            override fun update(observableObj: Observable?, data: Any?) {
+                val userObs = observableObj as CustomObservable
+                val user = userObs.getValue() as User
+                var popularCards: ArrayList<Card>
+                val interests = user.interests
+
+                popularCards = ArrayList(cards.filter {
+                    var count = 0.0
+                    for (cat in it.category) {
+                        if (cat in interests) {
+                            count++
+                        }
                     }
-                }
-                it.likelihood= count/( interests.size + it.category.size)
-                it.likelihood>0
-            })
-            popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
-            popularCardObs.setValue(popularCards)
-        }
+                    it.likelihood = count / (interests.size + it.category.size)
+                    it.likelihood > 0
+                })
+                popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
+                popularCardObs.setValue(popularCards)
+            }
+        })
     }
 
     fun interestCards(cards: ArrayList<Card>){
-        var interestCards: ArrayList<Card>
-        if(FirebaseUtils.getLocalUser() !=null) {
-            val interests = FirebaseUtils.getLocalUser()!!.interests
-            val followed = FirebaseUtils.getLocalUser()!!.followed
 
-            interestCards = ArrayList(cards.filter { followed.contains(it.user)})
+        FirebaseUtils.getPrimaryProfile().addObserver( object: Observer{
+            override fun update(observableObj: Observable?, data: Any?) {
+                val userObs = observableObj as CustomObservable
+                val user = userObs.getValue() as User
+                var interestCards: ArrayList<Card>
+                val interests = user.interests
+                val followed = user.followed
 
-            interestCards = ArrayList(interestCards.filter{
-                var count = 0.0
-                for (cat in it.category){
-                    if (cat in interests){
-                        count++
+                interestCards = ArrayList(cards.filter { followed.contains(it.user) })
+
+                interestCards = ArrayList(interestCards.filter {
+                    var count = 0.0
+                    for (cat in it.category) {
+                        if (cat in interests) {
+                            count++
+                        }
                     }
-                }
-                it.likelihood= count/( interests.size + it.category.size)
-                it.likelihood>0
-            })
-            interestCards = ArrayList(cards.filter { it.likelihood <= 0})
+                    it.likelihood = count / (interests.size + it.category.size)
+                    it.likelihood > 0
+                })
+                interestCards = ArrayList(cards.filter { it.likelihood <= 0 })
 
-            interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
-            interestCardObs.setValue(interestCards)
-        }
+                interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
+                interestCardObs.setValue(interestCards)
+            }
+        })
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
