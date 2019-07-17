@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import android.text.Editable
 import android.text.InputType
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import com.example.rathings.*
@@ -34,6 +35,13 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_card)
+
+        /**SET TOOLBAR OPTION*/
+        val toolbar = findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        /**-----------------*/
 
         confirm_button.setOnClickListener { updateCard() }
 
@@ -113,6 +121,16 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         }
 
         Log.e("[EDIT-CARD]", selectedCard.toString())
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     // Identifiers to Publish Card

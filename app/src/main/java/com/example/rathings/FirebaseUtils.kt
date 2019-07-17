@@ -23,9 +23,6 @@ object FirebaseUtils {
 
     var tabsObservable: CustomObservable = CustomObservable()
 
-    private var localUserProfile: User? = null
-    private var primaryUserProfile: User? = null
-
     private var auth: FirebaseAuth
 
     val database = FirebaseDatabase.getInstance().reference
@@ -85,9 +82,6 @@ object FirebaseUtils {
         return false
     }
 
-    fun getLocalUser(): User? {return localUserProfile}
-
-
     // ---------------------------------
     // BEGIN Wrappers for UserController
     // ---------------------------------
@@ -103,7 +97,6 @@ object FirebaseUtils {
                 for (singleSnapshot in dataSnapshot.children) {
                     user = singleSnapshot.getValue(User::class.java)
 
-                    primaryUserProfile=user
                     primaryUserProfileObservable.setValue(user)
                     Log.e("[FIREBASE-UTILS]", "primaryUser " + user?.toString())
                 }
@@ -132,7 +125,6 @@ object FirebaseUtils {
                 for (singleSnapshot in dataSnapshot.children) {
                     user = singleSnapshot.getValue(User::class.java)
 
-                    localUserProfile=user
                     userProfileObservable.setValue(user)
                     Log.e("[FIREBASE-UTILS]", "getProfile " + user?.toString())
                 }
@@ -243,7 +235,6 @@ object FirebaseUtils {
                     var card=singleSnapshot.getValue(Card::class.java)
                     if(card is Card)
                         cards.add(card)
-                    Log.e("[FIREBASE-UTILS]", "onDataChange interest card ${card.toString()}")
                 }
                 val sortedList = cards.sortedWith(compareBy({ it.timestamp }))
 
@@ -263,11 +254,11 @@ object FirebaseUtils {
                                                 comment.userObj = user
                                             }
                                         }
+                                        Log.e("[FIREBASE-UTILS]", "onDataChange card ${card.toString()}")
                                     }
                                 }
                             }
                             interestCardsObservable.setValue(sortedList)
-                            Log.e("[FIREBASE-UTILS]", "onDataChange UserCards ${cards}")
                         }
                         override fun onCancelled(p0: DatabaseError) {
                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -281,5 +272,10 @@ object FirebaseUtils {
             }
         }
         query.addValueEventListener(postListener)
+    }
+
+
+    public fun getLocalUser():User{
+        return User()
     }
 }
