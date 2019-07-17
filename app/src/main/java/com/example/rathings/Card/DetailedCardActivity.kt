@@ -20,6 +20,7 @@ import android.widget.*
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabController
+import com.example.rathings.Tab.TabsActivity
 import com.example.rathings.User.ProfileActivity
 import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
@@ -199,7 +200,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             for (i in selectedCard.multimedia.indices) {
                 var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
                 var imageView = ImageView(applicationContext)
-
+                imageView.setOnClickListener{ openMultimediaActivity() }
                 if (row.childCount == 2) {
                     row = LinearLayout(applicationContext)
                     row.layoutParams = paramsRow
@@ -218,6 +219,12 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 row.addView(imageView)
             }
         }
+    }
+
+    fun openMultimediaActivity() {
+        val intent = Intent(this, MultimediaActivity::class.java)
+        intent.putStringArrayListExtra("multimedia", selectedCard.multimedia as ArrayList<String>)
+        startActivityForResult(intent, 1)
     }
 
     fun setComments(user: User) {
