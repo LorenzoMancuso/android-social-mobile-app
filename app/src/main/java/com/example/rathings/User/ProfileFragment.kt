@@ -115,8 +115,6 @@ class ProfileFragment : Fragment(), Observer {
                         Picasso.get().load(user.profile_image).into(profile_image)
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
-
-
             }
             localUserCardsObservable -> {
                 val value = localUserCardsObservable.getValue()
@@ -124,11 +122,7 @@ class ProfileFragment : Fragment(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
-                    val mLayoutManager = LinearLayoutManager(
-                        super.getContext(),
-                        RecyclerView.VERTICAL,
-                        false
-                    )
+                    val mLayoutManager = LinearLayoutManager(super.getContext(),RecyclerView.VERTICAL,false)
                     cardRecyclerView?.layoutManager = mLayoutManager
                     cardAdapter = CardAdapter(cards)
                     cardRecyclerView?.adapter = cardAdapter

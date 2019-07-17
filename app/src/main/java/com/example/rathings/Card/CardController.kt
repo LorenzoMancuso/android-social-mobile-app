@@ -31,11 +31,9 @@ object CardController: Observer {
                 for (cat in it.category){
                     if (cat in interests){
                         count++
-                        Log.d("[DEBUG]", "count $count")
                     }
                 }
                 it.likelihood= count/( interests.size + it.category.size)
-                Log.d("[DEBUG]", "likelihood ${it.likelihood}")
                 it.likelihood>0
             })
             popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
@@ -56,11 +54,9 @@ object CardController: Observer {
                 for (cat in it.category){
                     if (cat in interests){
                         count++
-                        Log.d("[DEBUG]", "count $count")
                     }
                 }
                 it.likelihood= count/( interests.size + it.category.size)
-                Log.d("[DEBUG]", "likelihood ${it.likelihood}")
                 it.likelihood>0
             })
             interestCards = ArrayList(cards.filter { it.likelihood <= 0})
@@ -78,7 +74,6 @@ object CardController: Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     popularCards(cards)
                     interestCards(cards)
-                    Log.d("[CARD-CONTROLLER]", "Observable " + cards?.toString())
                 }
             }
             else -> Log.d("[CARD-CONTROLLER]", "Observable not recognized $data")

@@ -60,7 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/btn_edit"
-                        android:background="#FFF"
+                        android:backgroundTint="#FFF"
                         android:textColor="#F00"
                         android:text="edit"/>
             </LinearLayout>

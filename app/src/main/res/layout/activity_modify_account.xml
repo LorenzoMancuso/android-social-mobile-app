@@ -22,10 +22,6 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
                 <EditText
                         android:id="@+id/txt_name"
                         android:layout_width="match_parent"
@@ -35,11 +31,6 @@
                         android:layout_marginBottom="10dp"
                         android:maxLines="1"
                         android:singleLine="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                 <EditText
                         android:id="@+id/txt_surname"
                         android:layout_width="match_parent"
@@ -49,11 +40,6 @@
                         android:layout_marginBottom="10dp"
                         android:maxLines="1"
                         android:singleLine="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                 <EditText
                         android:id="@+id/txt_birthdate"
                         android:layout_width="match_parent"
@@ -64,11 +50,6 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:inputType="date"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                 <EditText
                         android:id="@+id/txt_city"
                         android:layout_width="match_parent"
@@ -78,11 +59,6 @@
                         android:singleLine="true"
                         android:padding="16dp"
                         android:layout_marginBottom="10dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                 <EditText
                         android:id="@+id/txt_country"
                         android:layout_width="match_parent"
@@ -92,11 +68,6 @@
                         android:singleLine="true"
                         android:padding="16dp"
                         android:layout_marginBottom="10dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                 <EditText
                         android:id="@+id/txt_profession"
                         android:layout_width="match_parent"
@@ -106,8 +77,6 @@
                         android:singleLine="true"
                         android:padding="16dp"
                         android:layout_marginBottom="10dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
                 <Button
                         android:id="@+id/confirm_button"
                         style="?android:textAppearanceSmall"

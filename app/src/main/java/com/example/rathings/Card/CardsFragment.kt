@@ -1,6 +1,7 @@
 package com.example.rathings.Card
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.rathings.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_cards.*
 
@@ -43,10 +45,19 @@ class CardsFragment : Fragment(){
         transaction.replace(R.id.container_card, childFragment).commit()
     }
 
+    fun newCard() {
+        val newCardIntent = Intent(this.context, NewCardActivity::class.java)
+        startActivity(newCardIntent)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cards, container, false)
+        val view = inflater.inflate(R.layout.fragment_cards, container, false)
+
+        var addNewCardButton = view.findViewById(R.id.add_new_card) as FloatingActionButton
+        addNewCardButton.setOnClickListener(View.OnClickListener { newCard() })
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
