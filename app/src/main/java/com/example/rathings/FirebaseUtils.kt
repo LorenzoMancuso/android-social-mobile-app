@@ -233,12 +233,13 @@ object FirebaseUtils {
      * which get the collection and filter by interests and order by votes*/
     @JvmStatic fun getInterestCards(uid:String?) {
         val ref = FirebaseUtils.database.child("cards")
-        var cards: ArrayList<Card> = ArrayList()
 
         val query = ref.orderByChild("timestamp")
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var cards: ArrayList<Card> = ArrayList()
+
                 for (singleSnapshot in dataSnapshot.children) {
                     var card=singleSnapshot.getValue(Card::class.java)
                     if(card is Card)

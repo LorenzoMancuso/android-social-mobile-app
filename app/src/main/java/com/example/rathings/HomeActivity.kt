@@ -117,10 +117,4 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
-
-    fun newCard(view: View) {
-        val newCardIntent = Intent(view.context, NewCardActivity::class.java)
-        startActivity(newCardIntent)
-    }
-
 }

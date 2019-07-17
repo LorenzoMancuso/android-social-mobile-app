@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.app.ProgressDialog
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.InputType
 import android.util.Log
@@ -184,7 +185,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 // View value
                 var chip = Chip(this)
                 chip.text = tab.value
-                chip.setChipBackgroundColorResource(R.color.bluePrimary)
+                chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tab.color)))
                 chip.setTextColor(Color.WHITE)
                 chip.setCloseIconEnabled(true)
                 addedCategories.addView(chip)

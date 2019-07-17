@@ -1,6 +1,7 @@
 package com.example.rathings.Card
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -25,9 +26,8 @@ import java.util.*
 class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.OnFragmentInteractionListener {
 
     var tabsObs = TabController.tabsObs
+    var cardsObs = FirebaseUtils.interestCardsObservable
     var selectedCard: Card = Card()
-
-    var flatPalette: java.util.ArrayList<String> = java.util.ArrayList(Arrays.asList("#1abc9c","#16a085","#2ecc71","#27ae60","#3498db","#2980b9","#f1c40f","#f39c12","#e67e22","#d35400","#e74c3c","#c0392b","#9b59b6","#8e44ad"))
 
     override fun onFragmentInteraction(uri: Uri) {}
 
@@ -36,22 +36,30 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         setContentView(R.layout.activity_detailed_card)
 
         tabsObs.addObserver(this)
+        cardsObs.addObserver(this)
 
-        initData()
+        FirebaseUtils.getInterestCards(null)
     }
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
-            tabsObs -> {
-                initData()
+            cardsObs -> {
+                Log.e("[Detailed Cards]", "Update")
+                var valuesObs = cardsObs.getValue()
+                if (valuesObs is List<*>) {
+                    val cards: ArrayList<Card> = ArrayList(valuesObs.filterIsInstance<Card>())
+                    selectedCard = (cards.filter { it.id == intent.getStringExtra("idCard") })[0]
+                    Log.d("[SELECTED CARD]", selectedCard.toString())
+                    initData()
+                }
             }
             else -> Log.d("[DETAILED-CARD]", "observable not recognized $data")
         }
     }
 
     private fun initData() {
-        var cards: ArrayList<Card> = intent.getSerializableExtra("card") as ArrayList<Card>
-        selectedCard = cards[0]
+        // var cards: ArrayList<Card> = intent.getSerializableExtra("card") as ArrayList<Card>
+        // selectedCard = cards[0]
 
         // User Name
         (findViewById(R.id.user) as TextView).text = "${selectedCard.userObj.name} ${selectedCard.userObj.surname}"
@@ -75,7 +83,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 if (selectedCard.category[i] == tabs[j].id.toInt()) {
                     var chip = Chip(this)
                     chip.text = tabs[j].value
-                    chip.setChipBackgroundColorResource(R.color.bluePrimary)
+                    chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
                     chip.setTextColor(Color.WHITE)
                     containerCategories.addView(chip)
                 }
@@ -181,11 +189,9 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             CommentAdapter(selectedCard.comments as ArrayList<Comment>)
         cardRecyclerView?.adapter = commentAdapter
 
-        publishComment.setOnClickListener(View.OnClickListener { addComment(selectedCard.comments.size.toString(), selectedCard.id.toString(), (findViewById(
-            R.id.add_comment
-        ) as EditText).text.toString()) })
+        publishComment.setOnClickListener(View.OnClickListener { addComment((findViewById( R.id.add_comment) as EditText).text.toString()) })
 
-        Log.d("[DETAILED-CARD]", "Card: " + cards[0])
+        // Log.d("[DETAILED-CARD]", "Card: " + cards[0])
 
         // Edit Card
         var localUser = FirebaseUtils.getLocalUser() as User
@@ -217,16 +223,16 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun addComment(idNewComment: String, idCard: String, text: String) {
+    fun addComment(text: String) {
         var newComment = Comment()
-        newComment.id = idNewComment.toLong()
+        newComment.id = selectedCard.comments.size.toLong()
         newComment.userObj = FirebaseUtils.getLocalUser() as User
         newComment.user = newComment.userObj.id
         newComment.text = text
         newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
         Log.d("[ADD-COMMENT]", newComment.toString())
         FirebaseUtils.updateData(
-            "cards/${idCard}/comments/${idNewComment}",
+            "cards/${selectedCard.id}/comments/${newComment.id }",
             newComment.toMutableMap()
         )
     }
@@ -234,6 +240,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     override fun onDestroy() {
         super.onDestroy()
         tabsObs.deleteObserver(this)
+        cardsObs.deleteObserver(this)
     }
 
 }
