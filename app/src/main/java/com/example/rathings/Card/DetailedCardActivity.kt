@@ -14,14 +14,17 @@ import androidx.viewpager.widget.ViewPager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabController
+import com.example.rathings.Tab.TabsActivity
 import com.example.rathings.User.ProfileActivity
 import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
@@ -43,11 +46,29 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_card)
 
+        /**SET TOOLBAR OPTION*/
+        val toolbar = findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        /**-----------------*/
+
         tabsObs.addObserver(this)
         cardsObs.addObserver(this)
         FirebaseUtils.getInterestCards(null)
 
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
@@ -61,20 +82,21 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             }
             userObs -> {
                 setRatingBar(userObs.getValue() as User)
+                setComments(userObs.getValue() as User)
             }
             else -> Log.d("[DETAILED-CARD]", "observable not recognized $data")
         }
     }
 
     private fun initData() {
-        // User, Title, Description, Categories, Link, Multimedia and Comments
+        // User, Title, Description, Categories, Link, Multimedia, Comments and SettingsButton
         setUser()
         (findViewById(R.id.title) as TextView).text = selectedCard.title
         (findViewById(R.id.description) as TextView).text = selectedCard.description
         setCategories()
         setLink()
         setMultimedia()
-        setComments()
+        setSettingsButton()
 
         // Date
         val date = Date(selectedCard.timestamp.toLong() * 1000)
@@ -89,11 +111,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         // To initialize Rating Bar
         userObs = FirebaseUtils.getPrimaryProfile()
         userObs.addObserver(this)
-
-        // Edit Card
-        if (FirebaseUtils.isCurrentUser(selectedCard.userObj.id)) {
-            (findViewById(R.id.edit_card) as FloatingActionButton).visibility = View.VISIBLE
-        }
 
     }
 
@@ -183,7 +200,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             for (i in selectedCard.multimedia.indices) {
                 var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
                 var imageView = ImageView(applicationContext)
-
+                imageView.setOnClickListener{ openMultimediaActivity() }
                 if (row.childCount == 2) {
                     row = LinearLayout(applicationContext)
                     row.layoutParams = paramsRow
@@ -204,16 +221,22 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setComments() {
+    fun openMultimediaActivity() {
+        val intent = Intent(this, MultimediaActivity::class.java)
+        intent.putStringArrayListExtra("multimedia", selectedCard.multimedia as ArrayList<String>)
+        startActivityForResult(intent, 1)
+    }
+
+    fun setComments(user: User) {
         var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
-        val publishComment = findViewById(R.id.publish_comment) as ImageButton
+        val publishComment = findViewById(R.id.publish_comment) as MaterialButton
 
         val mLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL,false)
         cardRecyclerView?.layoutManager = mLayoutManager
         var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
         cardRecyclerView?.adapter = commentAdapter
 
-        publishComment.setOnClickListener(View.OnClickListener { addComment() })
+        publishComment.setOnClickListener(View.OnClickListener { addComment(user) })
     }
 
     fun setCategories() {
@@ -248,19 +271,47 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun editCard(view: View) {
-        val intent = Intent(view.context, EditCardActivity::class.java)
+    fun setSettingsButton() {
+        if (FirebaseUtils.isCurrentUser(selectedCard.userObj.id)) {
+            findViewById<MaterialButton>(R.id.settings_button).visibility = View.VISIBLE
+
+            var settingsButton = findViewById(R.id.settings_button) as Button
+            settingsButton.setOnClickListener(View.OnClickListener() {
+                var popup = PopupMenu(this, settingsButton);
+                popup.getMenuInflater().inflate(R.menu.settings_detailed_card, popup.getMenu())
+
+                popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener() {
+                    if (it.title == "Edit Card") {
+                        editCard()
+                        true
+                    } else if (it.title == "Delete Card") {
+                        deleteCard()
+                        true
+                    }
+                    false
+                })
+                popup.show()
+            })
+        }
+    }
+
+    fun editCard() {
+        val intent = Intent(applicationContext, EditCardActivity::class.java)
         intent.putExtra("card", selectedCard)
-        view.context.startActivity(intent)
+        applicationContext.startActivity(intent)
         initData()
     }
 
-    fun addComment() {
+    fun deleteCard() {
+        Log.e("[DELETE CARD]", "Missing Function")
+    }
+
+    fun addComment(user: User) {
         var comment = (findViewById( R.id.added_comment) as EditText)
         if (comment.text.toString() != "") {
             var newComment = Comment()
             newComment.id = selectedCard.comments.size.toLong()
-            newComment.userObj = FirebaseUtils.getLocalUser() as User
+            newComment.userObj = user
             newComment.user = newComment.userObj.id
             newComment.text = comment.text.toString()
             newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
