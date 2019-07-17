@@ -31,17 +31,24 @@ class MultimediaActivity : AppCompatActivity() {
     }
 
     fun setMultimedia(multimedia: ArrayList<String>) {
-        var paramsImage = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
-        var padding = (10 * resources.displayMetrics.density + 0.5f).toInt()
+        var params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
+        var padding = (20 * resources.displayMetrics.density + 0.5f).toInt()
 
         var container_multimedia = findViewById<LinearLayout>(R.id.container_multimedia)
         for (i in multimedia.indices) {
+            var newLinearLayout = LinearLayout(applicationContext)
+            newLinearLayout.layoutParams = params
+            newLinearLayout.orientation = LinearLayout.VERTICAL
+            newLinearLayout.setPadding(0, 0, 0, padding)
+
             var imageView = ImageView(applicationContext)
-            imageView.setPadding(padding, padding, padding, padding)
-            imageView.layoutParams = paramsImage
+
+            imageView.layoutParams = params
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             Picasso.get().load(multimedia[i]).into(imageView)
-            container_multimedia.addView(imageView)
+            newLinearLayout.addView(imageView)
+
+            container_multimedia.addView(newLinearLayout)
         }
     }
 
