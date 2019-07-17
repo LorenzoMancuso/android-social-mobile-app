@@ -7,13 +7,13 @@ class Notification(): Serializable {
     public var id:String=""
     public var idUser:String=""
     public var text:String=""
-    public var timestamp:Int=0
+    public var timestamp:Long=0
     public var read:Boolean=false
     public var targetType:String=""
     public var targetId:String=""
 
     constructor(id:String) :this() {this.id = id}
-    constructor(id:String, idUser:String, text: String, timestamp: Int, read: Boolean, targetType: String, targetId: String) : this(id) {
+    constructor(id:String, idUser:String, text: String, timestamp: Long, read: Boolean, targetType: String, targetId: String) : this(id) {
         this.idUser = idUser
         this.text = text
         this.timestamp = timestamp
