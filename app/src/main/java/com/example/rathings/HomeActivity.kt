@@ -24,7 +24,8 @@ import kotlinx.android.synthetic.main.activity_home.*
 class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionListener,
     TabsFragment.OnFragmentInteractionListener,
     ProfileFragment.OnFragmentInteractionListener,
-    CardsPopularFragment.OnFragmentInteractionListener, CardsInterestFragment.OnFragmentInteractionListener {
+    CardsPopularFragment.OnFragmentInteractionListener, CardsInterestFragment.OnFragmentInteractionListener,
+    NotificationsFragment.OnFragmentInteractionListener{
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -63,7 +64,8 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
                     supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Profile").commit()
                 }
                 R.id.action_options -> {
-                    signOut()
+                    val fragment = NotificationsFragment()
+                    supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "notifications").commit()
                 }
             }
             return@setOnNavigationItemSelectedListener true
