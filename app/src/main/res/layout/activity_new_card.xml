@@ -148,6 +148,7 @@
                         <com.google.android.material.chip.ChipGroup
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                app:chipSpacingVertical="5dp"
                                 android:id="@+id/added_categories">
                         </com.google.android.material.chip.ChipGroup>
                 </LinearLayout>
