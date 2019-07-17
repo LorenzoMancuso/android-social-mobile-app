@@ -86,7 +86,8 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                     Picasso.get().load(mDataList[position].multimedia[i]).centerCrop().resize((100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt()).into(imageView)
                     holder.container_other_images.addView(imageView)
                 } else {
-                    holder.more_images_text.text = "and others ${i-2} images"
+                    holder.more_images_text.visibility = View.VISIBLE
+                    holder.more_images_text.text = "and ${i-3} other images"
                 }
             }
 
