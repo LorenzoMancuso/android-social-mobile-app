@@ -79,7 +79,16 @@
                             android:id="@+id/btn_follow"
                             android:background="#FFF"
                             android:textColor="#F00"
-                            android:text="follow+"/>
+                            android:text="follow +"
+                            android:visibility="gone"/>
+                    <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/btn_unfollow"
+                            android:background="#FFF"
+                            android:textColor="#F00"
+                            android:text="unfollow -"
+                            android:visibility="gone"/>
                 </LinearLayout>
 
 

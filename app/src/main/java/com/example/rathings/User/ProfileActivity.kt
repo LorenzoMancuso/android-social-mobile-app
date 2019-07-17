@@ -46,8 +46,12 @@ class ProfileActivity : AppCompatActivity(), Observer {
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
-        findViewById<Button>(R.id.btn_follow).isEnabled=false
+        /**BUTTONS*/
         findViewById<Button>(R.id.btn_follow)!!.setOnClickListener {addFollower()}
+        findViewById<Button>(R.id.btn_unfollow)!!.setOnClickListener {removeFollower()}
+        /**-----------------*/
+
+
         user_cards_recycler_view.isNestedScrollingEnabled = false
 
         val user=intent.getStringExtra("user");
@@ -75,6 +79,27 @@ class ProfileActivity : AppCompatActivity(), Observer {
 
             /**UPDATE FOLLOWERS OF OTHER USER*/
             localUserProfile.followers.add(localPrimaryUserProfile.id)
+
+            FirebaseUtils.updateData(
+                "users/${localPrimaryUserProfile.id}/",
+                localPrimaryUserProfile.toMutableMap()
+            )
+            FirebaseUtils.updateData(
+                "users/${localUserProfile.id}/",
+                localUserProfile.toMutableMap()
+            )
+        }
+        Log.d("[PROFILE-ACTIVITY]", "users/${localPrimaryUserProfile.id}/")
+        Log.d("[PROFILE-ACTIVITY]", "users/${localUserProfile.id}/")
+    }
+
+    fun removeFollower(){
+        if(localPrimaryUserProfile.id!="" && localUserProfile.id!=""){
+
+            /**UPDATE FOLLOWED OF PRIMARY USER*/
+            localPrimaryUserProfile.followed = localPrimaryUserProfile.followed.filter { it != localUserProfile.id} as MutableList<Any>
+            /**UPDATE FOLLOWERS OF OTHER USER*/
+            localUserProfile.followers = localUserProfile.followers.filter { it != localPrimaryUserProfile.id} as MutableList<Any>
 
             FirebaseUtils.updateData(
                 "users/${localPrimaryUserProfile.id}/",
@@ -159,10 +184,12 @@ class ProfileActivity : AppCompatActivity(), Observer {
         Log.d("[PROFILE-ACTIVITY]", "OTHER $localUserProfile")
         if(localPrimaryUserProfile.followed.contains(localUserProfile.id)) {
             Log.d("[PROFILE-ACTIVITY]", "check follow relation is true")
-            findViewById<Button>(R.id.btn_follow).isEnabled = false
+            findViewById<Button>(R.id.btn_follow).visibility = View.GONE
+            findViewById<Button>(R.id.btn_unfollow).visibility = View.VISIBLE
         } else {
             Log.d("[PROFILE-ACTIVITY]", "check follow relation is false")
-            findViewById<Button>(R.id.btn_follow).isEnabled = true
+            findViewById<Button>(R.id.btn_follow).visibility = View.VISIBLE
+            findViewById<Button>(R.id.btn_unfollow).visibility = View.GONE
         }
     }
 
