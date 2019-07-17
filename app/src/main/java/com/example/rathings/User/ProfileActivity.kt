@@ -102,6 +102,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
                 val value = localUserCardsObservable.getValue()
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
+                    Log.d("[PROFILE-FRAGMENT]", "CARDS observable lenght ${cards.size}")
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
                     cardRecyclerView = findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
