@@ -77,7 +77,7 @@ class CardsPopularFragment : Fragment(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     updateCardFragment(cards)
                     popularCardObs.deleteObserver(this)
-                    Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards.toString())
+                    Log.d("[CARD-FRAGMENT]", "observable popular cards " + cards.toString())
                 }
             }
             else -> Log.d("[CARD-FRAGMENT]", "observable not recognized $data")
