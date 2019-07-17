@@ -17,7 +17,7 @@ import java.util.*
 
 class ProfileActivity : AppCompatActivity(), Observer {
 
-    var localPrimaryUserProfileObservable= FirebaseUtils.primaryUserProfileObservable
+    var primaryUserProfileObservable= FirebaseUtils.getPrimaryProfile()
     var localUserProfileObservable= FirebaseUtils.userProfileObservable
     var localUserCardsObservable= FirebaseUtils.userCardsObservable
 
@@ -31,7 +31,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        localPrimaryUserProfileObservable.addObserver(this)
+        primaryUserProfileObservable.addObserver(this)
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
@@ -110,7 +110,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     cardRecyclerView?.adapter = cardAdapter
                 }
             }
-            localPrimaryUserProfileObservable-> {
+            primaryUserProfileObservable-> {
                 val value=localUserProfileObservable.getValue()
                 if(value is User){
                     val user= value
@@ -127,6 +127,6 @@ class ProfileActivity : AppCompatActivity(), Observer {
         super.onDestroy()
         localUserProfileObservable.deleteObserver(this)
         localUserCardsObservable.deleteObserver(this)
-        localPrimaryUserProfileObservable.deleteObserver(this)
+        primaryUserProfileObservable.deleteObserver(this)
     }
 }
