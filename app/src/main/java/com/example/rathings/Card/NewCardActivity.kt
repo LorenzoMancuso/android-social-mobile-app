@@ -21,6 +21,8 @@ import android.util.Log
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabsActivity
+import com.example.rathings.User.User
+import com.example.rathings.utils.CustomObservable
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
@@ -28,13 +30,21 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInteractionListener {
+class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInteractionListener, Observer {
 
     var listOfDownloadUri: MutableList<String> = ArrayList()
     var card = Card()
-    var user = FirebaseUtils.getLocalUser()
+    var userObs: CustomObservable = CustomObservable()
+    // Identifiers to Publish Card
+    var listOfTabsIds: ArrayList<Int> = ArrayList()
+    // Tabs List from TabsActivity
+    var listOfSelectedTabs: ArrayList<Tab> = ArrayList()
+    var addedLink = ""
+
 
     override fun onFragmentInteraction(uri: Uri) {}
 
@@ -42,17 +52,12 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_card)
 
+        userObs = FirebaseUtils.getPrimaryProfile()
+        userObs.addObserver(this)
+
+
         // Set Card info
         card.timestamp = (System.currentTimeMillis() / 1000).toInt()
-        card.id = user?.id + "_" + card.timestamp.toString()
-        card.user = user!!.id
-
-        // Set User info
-        (findViewById(R.id.user) as TextView).text = "${user!!.name} ${user!!.surname}"
-        val profile_image = findViewById(R.id.profile_image) as CircleImageView
-        if(user!!.profile_image != "") {
-            Picasso.get().load(user!!.profile_image).into(profile_image)
-        }
 
         // Set OnClickListeners for buttons
         val addCategories = findViewById(R.id.add_categories) as Button
@@ -82,27 +87,32 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             popup.show()
         })
 
-        /*val richLinkView = findViewById(R.id.richLinkView) as RichLinkViewTwitter
-        richLinkView.setLink("https://google.com", object : ViewListener {
-            override fun onSuccess(status: Boolean) {
-            }
-            override fun onError(e: Exception) {
-            }
-        })*/
-
     }
 
-    // Identifiers to Publish Card
-    var listOfTabsIds: ArrayList<Int> = ArrayList()
-    // Tabs List from TabsActivity
-    var listOfSelectedTabs: ArrayList<Tab> = ArrayList()
+    override fun update(o: Observable?, arg: Any?) {
+        when(o) {
+            userObs -> {
+                var user: User = userObs.getValue() as User
+                card.id = user.id + "_" + card.timestamp.toString()
+                card.user = user.id
+
+                // Set User info
+                (findViewById(R.id.user) as TextView).text = "${user!!.name} ${user!!.surname}"
+                val profile_image = findViewById(R.id.profile_image) as CircleImageView
+                if(user.profile_image != "") {
+                    Picasso.get().load(user!!.profile_image).into(profile_image)
+                }
+            }
+        }
+    }
+
+
     fun addCategories() {
         val intent = Intent(this, TabsActivity::class.java)
         intent.putExtra("list_of_selected_tabs", listOfSelectedTabs)
         startActivityForResult(intent, 5)
     }
 
-    var addedLink = ""
     fun addLink(): Boolean {
         var taskEditText = EditText(this)
         taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
@@ -289,29 +299,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 // Handle failures
             }
         }
-
-        // PROGRESS DIALOG
-        /*
-        val context = getApplicationContext()
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Uploading...")
-        progressDialog.show()
-
-        ref.putFile(filePath)
-        .addOnSuccessListener {
-            progressDialog.dismiss()
-            Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show()
-        }
-        .addOnFailureListener { e ->
-            progressDialog.dismiss()
-            Toast.makeText(context, "Failed " + e.message, Toast.LENGTH_SHORT).show()
-        }
-        .addOnProgressListener { taskSnapshot ->
-            val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
-                .totalByteCount
-            progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
-        }
-        */
 
     }
 

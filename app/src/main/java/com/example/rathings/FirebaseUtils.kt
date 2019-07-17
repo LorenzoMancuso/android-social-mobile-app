@@ -15,14 +15,11 @@ import com.google.firebase.database.ValueEventListener
 
 object FirebaseUtils {
 
-    var primaryUserProfileObservable: CustomObservable =
-        CustomObservable()
-    var userProfileObservable: CustomObservable =
-        CustomObservable()
+    private var primaryUserProfileObservable: CustomObservable = CustomObservable()
+    var userProfileObservable: CustomObservable = CustomObservable()
 
     var userCardsObservable: CustomObservable = CustomObservable()
-    var interestCardsObservable: CustomObservable =
-        CustomObservable()
+    var interestCardsObservable: CustomObservable = CustomObservable()
 
     var tabsObservable: CustomObservable = CustomObservable()
 
@@ -94,7 +91,7 @@ object FirebaseUtils {
     // ---------------------------------
     // BEGIN Wrappers for UserController
     // ---------------------------------
-    @JvmStatic fun getPrimaryProfile() {
+    @JvmStatic fun getPrimaryProfile(): CustomObservable {
         val uid=FirebaseAuth.getInstance().currentUser!!.uid
 
         val ref = FirebaseUtils.database.child("users")
@@ -117,6 +114,7 @@ object FirebaseUtils {
             }
         }
         phoneQuery.addValueEventListener(postListener)
+        return primaryUserProfileObservable
     }
 
     @JvmStatic fun getProfile(uid:String?) {
@@ -183,6 +181,7 @@ object FirebaseUtils {
         if(uid==null)
             id_user=FirebaseAuth.getInstance().currentUser!!.uid
 
+        Log.e("[FIREBASE-UTILS-USER]", "user uid ${id_user}")
         val ref = FirebaseUtils.database.child("cards")
         var cards: ArrayList<Card> = ArrayList()
         val phoneQuery = ref.orderByChild("user").equalTo(id_user)
@@ -193,7 +192,7 @@ object FirebaseUtils {
                     var card=singleSnapshot.getValue(Card::class.java)
                     if(card is Card)
                         cards.add(card)
-                    Log.e("[FIREBASE-UTILS]", "onDataChange single card ${card.toString()}")
+                    Log.e("[FIREBASE-UTILS-USER]", "onDataChange single card ${card.toString()}")
                 }
                 var sortedList = cards.sortedWith(compareBy({ it!!.timestamp }))
 
