@@ -2,6 +2,7 @@ package com.example.rathings.User
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Half.toFloat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
@@ -84,8 +85,10 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     findViewById<TextView>(R.id.txt_country).text = "${user.city}, ${user.country}"
                     findViewById<TextView>(R.id.txt_followers).text = "Followers: ${user.followers.size}"
                     findViewById<TextView>(R.id.txt_followed).text = "Followed: ${user.followed.size}"
-                    if(profile_image!=null && user.profile_image != "")
-                        Picasso.get().load(user.profile_image).into(profile_image)
+                    if(profile_image!=null && user.profile_image != "") {
+                        val scale = resources.displayMetrics.density
+                        Picasso.get().load(user.profile_image).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
+                    }
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
 
