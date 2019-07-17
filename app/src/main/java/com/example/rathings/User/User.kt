@@ -1,5 +1,6 @@
 package com.example.rathings.User
 
+import com.example.rathings.Notification
 import java.io.Serializable
 
 class User(): Serializable {
@@ -18,6 +19,9 @@ class User(): Serializable {
     public var interests: MutableList<Int> = ArrayList()
     public var profile_image: String = ""
 
+    public var notifiacations: MutableList<Notification> = ArrayList()
+
+
     /**
      * USERNAME
      * EMAIL
@@ -31,7 +35,7 @@ class User(): Serializable {
      * LISTA FOLLOWER
      * LISTA FOLLOWED*/
     constructor(id:String) :this() {}
-    constructor(id:String, name: String, surname: String, birth_date: String, country: String, city: String, profession: String, subscription_date: String, followed: Array<Any>, followers: Array<Any>, profile_image: String, interests: Array<Any>) : this(id) {}
+    constructor(id:String, name: String, surname: String, birth_date: String, country: String, city: String, profession: String, subscription_date: String, followed: Array<Any>, followers: Array<Any>, profile_image: String, interests: Array<Any>, Notifications:Array<Any>) : this(id) {}
 
     override fun toString():String {
         var str="{"
@@ -64,6 +68,7 @@ class User(): Serializable {
         res.set("followers",followers)
         res.set("interests",interests)
         res.set("profile_image",profile_image)
+        res.set("notifications",notifiacations)
 
         return res
     }

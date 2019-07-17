@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
+import com.example.rathings.Notification
 import com.example.rathings.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -88,9 +89,29 @@ class ProfileActivity : AppCompatActivity(), Observer {
                 "users/${localUserProfile.id}/",
                 localUserProfile.toMutableMap()
             )
+            addNotification(localUserProfile, localPrimaryUserProfile)
         }
         Log.d("[PROFILE-ACTIVITY]", "users/${localPrimaryUserProfile.id}/")
         Log.d("[PROFILE-ACTIVITY]", "users/${localUserProfile.id}/")
+    }
+
+    fun addNotification(userProfile: User, otherUserProfile: User){
+
+        val timestamp = System.currentTimeMillis() / 1000L
+        val split = userProfile.id.length/2
+        val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
+            otherUserProfile.id,
+            "${otherUserProfile.name} ${otherUserProfile.surname} started to follow you.",
+            timestamp,
+            false,
+            "profile",
+            userProfile.id)
+
+        userProfile.notifiacations.add(tmp)
+        FirebaseUtils.updateData(
+            "users/${userProfile.id}/",
+            localUserProfile.toMutableMap()
+        )
     }
 
     fun removeFollower(){
