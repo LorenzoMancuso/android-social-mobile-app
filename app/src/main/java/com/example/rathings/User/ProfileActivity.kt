@@ -14,6 +14,7 @@ import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.Notification
+import com.example.rathings.NotificationUtils
 import com.example.rathings.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -107,7 +108,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
             "profile",
             userProfile.id)
 
-        userProfile.notifiacations.add(tmp)
+        userProfile.notifications.add(tmp)
         FirebaseUtils.updateData(
             "users/${userProfile.id}/",
             localUserProfile.toMutableMap()

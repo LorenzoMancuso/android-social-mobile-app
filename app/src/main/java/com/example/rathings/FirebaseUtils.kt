@@ -10,7 +10,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
-
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 object FirebaseUtils {
@@ -22,6 +23,7 @@ object FirebaseUtils {
     var interestCardsObservable: CustomObservable = CustomObservable()
 
     var tabsObservable: CustomObservable = CustomObservable()
+    var notificationsObservable: CustomObservable = CustomObservable()
 
     private var auth: FirebaseAuth
 
@@ -274,8 +276,38 @@ object FirebaseUtils {
         query.addValueEventListener(postListener)
     }
 
+    /**GET NOTIFICATION*/
+    fun getNotificationsOld(): CustomObservable {
 
-    public fun getLocalUser():User{
-        return User()
+        getPrimaryProfile().addObserver(object: Observer {
+            override fun update(o: Observable?, arg: Any?) {
+                var user = (o as CustomObservable).getValue() as User
+                notificationsObservable.setValue(user.notifications)
+            }
+        })
+
+        return notificationsObservable
+
+    }
+
+    fun getNotifications(): CustomObservable {
+        getPrimaryProfile().addObserver(object: Observer {
+            override fun update(o: Observable?, arg: Any?) {
+                var user = (o as CustomObservable).getValue() as User
+
+                FirebaseUtils.database.child("users/${user.id}/notifications").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (singleSnapshot in dataSnapshot.children) {
+                                notificationsObservable.setValue(ArrayList(user.notifications.sortedWith(compareByDescending({ it.timestamp }))))
+                            }
+                        }
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+                    })
+            }
+        })
+        return notificationsObservable
     }
 }
