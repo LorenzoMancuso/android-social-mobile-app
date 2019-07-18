@@ -1,5 +1,6 @@
 package com.example.rathings
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.example.rathings.Card.DetailedCardActivity
 import com.example.rathings.R
+import com.example.rathings.User.ProfileActivity
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -27,6 +30,19 @@ class NotificationAdapter(private val mDataList: ArrayList<Notification>) : Recy
 
         if(!mDataList[position].read){
             holder.layout?.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        }
+
+        holder.itemView.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
+            val intent: Intent
+            if (mDataList[position].targetType == "card"){
+                intent = Intent(holder.itemView.context, DetailedCardActivity::class.java)
+                intent.putExtra("idCard", mDataList[position].targetId)
+            } else {
+                intent = Intent(holder.itemView.context, ProfileActivity::class.java)
+                intent.putExtra("user", mDataList[position].idUser)
+            }
+            holder.itemView.context.startActivity(intent)
+
         }
     }
 

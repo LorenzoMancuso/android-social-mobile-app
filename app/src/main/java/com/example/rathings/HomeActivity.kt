@@ -89,6 +89,11 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Profile").commit()
                 selectItem(R.id.action_profile)
             }
+            "options"->{
+                val fragment = NotificationsFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Notifications").commit()
+                selectItem(R.id.action_profile)
+            }
             else -> {
                 val fragment = CardsFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Cards").commit()
