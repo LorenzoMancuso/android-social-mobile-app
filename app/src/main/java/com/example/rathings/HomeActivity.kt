@@ -34,6 +34,9 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        /**NOTIFICATION LISTENER INIT*/
+        NotificationUtils.notificationListener(this)
+
         /**LOGOUT INIT*/
         auth = FirebaseAuth.getInstance()
         // Configure Google Sign In
