@@ -100,7 +100,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
         // Date
         val date = Date(selectedCard.timestamp.toLong() * 1000)
-        (findViewById(R.id.date) as TextView).text = java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss", Locale.ITALY).format(date)
+        (findViewById(R.id.date) as TextView).text = java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(date)
 
         // Profile Image
         Log.e("[DETAILED-CARD]", selectedCard.userObj.profile_image)
