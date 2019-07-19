@@ -25,6 +25,7 @@ import com.example.rathings.Tab.TabsActivity
 import com.example.rathings.User.ProfileActivity
 import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -226,6 +227,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
+    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
     fun manageVideo(row: LinearLayout, videoPath: String) {
         val scale = resources.displayMetrics.density
 
@@ -234,6 +236,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(Uri.parse(videoPath))
         var thumbnail = ImageView(applicationContext)
 
+        listOfVideoPlayers.add(player)
         playerView.setOnClickListener{ openMultimediaActivity() }
         playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
         playerView.setPadding(5,5,5,5)
@@ -395,6 +398,11 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         tabsObs.deleteObserver(this)
         cardsObs.deleteObserver(this)
         userObs.deleteObserver(this)
+        if (listOfVideoPlayers.size > 0) {
+            for (player in listOfVideoPlayers) {
+                player.release()
+            }
+        }
     }
 
 }

@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.example.rathings.R
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.squareup.picasso.Picasso
 import com.google.android.exoplayer2.ui.PlayerView
@@ -41,6 +42,7 @@ class MultimediaActivity : AppCompatActivity() {
 
     }
 
+    val listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
     fun setMultimedia(multimedia: ArrayList<String>) {
         var params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
         params.gravity = Gravity.CENTER_HORIZONTAL
@@ -67,6 +69,7 @@ class MultimediaActivity : AppCompatActivity() {
             } else {
                 var playerView = PlayerView(applicationContext)
                 val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
+                listOfVideoPlayers.add(player)
                 playerView.player = player
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
 
@@ -85,6 +88,15 @@ class MultimediaActivity : AppCompatActivity() {
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (listOfVideoPlayers.size > 0) {
+            for (player in listOfVideoPlayers) {
+                player.release()
+            }
         }
     }
 }

@@ -24,6 +24,13 @@ import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabsActivity
 import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
@@ -175,11 +182,17 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     }
                     1 -> {
                         if (type == "image") {
-                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                            startActivityForResult(Intent.createChooser(intent, "Do ${type}"), 3)
+                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                                takePictureIntent.resolveActivity(packageManager)?.also {
+                                    startActivityForResult(takePictureIntent, 3)
+                                }
+                            }
                         } else {
-                            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-                            startActivityForResult(Intent.createChooser(intent, "Do ${type}"), 4)
+                            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
+                                takePictureIntent.resolveActivity(packageManager)?.also {
+                                    startActivityForResult(takePictureIntent, 4)
+                                }
+                            }
                         }
                     }
                 }
@@ -187,6 +200,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         pictureDialog.show()
     }
 
+    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == 5) { // CASE Add Tab
@@ -238,7 +252,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     addedMultimediaLayout.addView(row)
                 }
 
-                if (requestCode == 1 || requestCode == 3) {
+                if (requestCode == 1 || requestCode == 3) { // PHOTO: 1 = select, 3 = do
                     var imageView = ImageView(context)
                     var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
                     imageView.setPadding(5,5,5,5)
@@ -247,7 +261,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                         var filePath: Uri
                         var bitmap:Bitmap
 
-                        // TODO: Risolvere problema 'filePath must not be null'
                         if (requestCode == 3) {
                             bitmap = data.getExtras().get("data") as Bitmap
                             filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
@@ -261,14 +274,30 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
-                } else if (requestCode == 2 || requestCode == 4) {
-                    // TODO: Risolvere il problema di visualizzazione!
-                    val videoView = VideoView(context)
+                } else if (requestCode == 2 || requestCode == 4) { // VIDEO: 2 = select, 4 = do
                     try {
                         var filePath = data?.data
-                        videoView.setVideoURI(filePath)
-                        videoView.setPadding(5,5,5,5)
-                        row.addView(videoView)
+
+                        var playerView = PlayerView(applicationContext)
+                        val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
+                        var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(filePath)
+                        var thumbnail = ImageView(applicationContext)
+
+                        listOfVideoPlayers.add(player)
+                        playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
+                        playerView.setPadding(5,5,5,5)
+                        playerView.player = player
+                        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
+                        playerView.useController = false
+
+                        thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
+                        thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
+                        thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
+
+                        playerView.overlayFrameLayout.addView(thumbnail)
+                        player.prepare(mediaSource)
+                        row.addView(playerView)
+
                         uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "video")
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -296,9 +325,17 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             Toast.makeText(context, "Failed " + e.message, Toast.LENGTH_SHORT).show()
         }
         .addOnProgressListener { taskSnapshot ->
-            val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
-                .totalByteCount
-            progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
+            if (taskSnapshot.totalByteCount > 3145728) { // If file is major than 3MB
+                taskSnapshot.task.cancel()
+            } else {
+                val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
+                    .totalByteCount
+                progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
+            }
+        }
+        .addOnCanceledListener {
+            Toast.makeText(context, "The file is major than 3 megabytes", Toast.LENGTH_LONG).show()
+            progressDialog.dismiss()
         }
         .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
             if (!task.isSuccessful) {
@@ -369,6 +406,16 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             }
 
             Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        userObs.deleteObserver(this)
+        if (listOfVideoPlayers.size > 0) {
+            for (player in listOfVideoPlayers) {
+                player.release()
+            }
         }
     }
 }
