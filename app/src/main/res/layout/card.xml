@@ -67,6 +67,28 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="10dp">
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_marginTop="10dp"
+                                  android:layout_marginBottom="10dp"
+                                  android:orientation="horizontal">
+                        <com.google.android.material.chip.ChipGroup
+                                android:layout_width="wrap_content"
+                                app:chipSpacingVertical="5dp"
+                                android:padding="3dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/container_categories">
+                        </com.google.android.material.chip.ChipGroup>
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"
+                                android:padding="3dp"
+                                android:gravity="right"
+                                android:layout_gravity="center_vertical"
+                                android:id="@+id/other_categories_text"/>
+                    </LinearLayout>
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -88,9 +110,10 @@
                             android:gravity="center"
                             android:layout_gravity="center"
                             android:id="@+id/container_multimedia">
-                            <ImageView android:layout_width="wrap_content"
+                            <LinearLayout android:layout_width="wrap_content"
                                        android:layout_height="wrap_content"
-                                       android:id="@+id/first_image"/>
+                                       android:orientation="vertical"
+                                       android:id="@+id/first_element"/>
                             <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"

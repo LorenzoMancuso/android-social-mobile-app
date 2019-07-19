@@ -52,16 +52,16 @@ class MultimediaActivity : AppCompatActivity() {
         var container_videos = findViewById<LinearLayout>(R.id.container_videos)
 
         for (i in multimedia.indices) {
-            if (multimedia[i].contains("image")) {
-                var newLinearLayout = LinearLayout(applicationContext)
-                newLinearLayout.layoutParams = params
-                newLinearLayout.orientation = LinearLayout.VERTICAL
-                newLinearLayout.setPadding(0, 0, 0, padding)
+            var newLinearLayout = LinearLayout(applicationContext)
+            newLinearLayout.layoutParams = params
+            newLinearLayout.orientation = LinearLayout.VERTICAL
+            newLinearLayout.setPadding(0, 0, 0, padding)
 
+            if (multimedia[i].contains("image")) {
                 var imageView = ImageView(applicationContext)
 
                 imageView.layoutParams = params
-                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 Picasso.get().load(multimedia[i]).into(imageView)
                 newLinearLayout.addView(imageView)
 
@@ -75,8 +75,9 @@ class MultimediaActivity : AppCompatActivity() {
 
                 var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(Uri.parse(multimedia[i]))
                 player.prepare(mediaSource)
+                newLinearLayout.addView(playerView)
 
-                container_videos.addView(playerView)
+                container_videos.addView(newLinearLayout)
             }
         }
     }
