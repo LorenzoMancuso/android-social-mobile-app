@@ -61,7 +61,7 @@ class MultimediaActivity : AppCompatActivity() {
                 var imageView = ImageView(applicationContext)
 
                 imageView.layoutParams = params
-                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 Picasso.get().load(multimedia[i]).into(imageView)
                 newLinearLayout.addView(imageView)
 

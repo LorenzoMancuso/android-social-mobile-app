@@ -75,6 +75,18 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:textSize="20sp"/>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_marginTop="10dp"
+                                  android:layout_marginBottom="10dp"
+                                  android:orientation="horizontal">
+                            <com.google.android.material.chip.ChipGroup
+                                    android:layout_width="match_parent"
+                                    app:chipSpacingVertical="5dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/container_categories">
+                            </com.google.android.material.chip.ChipGroup>
+                    </LinearLayout>
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

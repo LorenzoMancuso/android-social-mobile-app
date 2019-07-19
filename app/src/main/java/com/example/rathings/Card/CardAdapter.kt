@@ -1,7 +1,10 @@
 package com.example.rathings.Card
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import com.example.rathings.*
+import com.example.rathings.Tab.Tab
 import com.example.rathings.User.ProfileActivity
 import com.example.rathings.utils.CustomObservable
 import com.google.android.exoplayer2.ExoPlayer
@@ -23,6 +27,8 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
@@ -30,8 +36,8 @@ import kotlin.collections.ArrayList
 
 class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
-    var internalObservableCard : CustomObservable =
-        CustomObservable()
+    var internalObservableCard : CustomObservable = CustomObservable()
+    var tabsObs = FirebaseUtils.tabsObservable
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card, parent, false)
@@ -54,6 +60,17 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
     var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
+        // Set to false Recyclable to avoid delay on image download
+        holder.setIsRecyclable(false)
+
+        // Clean old video players
+        // TODO: Find a method to RELEASE all players
+        if (listOfVideoPlayers.size > 0) {
+            for (player in listOfVideoPlayers) {
+                player.release()
+            }
+        }
+
         // Init all data
         holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
         holder.id_user.text = mDataList[position].user
@@ -66,14 +83,25 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
         val scale = holder.itemView.resources.displayMetrics.density
 
-        // Set to false Recyclable to avoid delay on image download
-        holder.setIsRecyclable(false)
-
         // Set Profile Image
         if(mDataList[position].userObj.profile_image != "") {
             Picasso.get().load(mDataList[position].userObj.profile_image).resize((50 * scale + 0.5f).toInt(), (50 * scale + 0.5f).toInt()).centerCrop().into(holder.profile_image)
         } else {
             Picasso.get().load(R.drawable.default_avatar).resize((50 * scale + 0.5f).toInt(), (50 * scale + 0.5f).toInt()).centerCrop().into(holder.profile_image)
+        }
+
+        // Set Categories
+        var tabs = tabsObs.getValue() as java.util.ArrayList<Tab>
+        for (i in 0 until mDataList[position].category.size) {
+            for (j in 0 until tabs.size) {
+                if (mDataList[position].category[i] == tabs[j].id) {
+                    var chip = Chip(holder.itemView.context)
+                    chip.text = tabs[j].value
+                    chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
+                    chip.setTextColor(Color.WHITE)
+                    holder.container_categories.addView(chip)
+                }
+            }
         }
 
         // Set Multimedia
@@ -96,6 +124,17 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             intent.putExtra("idCard", mDataList[position].id)
             holder.itemView.context.startActivity(intent)
         }
+
+        Log.e("[VIDEO PLAYER!!!!!]", listOfVideoPlayers.toString())
+
+    }
+
+    fun retriveVideoFrameFromVideo(videoPath: String): Bitmap {
+        var mediaMetadataRetriever = MediaMetadataRetriever()
+        mediaMetadataRetriever.setDataSource(videoPath, HashMap<String, String>())
+        var bitmap = mediaMetadataRetriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST)
+        mediaMetadataRetriever.release()
+        return bitmap
     }
 
     fun manageMedia(holder: CardViewHolder, position: Int, index: Int) {
@@ -116,7 +155,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
         } else if (mDataList[position].multimedia[index].contains("video")) {
             var playerView = PlayerView(holder.itemView.context)
-            val player = ExoPlayerFactory.newSimpleInstance(holder.itemView.context,  DefaultTrackSelector())
+            val player = ExoPlayerFactory.newSimpleInstance(holder.itemView.context, DefaultTrackSelector())
             var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(holder.itemView.context, "rathings")).createMediaSource(Uri.parse(mDataList[position].multimedia[index]))
             var thumbnail = ImageView(holder.itemView.context)
 
@@ -140,6 +179,22 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             playerView.overlayFrameLayout.addView(thumbnail)
             player.prepare(mediaSource)
 
+            /* Version 2: Thumbnail with BITMAP
+            * PROBLEM: Really slow
+            **/
+            /*var imageView = ImageView(holder.itemView.context)
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            var bitmap = retriveVideoFrameFromVideo(mDataList[position].multimedia[index])
+            if (index == 0) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, (300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt(), false)
+                imageView.setImageBitmap(bitmap)
+                holder.first_element.addView(imageView)
+            } else {
+                bitmap = Bitmap.createScaledBitmap(bitmap, (100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt(), false)
+                imageView.setPadding(5, 5, 5, 5)
+                imageView.setImageBitmap(bitmap)
+                holder.container_other_images.addView(imageView)
+            }*/
         }
 
     }
@@ -162,6 +217,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         internal var ratings: RatingBar
         internal var date: TextView
         internal var more_images_text: TextView
+        internal var container_categories: ChipGroup
 
         init {
             user = itemView.findViewById<View>(R.id.user) as TextView
@@ -177,6 +233,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             date = itemView.findViewById<View>(R.id.date) as TextView
             more_images_text = itemView.findViewById<View>(R.id.more_images_text) as TextView
             first_element = itemView.findViewById<View>(R.id.first_element) as LinearLayout
+            container_categories = itemView.findViewById<View>(R.id.container_categories) as ChipGroup
         }
     }
 
