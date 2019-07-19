@@ -26,4 +26,11 @@
             android:icon="@drawable/ic_bookmark_black_24dp"
             android:title="notifications"
             app:showAsAction="ifRoom" />
+
+    <item
+            android:id="@+id/action_search"
+            android:enabled="true"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:title="search"
+            app:showAsAction="ifRoom" />
 </menu>
