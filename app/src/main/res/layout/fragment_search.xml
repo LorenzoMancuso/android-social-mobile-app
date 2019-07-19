@@ -19,7 +19,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:id="@+id/added_comment"
+                    android:id="@+id/user_text"
                     android:background="#fff"
                     android:hint="Search user by name"
                     android:padding="10dp"
@@ -32,7 +32,7 @@
                     app:icon="@drawable/ic_search_black_24dp"
                     app:rippleColor="#FFF"
                     app:iconTint="@color/redPrimary"
-                    android:id="@+id/publish_comment"/>
+                    android:id="@+id/search_user"/>
         </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
