@@ -99,8 +99,8 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     private fun init() {
         // User, Title, Description, Categories, Link, Multimedia, Comments and SettingsButton
         initUser()
-        (findViewById(R.id.title) as TextView).text = selectedCard.title
-        (findViewById(R.id.description) as TextView).text = selectedCard.description
+        findViewById<TextView>(R.id.title).text = selectedCard.title
+        findViewById<TextView>(R.id.description).text = selectedCard.description
         initCategories()
         initLink()
         initMultimedia()
@@ -146,19 +146,16 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         finalRatingBar.rating = selectedCard.ratings_average
 
         // Show the FinalRatingBar if the user has already voted in the past
-        Log.e("[VOTES Users]", selectedCard.ratings_users.toString())
-        Log.e("[VOTES Average]", selectedCard.ratings_average.toString())
-        Log.e("[VOTES Count]", selectedCard.ratings_count.toString())
         if(selectedCard.ratings_users.containsKey(user.id)) {
             ratingBar.visibility = View.GONE
             finalRatingBar.visibility = View.VISIBLE
-            (findViewById(R.id.ratings_title) as TextView).text = "Ratings average"
+            findViewById<TextView>(R.id.ratings_title).text = "Ratings average"
         }
 
         ratingBar.setOnRatingBarChangeListener { ratings, value, fromUser ->
             run {
                 if (fromUser) {
-                    (findViewById(R.id.ratings_title) as TextView).text = "Ratings average"
+                    findViewById<TextView>(R.id.ratings_title).text = "Ratings average"
 
                     // Calc the average
                     selectedCard.ratings_average = ((selectedCard.ratings_average * selectedCard.ratings_count) + value) / (selectedCard.ratings_count + 1)
@@ -187,7 +184,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     fun initMultimedia() {
         val scale = resources.displayMetrics.density
-        val containerMultimedia = findViewById(R.id.container_multimedia) as LinearLayout
+        val containerMultimedia = findViewById<LinearLayout>(R.id.container_multimedia)
         containerMultimedia.removeAllViews()
 
         var newLinearLayout = LinearLayout(applicationContext)
@@ -209,6 +206,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
             for (i in selectedCard.multimedia.indices) {
                 var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
+                row.setOnClickListener{ openMultimediaActivity() }
 
                 if (row.childCount == 2) {
                     row = LinearLayout(applicationContext)
@@ -237,7 +235,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         var thumbnail = ImageView(applicationContext)
 
         listOfVideoPlayers.add(player)
-        playerView.setOnClickListener{ openMultimediaActivity() }
         playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
         playerView.setPadding(5,5,5,5)
         playerView.player = player
@@ -250,6 +247,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
         playerView.overlayFrameLayout.addView(thumbnail)
         player.prepare(mediaSource)
+
         row.addView(playerView)
     }
 
@@ -257,7 +255,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         val scale = resources.displayMetrics.density
 
         var imageView = ImageView(applicationContext)
-        imageView.setOnClickListener{ openMultimediaActivity() }
         imageView.setPadding(5,5,5,5)
         imageView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
 

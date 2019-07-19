@@ -269,8 +269,8 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                         }
 
                         Picasso.get().load(filePath).centerCrop().fit().into(imageView)
-                        row.addView(imageView)
-                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "image")
+
+                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, "image")
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -287,7 +287,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                         playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
                         playerView.setPadding(5,5,5,5)
                         playerView.player = player
-                        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
                         playerView.useController = false
 
                         thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
@@ -296,9 +295,8 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
                         playerView.overlayFrameLayout.addView(thumbnail)
                         player.prepare(mediaSource)
-                        row.addView(playerView)
 
-                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), "video")
+                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, playerView, "video")
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -307,7 +305,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         }
     }
 
-    private fun uploadFile(filePath: Uri, name: String, type: String) {
+    private fun uploadFile(filePath: Uri, name: String, row: LinearLayout, view: View, type: String) {
 
         var storage = FirebaseStorage.getInstance()
         var storageReference = storage.getReference()
@@ -346,6 +344,9 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             return@Continuation ref.downloadUrl
         }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
+                // Add ImageView or PlayerView only if UPLOAD done
+                row.addView(view)
+
                 listOfDownloadUri.add(task.result.toString())
                 progressDialog.dismiss()
                 Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show()
@@ -385,7 +386,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             var errorMessage = "You can't publish new card because "
             var listOfErrors: ArrayList<Any> = ArrayList()
 
-            if (titleText == "") listOfErrors.add("Title")
             if (descriptionText == "") listOfErrors.add("Description")
             if (listOfTabsIds.size == 0) listOfErrors.add("Tab")
 
@@ -394,8 +394,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     errorMessage += listOfErrors[i]
                 } else if (i == listOfErrors.size-1) {
                     errorMessage += " and " + listOfErrors[i]
-                } else {
-                    errorMessage += ", " + listOfErrors[i]
                 }
             }
 
