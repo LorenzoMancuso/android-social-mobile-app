@@ -25,7 +25,7 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
     TabsFragment.OnFragmentInteractionListener,
     ProfileFragment.OnFragmentInteractionListener,
     CardsPopularFragment.OnFragmentInteractionListener, CardsInterestFragment.OnFragmentInteractionListener,
-    NotificationsFragment.OnFragmentInteractionListener{
+    NotificationsFragment.OnFragmentInteractionListener, SearchFragment.OnFragmentInteractionListener {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -66,6 +66,10 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
                     val fragment = ProfileFragment()
                     supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Profile").commit()
                 }
+                R.id.action_search -> {
+                    val fragment = SearchFragment()
+                    supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Search").commit()
+                }
                 R.id.action_options -> {
                     val fragment = NotificationsFragment()
                     supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "notifications").commit()
@@ -94,6 +98,11 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Notifications").commit()
                 selectItem(R.id.action_profile)
             }
+            "search"->{
+                val fragment = SearchFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Search").commit()
+                selectItem(R.id.action_search)
+            }
             else -> {
                 val fragment = CardsFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Cards").commit()
@@ -110,6 +119,7 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
     override fun onCardsFragmentInteraction(uri: Uri) {}
     override fun onTabsFragmentInteraction(uri: Uri) {}
     override fun onProfileFragmentInteraction(uri: Uri) {}
+    override fun onSearchFragmentInteraction(uri: Uri) {}
 
     fun signOut() {
         //Firebase Sign Out
