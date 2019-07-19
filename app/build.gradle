@@ -42,6 +42,8 @@ dependencies {
     implementation 'io.github.ponnamkarthik:richlinkpreview:1.0.9'
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.7.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'

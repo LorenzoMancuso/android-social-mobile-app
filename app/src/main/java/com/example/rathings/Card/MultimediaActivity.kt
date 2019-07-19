@@ -9,10 +9,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.MediaController
-import android.widget.VideoView
 import com.example.rathings.R
+import com.google.android.exoplayer2.Player
 import com.squareup.picasso.Picasso
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+
 
 class MultimediaActivity : AppCompatActivity() {
 
@@ -58,15 +65,15 @@ class MultimediaActivity : AppCompatActivity() {
 
                 container_images.addView(newLinearLayout)
             } else {
-                var newLinearLayout = LinearLayout(applicationContext)
-                newLinearLayout.layoutParams = params
-                newLinearLayout.orientation = LinearLayout.VERTICAL
-                newLinearLayout.setPadding(0, 0, 0, padding)
+                var playerView = PlayerView(applicationContext)
+                val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
+                playerView.player = player
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
 
-                // videoView.setVideoURI(Uri.parse(multimedia[i]))
-                // newLinearLayout.addView(videoView)
+                var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(Uri.parse(multimedia[i]))
+                player.prepare(mediaSource)
 
-                container_videos.addView(newLinearLayout)
+                container_videos.addView(playerView)
             }
         }
     }

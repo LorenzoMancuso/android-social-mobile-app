@@ -47,6 +47,14 @@
                                       android:padding="10dp"
                                       android:id="@+id/container_videos">
                         </LinearLayout>
+                        <com.google.android.exoplayer2.ui.PlayerView
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/exoplayerview_activity_video"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                        />
 
                 </LinearLayout>
         </androidx.core.widget.NestedScrollView>
