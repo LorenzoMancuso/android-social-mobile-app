@@ -34,6 +34,9 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        /**NOTIFICATION LISTENER INIT*/
+        NotificationUtils.notificationListener(this)
+
         /**LOGOUT INIT*/
         auth = FirebaseAuth.getInstance()
         // Configure Google Sign In
@@ -84,6 +87,11 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
             "profile"->{
                 val fragment = ProfileFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Profile").commit()
+                selectItem(R.id.action_profile)
+            }
+            "options"->{
+                val fragment = NotificationsFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Notifications").commit()
                 selectItem(R.id.action_profile)
             }
             else -> {

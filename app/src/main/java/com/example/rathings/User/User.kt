@@ -19,7 +19,7 @@ class User(): Serializable {
     public var interests: MutableList<Int> = ArrayList()
     public var profile_image: String = ""
 
-    public var notifiacations: MutableList<Notification> = ArrayList()
+    public var notifications: MutableList<Notification> = ArrayList()
 
 
     /**
@@ -50,7 +50,8 @@ class User(): Serializable {
         str+="'followed': ${followed}, "
         str+="'followers': ${followers}, "
         str+="'interests': ${interests}, "
-        str+="'profile_image': ${profile_image}}"
+        str+="'profile_image': ${profile_image}"
+        str+="'notifications': ${notifications}}"
         return str
     }
 
@@ -68,7 +69,7 @@ class User(): Serializable {
         res.set("followers",followers)
         res.set("interests",interests)
         res.set("profile_image",profile_image)
-        res.set("notifications",notifiacations)
+        res.set("notifications",notifications)
 
         return res
     }

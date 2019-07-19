@@ -13,15 +13,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.R
+import com.example.rathings.User.User
+import com.example.rathings.utils.CustomObservable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_cards.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class NotificationsFragment : Fragment(){
     private var mListener: OnFragmentInteractionListener? = null
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
+
+    private var localNotification = ArrayList<Notification>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,22 +43,23 @@ class NotificationsFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateNotifications()
+
+        FirebaseUtils.getNotifications().addObserver(object: Observer {
+            override fun update(o: Observable?, arg: Any?) {
+                val notifications = (o as CustomObservable).getValue() as ArrayList<Notification>
+                localNotification = notifications
+                updateNotifications(notifications)
+            }
+        })
     }
 
-    fun updateNotifications(){
+    fun updateNotifications(notification: ArrayList<Notification>){
 
         Log.d("[NOTIFICATION-FRAGMENT]", "Update notifications")
 
         mRecyclerView = view?.findViewById(R.id.my_recycler_view)
         val mLayoutManager = LinearLayoutManager(super.getContext(), RecyclerView.VERTICAL, false)
         mRecyclerView?.layoutManager = mLayoutManager
-
-        var notification = ArrayList<Notification>()
-        val tmp = Notification("ID", "ABCDUSER","contenuto della notifica",1563371138,false,"card","CARDID")
-        for (i in 0 until 30) {
-            notification.add(tmp)
-        }
 
         Log.d("[NOTIFICATION-FRAGMENT]", "${notification}")
 
@@ -77,6 +84,21 @@ class NotificationsFragment : Fragment(){
 
     override fun onDestroy() {
         super.onDestroy()
+
+        FirebaseUtils.getPrimaryProfile().addObserver(object: Observer {
+            override fun update(o: Observable?, arg: Any?) {
+                val user = (o as CustomObservable).getValue() as User
+
+                for (notification in user.notifications)
+                    notification.read = true
+
+                FirebaseUtils.updateData(
+                    "users/${user.id}/",
+                    user.toMutableMap()
+                )
+            }
+        })
+
     }
 
     /**
