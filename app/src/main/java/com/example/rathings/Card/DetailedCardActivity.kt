@@ -84,26 +84,26 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 if (valuesObs is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(valuesObs.filterIsInstance<Card>())
                     selectedCard = (cards.filter { it.id == intent.getStringExtra("idCard") })[0]
-                    initData()
+                    init()
                 }
             }
             userObs -> {
-                setRatingBar(userObs.getValue() as User)
-                setComments(userObs.getValue() as User)
+                initRatingBar(userObs.getValue() as User)
+                initComments(userObs.getValue() as User)
             }
             else -> Log.d("[DETAILED-CARD]", "observable not recognized $data")
         }
     }
 
-    private fun initData() {
+    private fun init() {
         // User, Title, Description, Categories, Link, Multimedia, Comments and SettingsButton
-        setUser()
+        initUser()
         (findViewById(R.id.title) as TextView).text = selectedCard.title
         (findViewById(R.id.description) as TextView).text = selectedCard.description
-        setCategories()
-        setLink()
-        setMultimedia()
-        setSettingsButton()
+        initCategories()
+        initLink()
+        initMultimedia()
+        initSettingsButton()
 
         // Date
         val date = Date(selectedCard.timestamp.toLong() * 1000)
@@ -121,7 +121,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     }
 
-    fun setUser() {
+    fun initUser() {
         findViewById<TextView>(R.id.user).text = "${selectedCard.userObj.name} ${selectedCard.userObj.surname}"
 
         findViewById<TextView>(R.id.user)!!.setOnClickListener {
@@ -138,7 +138,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setRatingBar(user: User) {
+    fun initRatingBar(user: User) {
         var ratingBar = findViewById(R.id.ratings) as RatingBar
         var finalRatingBar = findViewById(R.id.final_ratings) as RatingBar
         ratingBar.rating = selectedCard.ratings_average
@@ -184,7 +184,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setMultimedia() {
+    fun initMultimedia() {
         val scale = resources.displayMetrics.density
         val containerMultimedia = findViewById(R.id.container_multimedia) as LinearLayout
         containerMultimedia.removeAllViews()
@@ -268,7 +268,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         startActivityForResult(intent, 1)
     }
 
-    fun setComments(user: User) {
+    fun initComments(user: User) {
         var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
         val publishComment = findViewById(R.id.publish_comment) as MaterialButton
 
@@ -280,7 +280,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         publishComment.setOnClickListener(View.OnClickListener { addComment(user) })
     }
 
-    fun setCategories() {
+    fun initCategories() {
         var containerCategories = findViewById(R.id.container_categories) as ChipGroup
         containerCategories.removeAllViews()
         var tabs = tabsObs.getValue() as ArrayList<Tab>
@@ -297,7 +297,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setLink() {
+    fun initLink() {
         if (selectedCard.link != "") {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
@@ -312,7 +312,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setSettingsButton() {
+    fun initSettingsButton() {
         if (FirebaseUtils.isCurrentUser(selectedCard.userObj.id)) {
             findViewById<MaterialButton>(R.id.settings_button).visibility = View.VISIBLE
 
@@ -340,7 +340,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         val intent = Intent(applicationContext, EditCardActivity::class.java)
         intent.putExtra("card", selectedCard)
         applicationContext.startActivity(intent)
-        initData()
+        init()
     }
 
     fun deleteCard() {
