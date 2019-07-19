@@ -75,6 +75,10 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
         holder.id_user.text = mDataList[position].user
         holder.title.text = mDataList[position].title
+        if (mDataList[position].title == "") {
+            holder.title.visibility = View.GONE
+        }
+        holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
         holder.comments_size.text = "Comments: " + mDataList[position].comments.size
         holder.ratings.rating = mDataList[position].ratings_average
@@ -92,7 +96,25 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
         // Set Categories
         var tabs = tabsObs.getValue() as java.util.ArrayList<Tab>
-        for (i in 0 until mDataList[position].category.size) {
+        for (i in mDataList[position].category.indices) {
+            if (i <= 1) {
+                for (j in 0 until tabs.size) {
+                    if (mDataList[position].category[i] == tabs[j].id) {
+                        var chip = Chip(holder.itemView.context)
+                        chip.text = tabs[j].value
+                        chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
+                        chip.setTextColor(Color.WHITE)
+                        holder.container_categories.addView(chip)
+                    }
+                }
+            } else {
+                holder.other_categories_text.visibility = View.VISIBLE
+                holder.other_categories_text.text = "+ ${mDataList[position].category.size - i} Tabs"
+                break
+            }
+        }
+
+        /*for (i in 0 until mDataList[position].category.size) {
             for (j in 0 until tabs.size) {
                 if (mDataList[position].category[i] == tabs[j].id) {
                     var chip = Chip(holder.itemView.context)
@@ -102,7 +124,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                     holder.container_categories.addView(chip)
                 }
             }
-        }
+        }*/
 
         // Set Multimedia
         if(mDataList[position].multimedia.size > 0) {
@@ -112,7 +134,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                     manageMedia(holder, position, i)
                 } else {
                     holder.more_images_text.visibility = View.VISIBLE
-                    holder.more_images_text.text = "and ${i-3} other media"
+                    holder.more_images_text.text = "+ ${mDataList[position].multimedia.size - i} media"
                 }
             }
 
@@ -124,8 +146,6 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             intent.putExtra("idCard", mDataList[position].id)
             holder.itemView.context.startActivity(intent)
         }
-
-        Log.e("[VIDEO PLAYER!!!!!]", listOfVideoPlayers.toString())
 
     }
 
@@ -143,7 +163,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         if (mDataList[position].multimedia[index].contains("image")) {
             if (index == 0) {
                 var media = ImageView(holder.itemView.context)
-                Picasso.get().load(mDataList[position].multimedia[index]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).onlyScaleDown().centerInside().into(media)
+                Picasso.get().load(mDataList[position].multimedia[index]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).centerInside().into(media)
                 holder.first_element.addView(media)
 
             } else {
@@ -218,6 +238,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         internal var date: TextView
         internal var more_images_text: TextView
         internal var container_categories: ChipGroup
+        internal var other_categories_text: TextView
 
         init {
             user = itemView.findViewById<View>(R.id.user) as TextView
@@ -234,6 +255,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             more_images_text = itemView.findViewById<View>(R.id.more_images_text) as TextView
             first_element = itemView.findViewById<View>(R.id.first_element) as LinearLayout
             container_categories = itemView.findViewById<View>(R.id.container_categories) as ChipGroup
+            other_categories_text = itemView.findViewById<View>(R.id.other_categories_text) as TextView
         }
     }
 
