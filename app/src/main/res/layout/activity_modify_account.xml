@@ -21,7 +21,30 @@
                 android:paddingRight="30dp"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp">
-
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/profile_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@mipmap/ic_launcher"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginBottom="20dp"/>
+                        <com.google.android.material.button.MaterialButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:text="Change image"
+                                style="?android:textAppearanceSmall"
+                                android:textColor="#FFF"
+                                android:id="@+id/change_image"
+                                android:background="@color/redPrimary"
+                                android:layout_gravity="center_vertical"/>
+                </LinearLayout>
                 <EditText
                         android:id="@+id/txt_name"
                         android:layout_width="match_parent"
@@ -85,7 +108,7 @@
                         android:layout_marginTop="16dp"
                         android:text="CONFERMA INFORMAZIONI"
                         android:textColor="#FFFFFF"
-                        android:background="#D84B37"
+                        android:background="@color/redPrimary"
                         android:textStyle="bold"/>
         </LinearLayout>
     </ScrollView>
