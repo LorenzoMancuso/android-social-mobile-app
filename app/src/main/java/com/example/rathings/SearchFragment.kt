@@ -3,10 +3,20 @@ package com.example.rathings
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.rathings.User.User
+import com.example.rathings.User.UserAdapter
+import com.example.rathings.User.UserController
+import com.google.android.material.button.MaterialButton
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,17 +33,30 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), Observer {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
 
+    var allUsersObs = FirebaseUtils.getUsers()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+        }
+
+        allUsersObs.addObserver(this)
+
+    }
+
+    override fun update(observableObj: Observable?, data: Any?) {
+        when(observableObj) {
+            allUsersObs -> {}
+            else -> Log.d("[SEARCH FRAGMENT]", "observable not recognized $data")
         }
     }
 
@@ -46,7 +69,27 @@ class SearchFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.findViewById<MaterialButton>(R.id.search_user).setOnClickListener({ searchUser(view) })
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    fun searchUser(view: View) {
+        var user_text = view.findViewById<EditText>(R.id.user_text)?.text.toString()
+        var listOfUsers = allUsersObs.getValue() as ArrayList<User>
+        var filteredUsers = ArrayList(listOfUsers.filter({(it.name + " " + it.surname).contains(user_text, ignoreCase = true) || (it.surname + " " + it.name).contains(user_text, ignoreCase = true)}))
+        initUsers(filteredUsers, view)
+    }
+
+    fun initUsers(users: ArrayList<User>, view: View) {
+        var cardRecyclerView = view.findViewById<RecyclerView>(R.id.recycler_users)
+
+        val mLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+        cardRecyclerView?.layoutManager = mLayoutManager
+        var userAdapter = UserAdapter(users)
+        cardRecyclerView?.adapter = userAdapter
+
+        // publishComment.setOnClickListener(View.OnClickListener { addComment(user) })
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

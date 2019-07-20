@@ -7,32 +7,56 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".SearchFragment">
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#FFF"
-                android:background="#FFF"
-                android:focusableInTouchMode="true"
-                android:layout_gravity="top"
-                android:orientation="horizontal">
-            <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:id="@+id/added_comment"
-                    android:background="#fff"
-                    android:hint="Search user by name"
-                    android:padding="10dp"
-                    android:layout_weight="1"/>
-            <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="#FFF"
-                    app:icon="@drawable/ic_search_black_24dp"
-                    app:rippleColor="#FFF"
-                    app:iconTint="@color/redPrimary"
-                    android:id="@+id/publish_comment"/>
-        </LinearLayout>
-
+                android:layout_height="match_parent">
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:focusableInTouchMode="true">
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="#FFF"
+                            android:background="#FFF"
+                            android:focusableInTouchMode="true"
+                            android:layout_gravity="top"
+                            android:orientation="horizontal">
+                        <EditText
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:id="@+id/user_text"
+                                android:background="#fff"
+                                android:hint="Search user by name"
+                                android:padding="10dp"
+                                android:layout_weight="1"/>
+                        <com.google.android.material.button.MaterialButton
+                                style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+                                android:layout_width="50dp"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="#FFF"
+                                app:icon="@drawable/ic_search_black_24dp"
+                                app:rippleColor="#FFF"
+                                app:iconTint="@color/redPrimary"
+                                android:id="@+id/search_user"/>
+                    </LinearLayout>
+                    <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:focusableInTouchMode="true"
+                            android:id="@+id/container_users">
+                        <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recycler_users"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:layout_marginTop="10dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
