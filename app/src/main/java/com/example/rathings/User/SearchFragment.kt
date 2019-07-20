@@ -52,12 +52,7 @@ class SearchFragment : Fragment(), Observer {
 
     }
 
-    override fun update(observableObj: Observable?, data: Any?) {
-        when(observableObj) {
-            allUsersObs -> {}
-            else -> Log.d("[SEARCH FRAGMENT]", "observable not recognized $data")
-        }
-    }
+    override fun update(observableObj: Observable?, data: Any?) {}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,9 +81,6 @@ class SearchFragment : Fragment(), Observer {
         cardRecyclerView?.layoutManager = mLayoutManager
         var userAdapter = UserAdapter(users)
         cardRecyclerView?.adapter = userAdapter
-
-        // publishComment.setOnClickListener(View.OnClickListener { addComment(user) })
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

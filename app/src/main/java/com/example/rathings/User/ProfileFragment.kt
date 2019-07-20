@@ -61,10 +61,17 @@ class ProfileFragment : Fragment(), Observer {
         startActivity(intent)
     }
 
+    fun goToFollowList(requestType: String, followList: MutableList<Any>) {
+        val intent = Intent(context, FollowListActivity::class.java)
+        intent.putExtra("requestType", requestType)
+        intent.putExtra("followList", followList as ArrayList<String>)
+        startActivity(intent)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener {goToEdit()}
+        view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener { goToEdit() }
 
         //call for get profile info
         FirebaseUtils.getProfile(null)
@@ -116,6 +123,10 @@ class ProfileFragment : Fragment(), Observer {
                         val scale = resources.displayMetrics.density
                         Picasso.get().load(user.profile_image).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
                     }
+
+                    view?.findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }
+                    view?.findViewById<TextView>(R.id.txt_followed)!!.setOnClickListener{ goToFollowList("Followed", user.followed) }
+
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
             }
