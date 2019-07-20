@@ -78,6 +78,14 @@ object CardController: Observer {
         })
     }
 
+    fun deleteCard(id: String) {
+        var cards = interestCardsObservable.getValue()
+        if (cards is List<*>) {
+            interestCardsObservable.setValue(cards.filter { it is Card && it.id != id })
+            FirebaseUtils.deleteData("cards/${id}")
+        }
+    }
+
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             interestCardsObservable -> {

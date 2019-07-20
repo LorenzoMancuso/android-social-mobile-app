@@ -84,8 +84,13 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 var valuesObs = cardsObs.getValue()
                 if (valuesObs is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(valuesObs.filterIsInstance<Card>())
-                    selectedCard = (cards.filter { it.id == intent.getStringExtra("idCard") })[0]
-                    init()
+                    val filteredCards = (cards.filter { it.id == intent.getStringExtra("idCard") })
+                    if (filteredCards.isNotEmpty()) {
+                        selectedCard = filteredCards[0]
+                        init()
+                    } else {
+                        finish()
+                    }
                 }
             }
             userObs -> {
@@ -344,7 +349,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     }
 
     fun deleteCard() {
-        Log.e("[DELETE CARD]", "Missing Function")
+        CardController.deleteCard(selectedCard.id)
     }
 
     fun addComment(user: User) {
