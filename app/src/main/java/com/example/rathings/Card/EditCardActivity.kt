@@ -55,10 +55,10 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         txt_description.text = Editable.Factory.getInstance().newEditable("${selectedCard.description}")
 
         // Tabs
-        val addCategories = findViewById(R.id.add_categories) as Button
+        val addCategories = findViewById<Button>(R.id.add_categories)
         addCategories.setOnClickListener(View.OnClickListener { addCategories() })
 
-        var addedCategories = findViewById(R.id.added_categories) as ChipGroup
+        var addedCategories = findViewById<ChipGroup>(R.id.added_categories)
         var tabs = tabsObs.getValue() as ArrayList<Tab>
         for (i in 0 until selectedCard.category.size) {
             for (j in 0 until tabs.size) {
@@ -69,7 +69,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
                     chip.text = tabs[j].value
                     chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
                     chip.setTextColor(Color.WHITE)
-                    chip.setCloseIconEnabled(true)
+                    chip.setCloseIconVisible(false)
                     addedCategories.addView(chip)
 
                     chip.setOnCloseIconClickListener(View.OnClickListener { v ->
@@ -146,12 +146,11 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
     fun addLink(): Boolean {
         var taskEditText = EditText(this)
         taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-        var errorEditText = EditText(this)
         var dialog = AlertDialog.Builder(this)
             .setTitle("Add Link")
             .setMessage("Write or paste here a link")
             .setView(taskEditText)
-            .setPositiveButton("Add", DialogInterface.OnClickListener() { dialog, which ->
+            .setPositiveButton("Add", DialogInterface.OnClickListener() { _, _ ->
                 Log.d("[DIALOG]", taskEditText.text.toString())
 
                 val fragmentManager = supportFragmentManager
@@ -175,13 +174,12 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (data?.extras?.get("added_categories") != null) {
-            Log.d("[EXTRAS]", data?.extras?.get("added_categories").toString())
-
+            Log.d("[EXTRAS]", data.extras?.get("added_categories").toString())
             // Re-initialize lists
             listOfSelectedTabs = ArrayList()
             listOfTabsIds = ArrayList()
 
-            listOfSelectedTabs = data?.extras?.get("added_categories") as ArrayList<Tab>
+            listOfSelectedTabs = data.extras?.get("added_categories") as ArrayList<Tab>
 
             var addedCategories = findViewById(R.id.added_categories) as ChipGroup
             addedCategories.removeAllViews()
@@ -193,7 +191,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
                 chip.text = tab.value
                 chip.setChipBackgroundColorResource(R.color.bluePrimary)
                 chip.setTextColor(Color.WHITE)
-                chip.setCloseIconEnabled(true)
+                chip.setCloseIconVisible(false)
                 addedCategories.addView(chip)
 
                 chip.setOnCloseIconClickListener(View.OnClickListener { v ->

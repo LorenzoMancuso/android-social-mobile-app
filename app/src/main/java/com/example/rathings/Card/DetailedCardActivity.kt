@@ -274,13 +274,13 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     }
 
     fun initComments(user: User) {
-        var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
-        val publishComment = findViewById(R.id.publish_comment) as MaterialButton
+        var cardRecyclerView = findViewById<RecyclerView>(R.id.recycler_comments)
+        val publishComment = findViewById<MaterialButton>(R.id.publish_comment)
 
         val mLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL,false)
-        cardRecyclerView?.layoutManager = mLayoutManager
+        cardRecyclerView.layoutManager = mLayoutManager
         var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
-        cardRecyclerView?.adapter = commentAdapter
+        cardRecyclerView.adapter = commentAdapter
 
         publishComment.setOnClickListener(View.OnClickListener { addComment(user) })
     }
@@ -329,12 +329,10 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener() {
                     if (it.title == "Edit Card") {
                         editCard()
-                        true
                     } else if (it.title == "Delete Card") {
                         deleteCard()
-                        true
                     }
-                    false
+                    true
                 })
                 popup.show()
             })
