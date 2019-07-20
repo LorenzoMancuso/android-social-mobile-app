@@ -7,14 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.util.Log
-import android.view.View
 import com.example.rathings.Card.CardsFragment
 import com.example.rathings.Card.CardsInterestFragment
 import com.example.rathings.Card.CardsPopularFragment
-import com.example.rathings.Card.NewCardActivity
 import com.example.rathings.Tab.TabController
 import com.example.rathings.Tab.TabsFragment
 import com.example.rathings.User.ProfileFragment
+import com.example.rathings.User.SearchFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
