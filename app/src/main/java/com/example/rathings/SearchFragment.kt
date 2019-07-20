@@ -9,7 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.rathings.User.User
+import com.example.rathings.User.UserAdapter
 import com.example.rathings.User.UserController
 import com.google.android.material.button.MaterialButton
 import java.util.*
@@ -66,14 +69,27 @@ class SearchFragment : Fragment(), Observer {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<MaterialButton>(R.id.search_user).setOnClickListener({ searchUser() })
+        view.findViewById<MaterialButton>(R.id.search_user).setOnClickListener({ searchUser(view) })
         super.onViewCreated(view, savedInstanceState)
     }
 
-    fun searchUser() {
-        var user_text = view?.findViewById<EditText>(R.id.user_text)?.text.toString()
-        var listOfUser = allUsersObs.getValue() as ArrayList<User>
-        var filteredUser = ArrayList(listOfUser.filter({(it.name + " " + it.surname).contains(user_text, ignoreCase = true) || (it.surname + " " + it.name).contains(user_text, ignoreCase = true)}))
+    fun searchUser(view: View) {
+        var user_text = view.findViewById<EditText>(R.id.user_text)?.text.toString()
+        var listOfUsers = allUsersObs.getValue() as ArrayList<User>
+        var filteredUsers = ArrayList(listOfUsers.filter({(it.name + " " + it.surname).contains(user_text, ignoreCase = true) || (it.surname + " " + it.name).contains(user_text, ignoreCase = true)}))
+        initUsers(filteredUsers, view)
+    }
+
+    fun initUsers(users: ArrayList<User>, view: View) {
+        var cardRecyclerView = view.findViewById<RecyclerView>(R.id.recycler_users)
+
+        val mLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+        cardRecyclerView?.layoutManager = mLayoutManager
+        var userAdapter = UserAdapter(users)
+        cardRecyclerView?.adapter = userAdapter
+
+        // publishComment.setOnClickListener(View.OnClickListener { addComment(user) })
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
