@@ -1,4 +1,4 @@
-package com.example.rathings
+package com.example.rathings.User
 
 import android.content.Context
 import android.net.Uri
@@ -11,9 +11,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.rathings.User.User
-import com.example.rathings.User.UserAdapter
-import com.example.rathings.User.UserController
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.R
 import com.google.android.material.button.MaterialButton
 import java.util.*
 import kotlin.collections.ArrayList
