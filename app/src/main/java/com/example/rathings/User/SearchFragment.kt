@@ -110,6 +110,7 @@ class SearchFragment : Fragment(), Observer {
 
     override fun onDestroy() {
         super.onDestroy()
+        allUsersObs.deleteObserver(this)
     }
 
     /**

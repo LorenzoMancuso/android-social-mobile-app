@@ -36,7 +36,6 @@ import kotlin.collections.ArrayList
 
 class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
-    var internalObservableCard : CustomObservable = CustomObservable()
     var tabsObs = FirebaseUtils.tabsObservable
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {

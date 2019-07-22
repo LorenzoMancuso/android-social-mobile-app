@@ -45,10 +45,13 @@ import kotlin.collections.ArrayList
 class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInteractionListener, Observer {
 
     var listOfDownloadUri: MutableList<String> = ArrayList()
+
     var card = Card()
     var userObs: CustomObservable = CustomObservable()
+
     // Identifiers to Publish Card
     var listOfTabsIds: ArrayList<Int> = ArrayList()
+
     // Tabs List from TabsActivity
     var listOfSelectedTabs: ArrayList<Tab> = ArrayList()
     var addedLink = ""
