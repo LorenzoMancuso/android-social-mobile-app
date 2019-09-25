@@ -86,6 +86,24 @@ object CardController: Observer {
         }
     }
 
+    fun deleteMedia(idMedia: String, idCard: String) {
+        var cards = interestCardsObservable.getValue() as ArrayList<Card>
+        var found = false
+        for (card in cards) {
+            for (media in card.multimedia) {
+                if (media == idMedia && card.id == idCard) {
+                    card.multimedia.removeAt(card.multimedia.indexOf(media))
+                    found = true
+                    break
+                }
+            }
+            if(found) {
+                break
+            }
+        }
+        FirebaseUtils.deleteData("cards/${idCard}/${idMedia}")
+    }
+
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             interestCardsObservable -> {

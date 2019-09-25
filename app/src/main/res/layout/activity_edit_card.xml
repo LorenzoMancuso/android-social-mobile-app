@@ -110,11 +110,19 @@
                                     android:textStyle="normal"
                                     android:backgroundTint="@color/whitePrimary"/>
                         </LinearLayout>
-                        <com.google.android.material.chip.ChipGroup
+                        <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/added_categories">
-                        </com.google.android.material.chip.ChipGroup>
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:orientation="horizontal">
+                            <com.google.android.material.chip.ChipGroup
+                                    android:layout_width="match_parent"
+                                    app:chipSpacingVertical="5dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/added_categories">
+                            </com.google.android.material.chip.ChipGroup>
+                        </LinearLayout>
                     </LinearLayout>
                     <LinearLayout
                             android:id="@+id/container_multimedia"
@@ -150,17 +158,14 @@
                                     android:backgroundTint="@color/whitePrimary"
                                     android:id="@+id/multimedia_btn"/>
                         </LinearLayout>
-                        <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="horizontal"
-                                android:id="@+id/added_multimedia">
-                                <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:orientation="horizontal"/>
+                        <LinearLayout android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                      android:orientation="vertical"
+                                      android:gravity="center"
+                                      android:layout_gravity="center"
+                                      android:layout_marginTop="10dp"
+                                      android:layout_weight="1"
+                                      android:id="@+id/added_multimedia">
                         </LinearLayout>
                     </LinearLayout>
                     <LinearLayout

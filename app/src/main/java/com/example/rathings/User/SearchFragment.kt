@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rathings.FirebaseUtils
@@ -71,7 +72,12 @@ class SearchFragment : Fragment(), Observer {
         var user_text = view.findViewById<EditText>(R.id.user_text)?.text.toString()
         var listOfUsers = allUsersObs.getValue() as ArrayList<User>
         var filteredUsers = ArrayList(listOfUsers.filter({(it.name + " " + it.surname).contains(user_text, ignoreCase = true) || (it.surname + " " + it.name).contains(user_text, ignoreCase = true)}))
-        initUsers(filteredUsers, view)
+        if (filteredUsers.isNotEmpty()) {
+            view.findViewById<TextView>(R.id.no_users).visibility = View.GONE
+            initUsers(filteredUsers, view)
+        } else {
+            view.findViewById<TextView>(R.id.no_users).visibility = View.VISIBLE
+        }
     }
 
     fun initUsers(users: ArrayList<User>, view: View) {
@@ -104,6 +110,7 @@ class SearchFragment : Fragment(), Observer {
 
     override fun onDestroy() {
         super.onDestroy()
+        allUsersObs.deleteObserver(this)
     }
 
     /**

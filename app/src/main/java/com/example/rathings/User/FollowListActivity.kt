@@ -61,4 +61,9 @@ class FollowListActivity : AppCompatActivity(), Observer {
             else -> return super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        allUsersObs.deleteObserver(this)
+    }
 }

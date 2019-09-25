@@ -29,7 +29,7 @@ import java.util.*
 
 class ModifyAccountActivity : AppCompatActivity(), Observer {
 
-    var localUserProfileObservable= FirebaseUtils.userProfileObservable
+    var localUserProfileObservable = FirebaseUtils.userProfileObservable
     var user: User = User()
 
     override fun onCreate(savedInstanceState: Bundle?) {
