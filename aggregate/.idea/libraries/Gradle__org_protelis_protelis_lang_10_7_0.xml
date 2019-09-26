@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.protelis:protelis-lang:10.7.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.protelis/protelis-lang/10.7.0/8876c454de83983a2ef3eb66324cfe393625b4f9/protelis-lang-10.7.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.protelis/protelis-lang/10.7.0/2c81d8cf150a7781720478855aad10d3aba1497d/protelis-lang-10.7.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

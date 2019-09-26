@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.eclipse.platform:org.eclipse.core.commands:3.9.500">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.platform/org.eclipse.core.commands/3.9.500/12efee6e6c4ffc4eeb8584b21b6892b4071ffe3/org.eclipse.core.commands-3.9.500.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.platform/org.eclipse.core.commands/3.9.500/1ad857d67a20055781539445471a700debb1a005/org.eclipse.core.commands-3.9.500-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

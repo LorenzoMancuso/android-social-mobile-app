@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.locationtech.jts:jts-core:1.16.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.locationtech.jts/jts-core/1.16.0/dd852eb51b92eec108415c0ce624a65d99d0daae/jts-core-1.16.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.locationtech.jts/jts-core/1.16.0/bb7197402ffdc6edb8f56ea1be8e19387c9aecb4/jts-core-1.16.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
