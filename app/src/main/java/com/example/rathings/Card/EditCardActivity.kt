@@ -224,13 +224,20 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
     }
 
     fun deleteMedia(index: Int) {
-        Log.d("[DELETE MEDIA]", selectedCard.multimedia.toString())
         if (selectedCard.multimedia.size > 0) {
-            selectedCard.multimedia.removeAt(index)
-            Log.d("[DELETE MEDIA]", index.toString())
-            initMultimedia()
-        } else {
-            Log.d("[DELETE MEDIA]", "There aren't images or videos")
+            var taskEditText = EditText(this)
+            taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+            var dialog = AlertDialog.Builder(this)
+                .setTitle("Delete media")
+                .setMessage("Do you want delete this media?")
+                .setPositiveButton("Yes", DialogInterface.OnClickListener() { _, _ ->
+                    selectedCard.multimedia.removeAt(index)
+                    Log.d("[DELETE MEDIA]", index.toString())
+                    initMultimedia()
+                })
+                .setNegativeButton("No", null)
+                .create()
+            dialog.show()
         }
     }
 

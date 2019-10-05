@@ -38,6 +38,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.card.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -351,6 +352,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 row.addView(view)
 
                 listOfDownloadUri.add(task.result.toString())
+                view.setOnClickListener { deleteMedia(task.result.toString(), row, view) }
                 progressDialog.dismiss()
                 Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show()
             } else {
@@ -358,6 +360,24 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             }
         }
 
+    }
+
+    fun deleteMedia(uri: String, row: LinearLayout, view: View) {
+        if (listOfDownloadUri.size > 0) {
+            var taskEditText = EditText(this)
+            taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+            var dialog = AlertDialog.Builder(this)
+                .setTitle("Delete media")
+                .setMessage("Do you want delete this media?")
+                .setPositiveButton("Yes", DialogInterface.OnClickListener() { _, _ ->
+                    listOfDownloadUri.remove(uri)
+                    Log.d("[DELETE MEDIA]", uri)
+                    row.removeView(view)
+                })
+                .setNegativeButton("No", null)
+                .create()
+            dialog.show()
+        }
     }
 
     fun publishCard() {
