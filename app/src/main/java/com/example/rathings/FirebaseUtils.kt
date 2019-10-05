@@ -17,6 +17,8 @@ import kotlin.collections.ArrayList
 object FirebaseUtils {
 
     private var primaryUserProfileObservable: CustomObservable = CustomObservable()
+    private var allUsers: CustomObservable = CustomObservable()
+
     var userProfileObservable: CustomObservable = CustomObservable()
 
     var userCardsObservable: CustomObservable = CustomObservable()
@@ -87,6 +89,33 @@ object FirebaseUtils {
     // ---------------------------------
     // BEGIN Wrappers for UserController
     // ---------------------------------
+    fun getUsers(): CustomObservable {
+        /**GET CURRENT AUTH USER IF UID IS NULL*/
+        val ref = FirebaseUtils.database.child("users")
+        var user: User?
+        val phoneQuery = ref.orderByChild("id")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var listOfUsers: ArrayList<User?> = ArrayList()
+
+                for (singleSnapshot in dataSnapshot.children) {
+                    user = singleSnapshot.getValue(User::class.java)
+                    listOfUsers.add(user)
+                    Log.e("[FIREBASE-UTILS]", "Search User " + user?.toString())
+                }
+
+                allUsers.setValue(listOfUsers)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("[FIREBASE-UTILS]", "onCancelled", databaseError.toException())
+            }
+        }
+        phoneQuery.addValueEventListener(postListener)
+        return allUsers
+    }
+
     @JvmStatic fun getPrimaryProfile(): CustomObservable {
         val uid=FirebaseAuth.getInstance().currentUser!!.uid
 

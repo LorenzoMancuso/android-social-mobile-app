@@ -19,6 +19,8 @@
             android:theme="@style/MaterialTheme"
             tools:ignore="GoogleAppIndexingWarning"
             tools:targetApi="28">
+        <activity android:name=".User.FollowListActivity">
+        </activity>
         <activity android:name=".Card.MultimediaActivity">
         </activity>
         <activity android:name=".Card.EditCardActivity"/>

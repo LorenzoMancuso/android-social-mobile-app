@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,13 @@ import com.example.rathings.Tab.TabsActivity
 import com.example.rathings.User.ProfileActivity
 import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -76,31 +84,36 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 var valuesObs = cardsObs.getValue()
                 if (valuesObs is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(valuesObs.filterIsInstance<Card>())
-                    selectedCard = (cards.filter { it.id == intent.getStringExtra("idCard") })[0]
-                    initData()
+                    val filteredCards = (cards.filter { it.id == intent.getStringExtra("idCard") })
+                    if (filteredCards.isNotEmpty()) {
+                        selectedCard = filteredCards[0]
+                        init()
+                    } else {
+                        finish()
+                    }
                 }
             }
             userObs -> {
-                setRatingBar(userObs.getValue() as User)
-                setComments(userObs.getValue() as User)
+                initRatingBar(userObs.getValue() as User)
+                initComments(userObs.getValue() as User)
             }
             else -> Log.d("[DETAILED-CARD]", "observable not recognized $data")
         }
     }
 
-    private fun initData() {
+    private fun init() {
         // User, Title, Description, Categories, Link, Multimedia, Comments and SettingsButton
-        setUser()
-        (findViewById(R.id.title) as TextView).text = selectedCard.title
-        (findViewById(R.id.description) as TextView).text = selectedCard.description
-        setCategories()
-        setLink()
-        setMultimedia()
-        setSettingsButton()
+        initUser()
+        findViewById<TextView>(R.id.title).text = selectedCard.title
+        findViewById<TextView>(R.id.description).text = selectedCard.description
+        initCategories()
+        initLink()
+        initMultimedia()
+        initSettingsButton()
 
         // Date
         val date = Date(selectedCard.timestamp.toLong() * 1000)
-        (findViewById(R.id.date) as TextView).text = java.text.SimpleDateFormat("yyyy-MM-dd' - 'HH:mm:ss", Locale.ITALY).format(date)
+        (findViewById(R.id.date) as TextView).text = java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(date)
 
         // Profile Image
         Log.e("[DETAILED-CARD]", selectedCard.userObj.profile_image)
@@ -114,7 +127,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     }
 
-    fun setUser() {
+    fun initUser() {
         findViewById<TextView>(R.id.user).text = "${selectedCard.userObj.name} ${selectedCard.userObj.surname}"
 
         findViewById<TextView>(R.id.user)!!.setOnClickListener {
@@ -131,26 +144,23 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setRatingBar(user: User) {
+    fun initRatingBar(user: User) {
         var ratingBar = findViewById(R.id.ratings) as RatingBar
         var finalRatingBar = findViewById(R.id.final_ratings) as RatingBar
         ratingBar.rating = selectedCard.ratings_average
         finalRatingBar.rating = selectedCard.ratings_average
 
         // Show the FinalRatingBar if the user has already voted in the past
-        Log.e("[VOTES Users]", selectedCard.ratings_users.toString())
-        Log.e("[VOTES Average]", selectedCard.ratings_average.toString())
-        Log.e("[VOTES Count]", selectedCard.ratings_count.toString())
         if(selectedCard.ratings_users.containsKey(user.id)) {
             ratingBar.visibility = View.GONE
             finalRatingBar.visibility = View.VISIBLE
-            (findViewById(R.id.ratings_title) as TextView).text = "Ratings average"
+            findViewById<TextView>(R.id.ratings_title).text = "Ratings average"
         }
 
         ratingBar.setOnRatingBarChangeListener { ratings, value, fromUser ->
             run {
                 if (fromUser) {
-                    (findViewById(R.id.ratings_title) as TextView).text = "Ratings average"
+                    findViewById<TextView>(R.id.ratings_title).text = "Ratings average"
 
                     // Calc the average
                     selectedCard.ratings_average = ((selectedCard.ratings_average * selectedCard.ratings_count) + value) / (selectedCard.ratings_count + 1)
@@ -177,17 +187,17 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setMultimedia() {
-        val containerMultimedia = findViewById(R.id.container_multimedia) as LinearLayout
+    fun initMultimedia() {
+        val scale = resources.displayMetrics.density
+        val containerMultimedia = findViewById<LinearLayout>(R.id.container_multimedia)
         containerMultimedia.removeAllViews()
+
         var newLinearLayout = LinearLayout(applicationContext)
         newLinearLayout.orientation = LinearLayout.HORIZONTAL
         newLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
         containerMultimedia.addView(newLinearLayout)
 
-        val scale = resources.displayMetrics.density
         var paramsRow : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
-        var paramsImage = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
 
         if (selectedCard.multimedia.size == 1) {
             var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
@@ -201,8 +211,8 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
             for (i in selectedCard.multimedia.indices) {
                 var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
-                var imageView = ImageView(applicationContext)
-                imageView.setOnClickListener{ openMultimediaActivity() }
+                row.setOnClickListener{ openMultimediaActivity() }
+
                 if (row.childCount == 2) {
                     row = LinearLayout(applicationContext)
                     row.layoutParams = paramsRow
@@ -210,17 +220,51 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                     containerMultimedia.addView(row)
                 }
 
-                imageView.setPadding(5,5,5,5)
-                imageView.layoutParams = paramsImage
+                if (selectedCard.multimedia[i].contains("video")) { // If media is a video, setThumbnail to imageView and user ExoPlayer with disabled controls
+                    manageVideo(row, selectedCard.multimedia[i])
 
-                if (selectedCard.multimedia[i].contains("video")) { // If media is a video, setThumbnail to imageView
-                    // Do Nothing
                 } else if (selectedCard.multimedia[i].contains("image")) { // else, set image
-                    Picasso.get().load(selectedCard.multimedia[i]).centerCrop().fit().into(imageView)
+                    manageImage(row, selectedCard.multimedia[i])
                 }
-                row.addView(imageView)
             }
         }
+    }
+
+    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
+    fun manageVideo(row: LinearLayout, videoPath: String) {
+        val scale = resources.displayMetrics.density
+
+        var playerView = PlayerView(applicationContext)
+        val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
+        var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(Uri.parse(videoPath))
+        var thumbnail = ImageView(applicationContext)
+
+        listOfVideoPlayers.add(player)
+        playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
+        playerView.setPadding(5,5,5,5)
+        playerView.player = player
+        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
+        playerView.useController = false
+
+        thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
+        thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
+        thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
+
+        playerView.overlayFrameLayout.addView(thumbnail)
+        player.prepare(mediaSource)
+
+        row.addView(playerView)
+    }
+
+    fun manageImage(row: LinearLayout, imagePath: String) {
+        val scale = resources.displayMetrics.density
+
+        var imageView = ImageView(applicationContext)
+        imageView.setPadding(5,5,5,5)
+        imageView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
+
+        Picasso.get().load(imagePath).centerCrop().fit().into(imageView)
+        row.addView(imageView)
     }
 
     fun openMultimediaActivity() {
@@ -229,19 +273,19 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         startActivityForResult(intent, 1)
     }
 
-    fun setComments(user: User) {
-        var cardRecyclerView = findViewById(R.id.recycler_comments) as RecyclerView
-        val publishComment = findViewById(R.id.publish_comment) as MaterialButton
+    fun initComments(user: User) {
+        var cardRecyclerView = findViewById<RecyclerView>(R.id.recycler_comments)
+        val publishComment = findViewById<MaterialButton>(R.id.publish_comment)
 
         val mLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL,false)
-        cardRecyclerView?.layoutManager = mLayoutManager
+        cardRecyclerView.layoutManager = mLayoutManager
         var commentAdapter = CommentAdapter(selectedCard.comments as ArrayList<Comment>)
-        cardRecyclerView?.adapter = commentAdapter
+        cardRecyclerView.adapter = commentAdapter
 
         publishComment.setOnClickListener(View.OnClickListener { addComment(user) })
     }
 
-    fun setCategories() {
+    fun initCategories() {
         var containerCategories = findViewById(R.id.container_categories) as ChipGroup
         containerCategories.removeAllViews()
         var tabs = tabsObs.getValue() as ArrayList<Tab>
@@ -258,7 +302,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setLink() {
+    fun initLink() {
         if (selectedCard.link != "") {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
@@ -273,7 +317,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    fun setSettingsButton() {
+    fun initSettingsButton() {
         if (FirebaseUtils.isCurrentUser(selectedCard.userObj.id)) {
             findViewById<MaterialButton>(R.id.settings_button).visibility = View.VISIBLE
 
@@ -285,12 +329,10 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener() {
                     if (it.title == "Edit Card") {
                         editCard()
-                        true
                     } else if (it.title == "Delete Card") {
                         deleteCard()
-                        true
                     }
-                    false
+                    true
                 })
                 popup.show()
             })
@@ -301,11 +343,11 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         val intent = Intent(applicationContext, EditCardActivity::class.java)
         intent.putExtra("card", selectedCard)
         applicationContext.startActivity(intent)
-        initData()
+        init()
     }
 
     fun deleteCard() {
-        Log.e("[DELETE CARD]", "Missing Function")
+        CardController.deleteCard(selectedCard.id)
     }
 
     fun addComment(user: User) {
@@ -356,6 +398,11 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         tabsObs.deleteObserver(this)
         cardsObs.deleteObserver(this)
         userObs.deleteObserver(this)
+        if (listOfVideoPlayers.size > 0) {
+            for (player in listOfVideoPlayers) {
+                player.release()
+            }
+        }
     }
 
 }
