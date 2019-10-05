@@ -302,17 +302,18 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
+    var linkPreviewFragment = LinkPreviewFragment()
     fun initLink() {
         if (selectedCard.link != "") {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val linkPreviewFragment = LinkPreviewFragment()
             val arguments = Bundle()
-            var containerLink = findViewById(R.id.container_link) as LinearLayout
-            containerLink.removeAllViews()
+            fragmentTransaction.remove(linkPreviewFragment)
+            linkPreviewFragment = LinkPreviewFragment()
             arguments.putString("URL", selectedCard.link)
             linkPreviewFragment.setArguments(arguments)
-            fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
+            fragmentTransaction.replace(R.id.container_link, linkPreviewFragment)
+            fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
     }
@@ -343,6 +344,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         val intent = Intent(applicationContext, EditCardActivity::class.java)
         intent.putExtra("card", selectedCard)
         applicationContext.startActivity(intent)
+        Log.d("[AFTER ACTIVITY]", "Init Card")
         init()
     }
 

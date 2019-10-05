@@ -77,6 +77,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
+    var linkPreviewFragment = LinkPreviewFragment()
     fun initLink() {
         val linkBtn = findViewById(R.id.link_btn) as Button
         linkBtn.setOnClickListener(View.OnClickListener { addLink() })
@@ -84,13 +85,13 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         if (selectedCard.link != "") {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val linkPreviewFragment = LinkPreviewFragment()
             val arguments = Bundle()
-            var addedLinkLayout = findViewById(R.id.added_link) as LinearLayout
-            addedLinkLayout.removeAllViews()
+            fragmentTransaction.remove(linkPreviewFragment)
+            linkPreviewFragment = LinkPreviewFragment()
             arguments.putString("URL", selectedCard.link)
             linkPreviewFragment.setArguments(arguments)
-            fragmentTransaction.add(R.id.added_link, linkPreviewFragment)
+            fragmentTransaction.replace(R.id.added_link, linkPreviewFragment)
+            fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
     }
@@ -202,43 +203,39 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
 
         var paramsRow : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
 
-        if (selectedCard.multimedia.size == 1) {
+        for (i in selectedCard.multimedia.indices) {
             var row = addedMultimedia.getChildAt(addedMultimedia.childCount - 1) as LinearLayout
+            // row.setOnClickListener{ openMultimediaActivity() }
 
-            var imageView = ImageView(applicationContext)
-            imageView.setPadding(5,5,5,5)
+            if (row.childCount == 2) {
+                row = LinearLayout(applicationContext)
+                row.layoutParams = paramsRow
+                row.orientation = LinearLayout.HORIZONTAL
+                addedMultimedia.addView(row)
+            }
 
-            Picasso.get().load(selectedCard.multimedia[0]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).onlyScaleDown().centerInside().into(imageView)
-            row.addView(imageView)
-        } else if (selectedCard.multimedia.size > 0) {
-
-            for (i in selectedCard.multimedia.indices) {
-                var row = addedMultimedia.getChildAt(addedMultimedia.childCount - 1) as LinearLayout
-                // row.setOnClickListener{ openMultimediaActivity() }
-
-                if (row.childCount == 2) {
-                    row = LinearLayout(applicationContext)
-                    row.layoutParams = paramsRow
-                    row.orientation = LinearLayout.HORIZONTAL
-                    addedMultimedia.addView(row)
-                }
-
-                if (selectedCard.multimedia[i].contains("video")) { // If media is a video, setThumbnail to imageView and user ExoPlayer with disabled controls
-                    manageVideo(row, selectedCard.multimedia[i])
-                } else if (selectedCard.multimedia[i].contains("image")) { // else, set image
-                    manageImage(row, selectedCard.multimedia[i])
-                }
+            if (selectedCard.multimedia[i].contains("video")) { // If media is a video, setThumbnail to imageView and user ExoPlayer with disabled controls
+                manageVideo(row, selectedCard.multimedia[i], i)
+            } else if (selectedCard.multimedia[i].contains("image")) { // else, set image
+                manageImage(row, selectedCard.multimedia[i], i)
             }
         }
 
     }
 
-    fun deleteMedia(path: String) {
-        Log.d("[DELETE MEDIA]", path)
+    fun deleteMedia(index: Int) {
+        Log.d("[DELETE MEDIA]", selectedCard.multimedia.toString())
+        if (selectedCard.multimedia.size > 0) {
+            selectedCard.multimedia.removeAt(index)
+            Log.d("[DELETE MEDIA]", index.toString())
+            initMultimedia()
+        } else {
+            Log.d("[DELETE MEDIA]", "There aren't images or videos")
+        }
     }
 
     var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
-    fun manageVideo(row: LinearLayout, videoPath: String) {
+    fun manageVideo(row: LinearLayout, videoPath: String, index: Int) {
         val scale = resources.displayMetrics.density
 
         var playerView = PlayerView(applicationContext)
@@ -256,7 +253,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
         thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
         thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        thumbnail.setOnClickListener { deleteMedia(videoPath) }
+        thumbnail.setOnClickListener { deleteMedia(index) }
 
         playerView.overlayFrameLayout.addView(thumbnail)
         player.prepare(mediaSource)
@@ -264,13 +261,13 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         row.addView(playerView)
     }
 
-    fun manageImage(row: LinearLayout, imagePath: String) {
+    fun manageImage(row: LinearLayout, imagePath: String, index: Int) {
         val scale = resources.displayMetrics.density
 
         var imageView = ImageView(applicationContext)
         imageView.setPadding(5,5,5,5)
         imageView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-        imageView.setOnClickListener { deleteMedia(imagePath) }
+        imageView.setOnClickListener { deleteMedia(index) }
 
         Picasso.get().load(imagePath).centerCrop().fit().into(imageView)
         row.addView(imageView)
