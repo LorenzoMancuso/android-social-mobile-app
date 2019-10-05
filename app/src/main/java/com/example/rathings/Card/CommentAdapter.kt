@@ -1,12 +1,16 @@
 package com.example.rathings.Card
 
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.HomeActivity
 import com.example.rathings.R
+import com.example.rathings.User.ProfileActivity
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -29,6 +33,22 @@ class CommentAdapter(private val mDataList: ArrayList<Comment>) : RecyclerView.A
         holder.text.text = mDataList[position].text
         if(mDataList[position].userObj.profile_image != "") {
             Picasso.get().load(mDataList[position].userObj.profile_image).into(holder.profile_image)
+        }
+
+        holder.profile_image.setOnClickListener { moveToUser(holder, position) }
+        holder.user.setOnClickListener { moveToUser(holder, position) }
+    }
+
+    fun moveToUser(holder: CommentViewHolder, position: Int) {
+        val uid = mDataList[position].userObj.id
+        if(FirebaseUtils.isCurrentUser(uid)){
+            val intent = Intent(holder.itemView.context, HomeActivity::class.java)
+            intent.putExtra("mode", "profile");
+            holder.itemView.context.startActivity(intent)
+        }else{
+            val intent = Intent(holder.itemView.context, ProfileActivity::class.java)
+            intent.putExtra("user", uid);
+            holder.itemView.context.startActivity(intent)
         }
     }
 

@@ -58,13 +58,31 @@
                         android:gravity="center"
                         android:id="@+id/txt_country"/>
 
-                <Button
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                        android:id="@+id/info_buttons_section"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/btn_edit"
-                        android:backgroundTint="#FFF"
-                        android:textColor="#F00"
-                        android:text="edit"/>
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="#FFF"
+                        android:paddingBottom="10dp">
+                        <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btn_edit"
+                                android:backgroundTint="#FFF"
+                                android:layout_margin="5dp"
+                                android:textColor="#F00"
+                                android:text="edit"/>
+                        <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btn_signout"
+                                android:layout_margin="5dp"
+                                android:backgroundTint="#F00"
+                                android:textColor="#FFF"
+                                android:text="sign out"/>
+                </LinearLayout>
             </LinearLayout>
 
             <!--follower / followed-->

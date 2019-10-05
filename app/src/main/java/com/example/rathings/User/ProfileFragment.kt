@@ -1,5 +1,6 @@
 package com.example.rathings.User
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -16,7 +17,12 @@ import android.widget.TextView
 import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
+import com.example.rathings.LoginActivity
 import com.example.rathings.R
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
@@ -45,6 +51,9 @@ class ProfileFragment : Fragment(), Observer {
 
     private var listener: OnFragmentInteractionListener? = null
 
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         /**CONSTRUCTOR INIT*/
         super.onCreate(savedInstanceState)
@@ -54,10 +63,37 @@ class ProfileFragment : Fragment(), Observer {
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
+        /**LOGOUT INIT*/
+        auth = FirebaseAuth.getInstance()
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this.activity as Activity, gso)
+        /**END LOGOUT INIT*/
+
     }
 
     fun goToEdit(){
         val intent = Intent(this.context, ModifyAccountActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun signOut() {
+        //Firebase Sign Out
+        auth.signOut()
+
+        // Google revoke access
+        googleSignInClient.revokeAccess().addOnCompleteListener(this.activity as Activity) {
+            Log.e("[SIGN OUT]", "googleRevokeAccess:success")
+        }
+
+        googleSignInClient.signOut().addOnCompleteListener(this.activity as Activity) {
+            Log.e("[SIGN OUT]", "googleSignOut:success")
+        }
+
+        val intent = Intent(this.activity as Activity, LoginActivity::class.java)
         startActivity(intent)
     }
 
@@ -72,6 +108,7 @@ class ProfileFragment : Fragment(), Observer {
         super.onViewCreated(view, savedInstanceState)
 
         view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener { goToEdit() }
+        view?.findViewById<Button>(R.id.btn_signout)!!.setOnClickListener { signOut() }
 
         //call for get profile info
         FirebaseUtils.getProfile(null)
