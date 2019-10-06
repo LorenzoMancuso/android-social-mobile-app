@@ -302,18 +302,15 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         }
     }
 
-    var linkPreviewFragment = LinkPreviewFragment()
     fun initLink() {
         if (selectedCard.link != "") {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             val arguments = Bundle()
-            fragmentTransaction.remove(linkPreviewFragment)
-            linkPreviewFragment = LinkPreviewFragment()
+            var linkPreviewFragment = LinkPreviewFragment()
             arguments.putString("URL", selectedCard.link)
             linkPreviewFragment.setArguments(arguments)
-            fragmentTransaction.replace(R.id.container_link, linkPreviewFragment)
-            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
             fragmentTransaction.commit()
         }
     }

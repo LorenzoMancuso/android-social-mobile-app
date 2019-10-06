@@ -1,5 +1,6 @@
 package com.example.rathings.User
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Half.toFloat
@@ -136,6 +137,13 @@ class ProfileActivity : AppCompatActivity(), Observer {
         Log.d("[PROFILE-ACTIVITY]", "users/${localUserProfile.id}/")
     }
 
+    fun goToFollowList(requestType: String, followList: MutableList<Any>) {
+        val intent = Intent(this, FollowListActivity::class.java)
+        intent.putExtra("requestType", requestType)
+        intent.putExtra("followList", followList as java.util.ArrayList<String>)
+        startActivity(intent)
+    }
+
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             localUserProfileObservable -> {
@@ -151,6 +159,9 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     findViewById<TextView>(R.id.txt_country).text = "${user.city}, ${user.country}"
                     findViewById<TextView>(R.id.txt_followers).text = "Followers: ${user.followers.size}"
                     findViewById<TextView>(R.id.txt_followed).text = "Followed: ${user.followed.size}"
+
+                    findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }
+                    findViewById<TextView>(R.id.txt_followed)!!.setOnClickListener{ goToFollowList("Followed", user.followed) }
 
                     val scale = resources.displayMetrics.density
 
