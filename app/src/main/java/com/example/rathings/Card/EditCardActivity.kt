@@ -77,7 +77,6 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
-    var linkPreviewFragment = LinkPreviewFragment()
     fun initLink() {
         val linkBtn = findViewById(R.id.link_btn) as Button
         linkBtn.setOnClickListener(View.OnClickListener { addLink() })
@@ -86,12 +85,10 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             val arguments = Bundle()
-            fragmentTransaction.remove(linkPreviewFragment)
-            linkPreviewFragment = LinkPreviewFragment()
+            var linkPreviewFragment = LinkPreviewFragment()
             arguments.putString("URL", selectedCard.link)
             linkPreviewFragment.setArguments(arguments)
-            fragmentTransaction.replace(R.id.added_link, linkPreviewFragment)
-            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.add(R.id.added_link, linkPreviewFragment)
             fragmentTransaction.commit()
         }
     }
