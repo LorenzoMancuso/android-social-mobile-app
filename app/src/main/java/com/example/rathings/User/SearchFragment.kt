@@ -74,9 +74,11 @@ class SearchFragment : Fragment(), Observer {
         var filteredUsers = ArrayList(listOfUsers.filter({(it.name + " " + it.surname).contains(user_text, ignoreCase = true) || (it.surname + " " + it.name).contains(user_text, ignoreCase = true)}))
         if (filteredUsers.isNotEmpty()) {
             view.findViewById<TextView>(R.id.no_users).visibility = View.GONE
+            view.findViewById<RecyclerView>(R.id.recycler_users).visibility = View.VISIBLE
             initUsers(filteredUsers, view)
         } else {
             view.findViewById<TextView>(R.id.no_users).visibility = View.VISIBLE
+            view.findViewById<RecyclerView>(R.id.recycler_users).visibility = View.GONE
         }
     }
 
