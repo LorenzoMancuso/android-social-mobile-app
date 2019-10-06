@@ -160,17 +160,12 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         val scale = holder.itemView.resources.displayMetrics.density
 
         if (mDataList[position].multimedia[index].contains("image")) {
-            if (index == 0) {
-                var media = ImageView(holder.itemView.context)
-                Picasso.get().load(mDataList[position].multimedia[index]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).centerInside().into(media)
-                holder.first_element.addView(media)
+            var imageView = ImageView(holder.itemView.context)
+            imageView.setPadding(5, 5, 5, 5)
+            imageView.layoutParams = LinearLayout.LayoutParams((120 * scale + 0.5f).toInt(), (120 * scale + 0.5f).toInt(), 1F)
 
-            } else {
-                var imageView = ImageView(holder.itemView.context)
-                imageView.setPadding(5, 5, 5, 5)
-                Picasso.get().load(mDataList[position].multimedia[index]).centerCrop().resize((100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt()).into(imageView)
-                holder.container_other_images.addView(imageView)
-            }
+            Picasso.get().load(mDataList[position].multimedia[index]).centerCrop().fit().into(imageView)
+            holder.container_other_images.addView(imageView)
 
         } else if (mDataList[position].multimedia[index].contains("video")) {
             var playerView = PlayerView(holder.itemView.context)
@@ -178,17 +173,13 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(holder.itemView.context, "rathings")).createMediaSource(Uri.parse(mDataList[position].multimedia[index]))
             var thumbnail = ImageView(holder.itemView.context)
 
-            if (index == 0) {
-                playerView.layoutParams = LinearLayout.LayoutParams((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt(), 1F)
-                holder.first_element.addView(playerView)
-            } else {
-                playerView.layoutParams = LinearLayout.LayoutParams((100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt(), 1F)
-                holder.container_other_images.addView(playerView)
-            }
+            playerView.layoutParams = LinearLayout.LayoutParams((120 * scale + 0.5f).toInt(), (120 * scale + 0.5f).toInt(), 1F)
+            holder.container_other_images.addView(playerView)
 
             listOfVideoPlayers.add(player)
             playerView.setPadding(5,5,5,5)
             playerView.player = player
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
             playerView.useController = false
 
             thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
@@ -204,16 +195,10 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             /*var imageView = ImageView(holder.itemView.context)
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             var bitmap = retriveVideoFrameFromVideo(mDataList[position].multimedia[index])
-            if (index == 0) {
-                bitmap = Bitmap.createScaledBitmap(bitmap, (300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt(), false)
-                imageView.setImageBitmap(bitmap)
-                holder.first_element.addView(imageView)
-            } else {
-                bitmap = Bitmap.createScaledBitmap(bitmap, (100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt(), false)
-                imageView.setPadding(5, 5, 5, 5)
-                imageView.setImageBitmap(bitmap)
-                holder.container_other_images.addView(imageView)
-            }*/
+            bitmap = Bitmap.createScaledBitmap(bitmap, (100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt(), false)
+            imageView.setPadding(5, 5, 5, 5)
+            imageView.setImageBitmap(bitmap)
+            holder.container_other_images.addView(imageView)*/
         }
 
     }
