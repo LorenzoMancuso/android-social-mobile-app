@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -321,23 +322,24 @@ object FirebaseUtils {
     }
 
     fun getNotifications(): CustomObservable {
-        getPrimaryProfile().addObserver(object: Observer {
-            override fun update(o: Observable?, arg: Any?) {
-                var user = (o as CustomObservable).getValue() as User
+        var user: User
+        try {
+            user = getPrimaryProfile().getValue() as User
+            /**Subscribe user's notifications only for update pourpose, all notifications are already in user object*/
+            FirebaseUtils.database.child("users/${user.id}/notifications").addValueEventListener(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        notificationsObservable.setValue(ArrayList(user.notifications.sortedWith(compareByDescending({ it.timestamp }))))
+                    }
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+                })
+        } catch (e:Exception) {
+            Log.e("[FIREBASE-UTILS]", "getNotifications error")
+            notificationsObservable.setValue(ArrayList<Notification>())
+        }
 
-                FirebaseUtils.database.child("users/${user.id}/notifications").addValueEventListener(
-                    object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            for (singleSnapshot in dataSnapshot.children) {
-                                notificationsObservable.setValue(ArrayList(user.notifications.sortedWith(compareByDescending({ it.timestamp }))))
-                            }
-                        }
-                        override fun onCancelled(p0: DatabaseError) {
-                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                        }
-                    })
-            }
-        })
         return notificationsObservable
     }
 }
