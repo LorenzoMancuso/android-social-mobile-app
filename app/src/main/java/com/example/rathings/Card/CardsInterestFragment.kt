@@ -66,6 +66,8 @@ class CardsInterestFragment : Fragment(), Observer {
         super.onHiddenChanged(hidden)
         if (!hidden) {
             interestCardsObs.addObserver(this)
+        } else {
+            interestCardsObs.deleteObserver(this)
         }
     }
 
@@ -76,7 +78,7 @@ class CardsInterestFragment : Fragment(), Observer {
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     updateCardFragment(cards)
-                    interestCardsObs.deleteObserver(this)
+                    //interestCardsObs.deleteObserver(this)
                     Log.d("[CARD-FRAGMENT]", "observable interest cards " + cards.toString())
                 }
             }

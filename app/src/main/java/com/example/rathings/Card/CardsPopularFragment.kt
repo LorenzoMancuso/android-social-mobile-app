@@ -39,6 +39,7 @@ class CardsPopularFragment : Fragment(), Observer {
     var popularCardObs = CardController.popularCardObs
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("[CARD-FRAGMENT]", "CREATE POPULAR CARDS FRAGMENT ")
         super.onCreate(savedInstanceState)
         arguments?.let {}
         popularCardObs.addObserver(this)
@@ -58,16 +59,17 @@ class CardsPopularFragment : Fragment(), Observer {
     }
 
     override fun onDestroy() {
+        Log.d("[CARD-FRAGMENT]", "DESTROY POPULAR CARDS FRAGMENT ")
         super.onDestroy()
         popularCardObs.deleteObserver(this)
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
+    /*override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
             popularCardObs.addObserver(this)
         }
-    }
+    }*/
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
@@ -76,7 +78,7 @@ class CardsPopularFragment : Fragment(), Observer {
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     updateCardFragment(cards)
-                    popularCardObs.deleteObserver(this)
+                    //popularCardObs.deleteObserver(this)
                     Log.d("[CARD-FRAGMENT]", "observable popular cards " + cards.toString())
                 }
             }
@@ -85,6 +87,7 @@ class CardsPopularFragment : Fragment(), Observer {
     }
 
     fun updateCardFragment(cards:ArrayList<Card>){
+        Log.d("[CARD-FRAGMENT]", "UPDATE POPULAR CARDS FRAGMENT $cards")
         mRecyclerView = view?.findViewById(R.id.my_recycler_view)
         val mLayoutManager = LinearLayoutManager(
             super.getContext(),
