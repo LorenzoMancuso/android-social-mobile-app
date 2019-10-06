@@ -27,6 +27,7 @@ object CardController: Observer {
 
         FirebaseUtils.getPrimaryProfile().addObserver( object: Observer{
             override fun update(observableObj: Observable?, data: Any?) {
+                Log.d("[CARD-CONTROLLER]", "***Primary profile observable in popular cards***")
                 val userObs = observableObj as CustomObservable
                 val user = userObs.getValue() as User
                 var popularCards: ArrayList<Card>

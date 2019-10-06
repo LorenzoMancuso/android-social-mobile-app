@@ -279,13 +279,14 @@ object FirebaseUtils {
                                     for(card in sortedList){
                                         if (card.user==user.id) {
                                             card.userObj=user
+                                            Log.e("[FIREBASE-UTILS]", "onDataChange card ${card.toString()}")
+
                                         }
                                         for (comment in card.comments) {
                                             if (comment.user == user.id) {
                                                 comment.userObj = user
                                             }
                                         }
-                                        Log.e("[FIREBASE-UTILS]", "onDataChange card ${card.toString()}")
                                     }
                                 }
                             }

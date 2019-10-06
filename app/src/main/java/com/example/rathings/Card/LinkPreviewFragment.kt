@@ -68,7 +68,14 @@ class LinkPreviewFragment : Fragment() {
                 data = metaData
                 Log.d("[RICH-PREVIEW]", metaData.imageurl)
                 if (metaData.imageurl != null && metaData.imageurl != "") {
-                    Picasso.get().load(metaData.imageurl).into(view?.findViewById(R.id.image) as ImageView)
+
+                    try {
+                        Picasso.get().load(metaData.imageurl).into(view?.findViewById(R.id.image) as ImageView)
+                    } catch(e: Exception){
+                        Log.w("[LINK-FRAGMENT]", e.toString())
+                        return
+                    }
+
                 } else {
                     Picasso.get().load(R.drawable.ic_broken_image_black_24dp).into(view?.findViewById(
                         R.id.image
