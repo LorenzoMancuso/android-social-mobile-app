@@ -25,58 +25,47 @@ object CardController: Observer {
 
     fun popularCards(cards: ArrayList<Card>){
 
-        FirebaseUtils.getPrimaryProfile().addObserver( object: Observer{
-            override fun update(observableObj: Observable?, data: Any?) {
-                Log.d("[CARD-CONTROLLER]", "***Primary profile observable in popular cards***")
-                val userObs = observableObj as CustomObservable
-                val user = userObs.getValue() as User
-                var popularCards: ArrayList<Card>
-                val interests = user.interests
+        val user = FirebaseUtils.getPrimaryProfile().getValue() as User
+        var popularCards: ArrayList<Card>
+        val interests = user.interests
 
-                popularCards = ArrayList(cards.filter {
-                    var count = 0.0
-                    for (cat in it.category) {
-                        if (cat in interests) {
-                            count++
-                        }
-                    }
-                    it.likelihood = count / (interests.size + it.category.size)
-                    it.likelihood > 0
-                })
-                popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
-                popularCardObs.setValue(popularCards)
+        popularCards = ArrayList(cards.filter {
+            var count = 0.0
+            for (cat in it.category) {
+                if (cat in interests) {
+                    count++
+                }
             }
+            it.likelihood = count / (interests.size + it.category.size)
+            it.likelihood > 0
         })
+        popularCards = ArrayList(popularCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
+        popularCardObs.setValue(popularCards)
+
     }
 
     fun interestCards(cards: ArrayList<Card>){
+        val user = FirebaseUtils.getPrimaryProfile().getValue() as User
+        var interestCards: ArrayList<Card>
+        val interests = user.interests
+        val followed = user.followed
 
-        FirebaseUtils.getPrimaryProfile().addObserver( object: Observer{
-            override fun update(observableObj: Observable?, data: Any?) {
-                val userObs = observableObj as CustomObservable
-                val user = userObs.getValue() as User
-                var interestCards: ArrayList<Card>
-                val interests = user.interests
-                val followed = user.followed
+        interestCards = ArrayList(cards.filter { followed.contains(it.user) })
 
-                interestCards = ArrayList(cards.filter { followed.contains(it.user) })
-
-                interestCards = ArrayList(interestCards.filter {
-                    var count = 0.0
-                    for (cat in it.category) {
-                        if (cat in interests) {
-                            count++
-                        }
-                    }
-                    it.likelihood = count / (interests.size + it.category.size)
-                    it.likelihood > 0
-                })
-                interestCards = ArrayList(cards.filter { it.likelihood <= 0 })
-
-                interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
-                interestCardObs.setValue(interestCards)
+        interestCards = ArrayList(interestCards.filter {
+            var count = 0.0
+            for (cat in it.category) {
+                if (cat in interests) {
+                    count++
+                }
             }
+            it.likelihood = count / (interests.size + it.category.size)
+            it.likelihood > 0
         })
+        interestCards = ArrayList(cards.filter { it.likelihood <= 0 })
+
+        interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
+        interestCardObs.setValue(interestCards)
     }
 
     fun deleteCard(id: String) {
