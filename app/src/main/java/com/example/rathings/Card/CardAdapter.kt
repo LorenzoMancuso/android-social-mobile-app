@@ -17,6 +17,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.User.ProfileActivity
@@ -32,6 +35,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.fragment_link_preview.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -85,13 +89,17 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         holder.date.text =  java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(Date(mDataList[position].timestamp.toLong() * 1000))
         Log.d("[PROFILE-IMAGE]", mDataList[position].userObj.profile_image)
 
-        val scale = holder.itemView.resources.displayMetrics.density
-
         // Set Profile Image
         if(mDataList[position].userObj.profile_image != "") {
-            Picasso.get().load(mDataList[position].userObj.profile_image).resize((50 * scale + 0.5f).toInt(), (50 * scale + 0.5f).toInt()).centerCrop().into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(mDataList[position].userObj.profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
         } else {
-            Picasso.get().load(R.drawable.default_avatar).resize((50 * scale + 0.5f).toInt(), (50 * scale + 0.5f).toInt()).centerCrop().into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(R.drawable.default_avatar)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
         }
 
         // Set Categories
@@ -113,18 +121,6 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                 break
             }
         }
-
-        /*for (i in 0 until mDataList[position].category.size) {
-            for (j in 0 until tabs.size) {
-                if (mDataList[position].category[i] == tabs[j].id) {
-                    var chip = Chip(holder.itemView.context)
-                    chip.text = tabs[j].value
-                    chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
-                    chip.setTextColor(Color.WHITE)
-                    holder.container_categories.addView(chip)
-                }
-            }
-        }*/
 
         // Set Multimedia
         if(mDataList[position].multimedia.size > 0) {
@@ -149,59 +145,28 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
     }
 
-    fun retriveVideoFrameFromVideo(videoPath: String): Bitmap {
-        var mediaMetadataRetriever = MediaMetadataRetriever()
-        mediaMetadataRetriever.setDataSource(videoPath, HashMap<String, String>())
-        var bitmap = mediaMetadataRetriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST)
-        mediaMetadataRetriever.release()
-        return bitmap
-    }
-
     fun manageMedia(holder: CardViewHolder, position: Int, index: Int) {
         val scale = holder.itemView.resources.displayMetrics.density
 
-        if (mDataList[position].multimedia[index].contains("image")) {
-            var imageView = ImageView(holder.itemView.context)
-            imageView.setPadding(5, 5, 5, 5)
-            imageView.layoutParams = LinearLayout.LayoutParams((120 * scale + 0.5f).toInt(), (120 * scale + 0.5f).toInt(), 1F)
+        var imageView = ImageView(holder.itemView.context)
+        imageView.setPadding(5, 5, 5, 5)
+        imageView.layoutParams = LinearLayout.LayoutParams((120 * scale + 0.5f).toInt(), (120 * scale + 0.5f).toInt(), 1F)
 
-            Picasso.get().load(mDataList[position].multimedia[index]).centerCrop().fit().into(imageView)
-            holder.container_other_images.addView(imageView)
+        if (mDataList[position].multimedia[index].contains("image")) {
+            Glide.with(holder.itemView.context).load(mDataList[position].multimedia[index])
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
 
         } else if (mDataList[position].multimedia[index].contains("video")) {
-            var playerView = PlayerView(holder.itemView.context)
-            val player = ExoPlayerFactory.newSimpleInstance(holder.itemView.context, DefaultTrackSelector())
-            var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(holder.itemView.context, "rathings")).createMediaSource(Uri.parse(mDataList[position].multimedia[index]))
-            var thumbnail = ImageView(holder.itemView.context)
-
-            playerView.layoutParams = LinearLayout.LayoutParams((120 * scale + 0.5f).toInt(), (120 * scale + 0.5f).toInt(), 1F)
-            holder.container_other_images.addView(playerView)
-
-            listOfVideoPlayers.add(player)
-            playerView.setPadding(5,5,5,5)
-            playerView.player = player
-            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
-            playerView.useController = false
-
-            thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
-            thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
-            thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-            playerView.overlayFrameLayout.addView(thumbnail)
-            player.prepare(mediaSource)
-
-            /* Version 2: Thumbnail with BITMAP
-            * PROBLEM: Really slow
-            **/
-            /*var imageView = ImageView(holder.itemView.context)
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            var bitmap = retriveVideoFrameFromVideo(mDataList[position].multimedia[index])
-            bitmap = Bitmap.createScaledBitmap(bitmap, (100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt(), false)
-            imageView.setPadding(5, 5, 5, 5)
-            imageView.setImageBitmap(bitmap)
-            holder.container_other_images.addView(imageView)*/
+            val options = RequestOptions().frame(1000.toLong())
+            Glide.with(holder.itemView.context).asBitmap().load(mDataList[position].multimedia[index]).apply(options)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
         }
 
+        holder.container_other_images.addView(imageView)
     }
 
     override fun getItemCount(): Int {
