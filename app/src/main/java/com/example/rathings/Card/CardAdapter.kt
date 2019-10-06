@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.cardview.widget.CardView
@@ -210,7 +211,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var user: TextView
         internal var id_user: TextView
-        internal var profile_image: CircleImageView
+        internal var profile_image: ImageView
         internal var container_multimedia: LinearLayout
         internal var first_element: LinearLayout
         internal var container_other_images: LinearLayout
@@ -228,7 +229,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             user = itemView.findViewById<View>(R.id.user) as TextView
             id_user = itemView.findViewById<View>(R.id.id_user) as TextView
             card = Card()
-            profile_image = itemView.findViewById<View>(R.id.profile_image) as CircleImageView
+            profile_image = itemView.findViewById<View>(R.id.profile_image) as ImageView
             container_multimedia = itemView.findViewById<View>(R.id.container_multimedia) as LinearLayout
             container_other_images = itemView.findViewById<View>(R.id.container_other_images) as LinearLayout
             title = itemView.findViewById<View>(R.id.title) as TextView
