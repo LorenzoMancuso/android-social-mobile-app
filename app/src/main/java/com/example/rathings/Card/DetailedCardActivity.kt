@@ -18,6 +18,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabController
@@ -118,7 +120,10 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         // Profile Image
         Log.e("[DETAILED-CARD]", selectedCard.userObj.profile_image)
         if(profile_image != null && selectedCard.userObj.profile_image != "") {
-            Picasso.get().load(selectedCard.userObj.profile_image).into(profile_image)
+            Glide.with(this).load(selectedCard.userObj.profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(profile_image)
         }
 
         // To initialize Rating Bar
@@ -204,8 +209,14 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
             var imageView = ImageView(applicationContext)
             imageView.setPadding(5,5,5,5)
+            imageView.layoutParams = LinearLayout.LayoutParams((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt(), 1F)
 
-            Picasso.get().load(selectedCard.multimedia[0]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).onlyScaleDown().centerInside().into(imageView)
+            Glide.with(this).load(selectedCard.multimedia[0])
+                .centerCrop().centerInside()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+
+            //Picasso.get().load(selectedCard.multimedia[0]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).onlyScaleDown().centerInside().into(imageView)
             row.addView(imageView)
         } else if (selectedCard.multimedia.size > 0) {
 
@@ -263,7 +274,11 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         imageView.setPadding(5,5,5,5)
         imageView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
 
-        Picasso.get().load(imagePath).centerCrop().fit().into(imageView)
+        Glide.with(this).load(imagePath)
+            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(imageView)
+
         row.addView(imageView)
     }
 

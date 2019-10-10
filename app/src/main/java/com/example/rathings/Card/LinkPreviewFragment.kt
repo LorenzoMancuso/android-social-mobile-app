@@ -12,8 +12,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.R
-import com.squareup.picasso.Picasso
 import io.github.ponnamkarthik.richlinkpreview.MetaData
 import io.github.ponnamkarthik.richlinkpreview.ResponseListener
 import io.github.ponnamkarthik.richlinkpreview.RichPreview
@@ -68,18 +69,20 @@ class LinkPreviewFragment : Fragment() {
                 data = metaData
                 Log.d("[RICH-PREVIEW]", metaData.imageurl)
                 if (metaData.imageurl != null && metaData.imageurl != "") {
-
                     try {
-                        Picasso.get().load(metaData.imageurl).into(view?.findViewById(R.id.image) as ImageView)
+                        Glide.with(view!!.context).load(metaData.imageurl)
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(view?.findViewById(R.id.image) as ImageView)
                     } catch(e: Exception){
                         Log.w("[LINK-FRAGMENT]", e.toString())
                         return
                     }
-
                 } else {
-                    Picasso.get().load(R.drawable.ic_broken_image_black_24dp).into(view?.findViewById(
-                        R.id.image
-                    ) as ImageView)
+                    Glide.with(view!!.context).load(R.drawable.ic_broken_image_black_24dp)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(view?.findViewById(R.id.image) as ImageView)
                 }
                 (view?.findViewById(R.id.title) as TextView)?.text = if (metaData.title.length > 32) metaData.title.substring(0, 30) + "..." else metaData.title
                 (view?.findViewById(R.id.description) as TextView)?.text = if (metaData.description.length > 32) metaData.description.substring(0, 55) + "..." else metaData.description

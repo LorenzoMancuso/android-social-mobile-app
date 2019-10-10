@@ -9,13 +9,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.R
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.Player
-import com.squareup.picasso.Picasso
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -62,7 +61,10 @@ class MultimediaActivity : AppCompatActivity() {
 
                 imageView.layoutParams = params
                 imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                Picasso.get().load(multimedia[i]).into(imageView)
+                Glide.with(this).load(multimedia[i])
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView)
                 newLinearLayout.addView(imageView)
 
                 container_images.addView(newLinearLayout)

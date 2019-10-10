@@ -7,22 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.HomeActivity
 import com.example.rathings.R
 import com.example.rathings.User.ProfileActivity
-import com.squareup.picasso.Picasso
 import java.util.*
 
 class CommentAdapter(private val mDataList: ArrayList<Comment>) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.comment, parent, false)
-        /*view?.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
-            val intent = Intent(parent.context, DetailedCardActivity::class.java)
-            intent.putExtra("card_position", view?.findViewById<TextView>(R.id.card_position).text);
-            parent.context.startActivity(intent)
-        }*/
         return CommentViewHolder(view)
     }
 
@@ -32,7 +28,10 @@ class CommentAdapter(private val mDataList: ArrayList<Comment>) : RecyclerView.A
         holder.date.text = java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(date)
         holder.text.text = mDataList[position].text
         if(mDataList[position].userObj.profile_image != "") {
-            Picasso.get().load(mDataList[position].userObj.profile_image).into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(mDataList[position].userObj.profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
         }
 
         holder.profile_image.setOnClickListener { moveToUser(holder, position) }
@@ -43,11 +42,11 @@ class CommentAdapter(private val mDataList: ArrayList<Comment>) : RecyclerView.A
         val uid = mDataList[position].userObj.id
         if(FirebaseUtils.isCurrentUser(uid)){
             val intent = Intent(holder.itemView.context, HomeActivity::class.java)
-            intent.putExtra("mode", "profile");
+            intent.putExtra("mode", "profile")
             holder.itemView.context.startActivity(intent)
         }else{
             val intent = Intent(holder.itemView.context, ProfileActivity::class.java)
-            intent.putExtra("user", uid);
+            intent.putExtra("user", uid)
             holder.itemView.context.startActivity(intent)
         }
     }

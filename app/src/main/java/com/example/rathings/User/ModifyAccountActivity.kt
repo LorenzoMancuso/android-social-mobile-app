@@ -7,14 +7,16 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.HomeActivity
 import com.example.rathings.R
@@ -22,8 +24,12 @@ import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_modify_account.*
+import kotlinx.android.synthetic.main.activity_modify_account.profile_image
+import kotlinx.android.synthetic.main.activity_modify_account.txt_country
+import kotlinx.android.synthetic.main.activity_modify_account.txt_name
+import kotlinx.android.synthetic.main.activity_modify_account.txt_profession
+import java.io.File
 import java.io.IOException
 import java.util.*
 
@@ -37,6 +43,9 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         setContentView(R.layout.activity_modify_account)
 
         localUserProfileObservable.addObserver(this)
+
+        var builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
 
         //call for get profile info
         FirebaseUtils.getProfile(null)
@@ -89,6 +98,9 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                     }
                     1 -> {
                         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                            // TODO: Use these methods to upload an image and not a thumbnail
+                            //var photoFile = createImageFile()
+                            //takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
                             takePictureIntent.resolveActivity(packageManager)?.also {
                                 startActivityForResult(takePictureIntent, 1)
                             }
@@ -97,6 +109,14 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 }
             })
         pictureDialog.show()
+    }
+
+    fun createImageFile(): File {
+        var timeStamp = System.currentTimeMillis()
+        var imageFileName = "rathings_photo" + timeStamp
+        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(imageFileName,".jpg",storageDir)
+        return image;
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -122,7 +142,10 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 }
             }
             uploadImage(filePath)
-            Picasso.get().load(filePath).centerCrop().fit().into(profileImageView)
+            Glide.with(this).load(filePath)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(profileImageView)
         }
     }
 
@@ -189,7 +212,10 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                     txt_profession?.text = Editable.Factory.getInstance().newEditable("${user.profession}")
 
                     if (user.profile_image != "") {
-                        Picasso.get().load(user.profile_image).centerCrop().fit().into(profile_image)
+                        Glide.with(this).load(user.profile_image)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
                     }
 
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")

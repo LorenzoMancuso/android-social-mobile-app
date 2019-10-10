@@ -14,6 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
@@ -23,7 +25,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
@@ -157,8 +158,15 @@ class ProfileFragment : Fragment(), Observer {
                     txt_followers?.text = "Followers: ${user.followers.size}"
                     txt_followed?.text = "Followed: ${user.followed.size}"
                     if(profile_image!=null && user.profile_image != "") {
-                        val scale = resources.displayMetrics.density
-                        Picasso.get().load(user.profile_image).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
+                        Glide.with(this).load(user.profile_image)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
+                    } else {
+                        Glide.with(this).load(R.drawable.default_avatar)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
                     }
 
                     view?.findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }

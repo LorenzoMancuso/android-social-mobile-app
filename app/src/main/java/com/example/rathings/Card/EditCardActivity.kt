@@ -14,6 +14,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabController
@@ -27,7 +29,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_card.*
 import kotlinx.android.synthetic.main.activity_modify_account.confirm_button
 import java.util.ArrayList
@@ -273,7 +274,11 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         imageView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
         imageView.setOnClickListener { deleteMedia(index) }
 
-        Picasso.get().load(imagePath).centerCrop().fit().into(imageView)
+        Glide.with(this).load(imagePath)
+            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(imageView)
+
         row.addView(imageView)
     }
 

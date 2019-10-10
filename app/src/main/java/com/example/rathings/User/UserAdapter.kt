@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.HomeActivity
 import com.example.rathings.R
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
@@ -39,7 +39,10 @@ class UserAdapter(private val mDataList: ArrayList<User>) : RecyclerView.Adapter
         holder.profession.text = mDataList[position].profession
         holder.country.text = mDataList[position].city + ", " + mDataList[position].country
         if(mDataList[position].profile_image != "") {
-            Picasso.get().load(mDataList[position].profile_image).into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(mDataList[position].profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
         }
     }
 

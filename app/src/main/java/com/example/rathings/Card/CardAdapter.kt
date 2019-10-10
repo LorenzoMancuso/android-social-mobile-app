@@ -2,11 +2,7 @@ package com.example.rathings.Card
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.media.MediaMetadataRetriever
-import android.net.Uri
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
@@ -23,19 +19,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.User.ProfileActivity
-import com.example.rathings.utils.CustomObservable
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.fragment_link_preview.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -62,18 +47,9 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         return CardViewHolder(view)
     }
 
-    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         // Set to false Recyclable to avoid delay on image download
         holder.setIsRecyclable(false)
-
-        // Clean old video players
-        // TODO: Find a method to RELEASE all players
-        if (listOfVideoPlayers.size > 0) {
-            for (player in listOfVideoPlayers) {
-                player.release()
-            }
-        }
 
         // Init all data
         holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
@@ -124,7 +100,6 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
         // Set Multimedia
         if(mDataList[position].multimedia.size > 0) {
-
             for (i in mDataList[position].multimedia.indices) {
                 if (i <= 3) {
                     manageMedia(holder, position, i)

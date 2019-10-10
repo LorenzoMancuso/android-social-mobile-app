@@ -3,7 +3,6 @@ package com.example.rathings.User
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Half.toFloat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
@@ -11,13 +10,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.Notification
-import com.example.rathings.NotificationUtils
 import com.example.rathings.R
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -163,12 +162,16 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }
                     findViewById<TextView>(R.id.txt_followed)!!.setOnClickListener{ goToFollowList("Followed", user.followed) }
 
-                    val scale = resources.displayMetrics.density
-
                     if(profile_image!=null && user.profile_image != "") {
-                        Picasso.get().load(user.profile_image).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
+                        Glide.with(this).load(user.profile_image)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
                     } else {
-                        Picasso.get().load(R.drawable.default_avatar).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
+                        Glide.with(this).load(R.drawable.default_avatar)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
                     }
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }

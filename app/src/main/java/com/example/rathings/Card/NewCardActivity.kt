@@ -19,6 +19,8 @@ import android.graphics.Color
 import android.text.InputType
 import android.util.Log
 import android.view.MenuItem
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabsActivity
@@ -28,7 +30,6 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.gms.tasks.Continuation
@@ -36,9 +37,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.card.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -128,7 +127,10 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 (findViewById(R.id.user) as TextView).text = "${user!!.name} ${user!!.surname}"
                 val profile_image = findViewById(R.id.profile_image) as CircleImageView
                 if(user.profile_image != "") {
-                    Picasso.get().load(user!!.profile_image).into(profile_image)
+                    Glide.with(this).load(user.profile_image)
+                        .centerCrop().circleCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(profile_image)
                 }
             }
         }
@@ -272,7 +274,10 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                             filePath = data?.data
                         }
 
-                        Picasso.get().load(filePath).centerCrop().fit().into(imageView)
+                        Glide.with(this).load(filePath)
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(imageView)
 
                         uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, "image")
                     } catch (e: IOException) {
