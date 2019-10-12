@@ -9,12 +9,15 @@
     <string name="sign_in_button">Sign in</string>
     <string name="sign_up_button">Sign up</string>
     <string name="google_button">Continue with Google</string>
+    <string name="sign_in_failed">Authentication failed %1$s</string>
+    <string name="sign_up_failed">Sign Up failed %1$s</string>
 
     <!-- General -->
     <string name="image_profile_description">Profile image</string>
     <string name="separator_text">OR</string>
     <string name="edit_button">Edit</string>
     <string name="name_surname">%1$s %2$s</string>
+    <string name="city_country">%1$s, %2$s</string>
     <string name="dialog_negative_button">Cancel</string>
 
     <!-- Detailed Card -->
@@ -81,6 +84,10 @@
     <!-- Profile -->
     <string name="add_follow">follow +</string>
     <string name="remove_follow">unfollow -</string>
+    <string name="cards_size">%1$d cards</string>
+    <string name="profile_rathing">Rathing %1$s</string>
+    <string name="followers_size">Followers: %1$d</string>
+    <string name="followed_size">Followed: %1$d</string>
 
     <!-- Tabs -->
     <string name="done_button">Done</string>
@@ -118,5 +125,10 @@
     <string name="comment_size">Comments: %1$d</string>
     <string name="other_tabs">+ %1$d Tabs</string>
     <string name="other_media">+ %1$d Media</string>
+
+    <!-- Notifications -->
+    <string name="follow_you">%1$s %2$s started to follow you.</string>
+    <string name="push_notification_title">You have a new notification!</string>
+    <string name="push_notification_message">Enter in Rathings for see what\'s up</string>
 
 </resources>

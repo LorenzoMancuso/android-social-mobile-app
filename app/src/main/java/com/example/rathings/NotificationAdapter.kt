@@ -21,7 +21,7 @@ class NotificationAdapter(private val mDataList: ArrayList<Notification>) : Recy
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-        val dateTime = java.util.Date(mDataList[position].timestamp.toLong() * 1000)
+        val dateTime = Date(mDataList[position].timestamp * 1000)
         holder.date.text = java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(dateTime)
         holder.text.text = "${mDataList[position].text}"
 

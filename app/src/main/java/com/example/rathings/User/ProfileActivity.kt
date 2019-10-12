@@ -100,10 +100,9 @@ class ProfileActivity : AppCompatActivity(), Observer {
 
         val timestamp = System.currentTimeMillis() / 1000L
         val split = userProfile.id.length/2
-        // TODO: Ripartire da qui con la localizzazione
         val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
             otherUserProfile.id,
-            "${otherUserProfile.name} ${otherUserProfile.surname} started to follow you.",
+            this.getString(R.string.follow_you, otherUserProfile.name, otherUserProfile.surname),
             timestamp,
             false,
             "profile",
@@ -154,11 +153,11 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     if(localPrimaryUserProfile.id!=""){
                         checkFollowRelation()
                     }
-                    findViewById<TextView>(R.id.txt_name).text = "${user.name} ${user.surname}"
-                    findViewById<TextView>(R.id.txt_profession).text = "${user.profession}"
-                    findViewById<TextView>(R.id.txt_country).text = "${user.city}, ${user.country}"
-                    findViewById<TextView>(R.id.txt_followers).text = "Followers: ${user.followers.size}"
-                    findViewById<TextView>(R.id.txt_followed).text = "Followed: ${user.followed.size}"
+                    findViewById<TextView>(R.id.txt_name).text = this.getString(R.string.name_surname, user.name, user.surname)
+                    findViewById<TextView>(R.id.txt_profession).text = user.profession
+                    findViewById<TextView>(R.id.txt_country).text = this.getString(R.string.city_country, user.city, user.country)
+                    findViewById<TextView>(R.id.txt_followers).text = this.getString(R.string.followers_size, user.followers.size)
+                    findViewById<TextView>(R.id.txt_followed).text = this.getString(R.string.followed_size, user.followed.size)
 
                     findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }
                     findViewById<TextView>(R.id.txt_followed)!!.setOnClickListener{ goToFollowList("Followed", user.followed) }
@@ -186,12 +185,12 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable lenght ${cards.size}")
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
 
-                    findViewById<TextView>(R.id.txt_post).text = "${cards.size} cards"
+                    findViewById<TextView>(R.id.txt_post).text = this.getString(R.string.cards_size, cards.size)
 
                     val tmp = ArrayList(cards.filter { it.ratings_average > 0 })
                     val avg = tmp.map { card -> card.ratings_average }.average().toFloat()
 
-                    findViewById<TextView>(R.id.txt_score).text = "Rathing ${Math.round((avg) * 10.0) / 10.0}"
+                    findViewById<TextView>(R.id.txt_score).text = this.getString(R.string.profile_rathing, (Math.round((avg) * 10.0) / 10.0).toString())
 
                     cardRecyclerView = findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)

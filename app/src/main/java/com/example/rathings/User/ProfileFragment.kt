@@ -152,11 +152,11 @@ class ProfileFragment : Fragment(), Observer {
                 val value=localUserProfileObservable.getValue()
                 if(value is User){
                     val user= value
-                    txt_name?.text = "${user.name} ${user.surname}"
-                    txt_profession?.text = "${user.profession}"
-                    txt_country?.text = "${user.city}, ${user.country}"
-                    txt_followers?.text = "Followers: ${user.followers.size}"
-                    txt_followed?.text = "Followed: ${user.followed.size}"
+                    txt_name?.text = this.getString(R.string.name_surname, user.name, user.surname)
+                    txt_profession?.text = user.profession
+                    txt_country?.text = this.getString(R.string.city_country, user.city, user.country)
+                    txt_followers?.text = this.getString(R.string.followers_size, user.followers.size)
+                    txt_followed?.text = this.getString(R.string.followed_size, user.followed.size)
                     if(profile_image!=null && user.profile_image != "") {
                         Glide.with(this).load(user.profile_image)
                             .centerCrop().circleCrop()
@@ -181,12 +181,12 @@ class ProfileFragment : Fragment(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
 
-                    txt_post.text = "${cards.size} cards"
+                    txt_post.text = this.getString(R.string.cards_size, cards.size)
 
                     val tmp = ArrayList(cards.filter { it.ratings_average > 0 })
                     val avg = tmp.map { card -> card.ratings_average }.average().toFloat()
 
-                    txt_score.text = "Rathing ${Math.round((avg) * 10.0) / 10.0}"
+                    txt_score.text = this.getString(R.string.profile_rathing, (Math.round((avg) * 10.0) / 10.0).toString())
 
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(super.getContext(),RecyclerView.VERTICAL,false)

@@ -87,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
                     // Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                    Snackbar.make(login_form, "Authentication Failed:  ${task.exception.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(login_form, this.getString(R.string.sign_in_failed, task.exception.toString().split(':')[1]), Snackbar.LENGTH_SHORT).show();
                 }
             }
     }
@@ -110,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Snackbar.make(login_form, "Signup Failed:  ${task.exception.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(login_form, this.getString(R.string.sign_up_failed, task.exception.toString().split(':')[1]), Snackbar.LENGTH_SHORT).show();
                 }
             }
     }
@@ -133,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
-                Snackbar.make(login_form, "Authentication Failed:  ${e.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(login_form, this.getString(R.string.sign_in_failed, e.toString().split(':')[1]), Snackbar.LENGTH_SHORT).show();
 
             }
         }
@@ -153,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    Snackbar.make(login_form, "Authentication Failed:  ${task.exception.toString().split(':')[1]}", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(login_form, this.getString(R.string.sign_in_failed, task.exception.toString().split(':')[1]), Snackbar.LENGTH_SHORT).show();
                 }
             }
     }

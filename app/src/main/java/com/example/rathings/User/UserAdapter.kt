@@ -35,9 +35,9 @@ class UserAdapter(private val mDataList: ArrayList<User>) : RecyclerView.Adapter
             }
         }
 
-        holder.name.text = "${mDataList[position].name} ${mDataList[position].surname}"
+        holder.name.text = holder.itemView.context.getString(R.string.name_surname, mDataList[position].name, mDataList[position].surname)
         holder.profession.text = mDataList[position].profession
-        holder.country.text = mDataList[position].city + ", " + mDataList[position].country
+        holder.country.text = holder.itemView.context.getString(R.string.city_country, mDataList[position].city, mDataList[position].country)
         if(mDataList[position].profile_image != "") {
             Glide.with(holder.itemView.context).load(mDataList[position].profile_image)
                 .centerCrop().circleCrop()
