@@ -5,13 +5,13 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.HomeActivity
 import com.example.rathings.R
-import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
 class UserAdapter(private val mDataList: ArrayList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -54,13 +54,13 @@ class UserAdapter(private val mDataList: ArrayList<User>) : RecyclerView.Adapter
         internal var name: TextView
         internal var profession: TextView
         internal var country: TextView
-        internal var profile_image: CircleImageView
+        internal var profile_image: ImageView
 
         init {
             name = itemView.findViewById<View>(R.id.name) as TextView
             profession = itemView.findViewById<View>(R.id.profession) as TextView
             country = itemView.findViewById<View>(R.id.country) as TextView
-            profile_image = itemView.findViewById<View>(R.id.profile_image) as CircleImageView
+            profile_image = itemView.findViewById<View>(R.id.profile_image) as ImageView
         }
     }
 }

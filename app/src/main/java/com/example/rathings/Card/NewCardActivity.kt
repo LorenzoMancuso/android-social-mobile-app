@@ -37,7 +37,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
-import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -125,7 +124,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
                 // Set User info
                 (findViewById(R.id.user) as TextView).text = "${user!!.name} ${user!!.surname}"
-                val profile_image = findViewById(R.id.profile_image) as CircleImageView
+                val profile_image = findViewById(R.id.profile_image) as ImageView
                 if(user.profile_image != "") {
                     Glide.with(this).load(user.profile_image)
                         .centerCrop().circleCrop()
