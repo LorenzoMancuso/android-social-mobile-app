@@ -76,25 +76,25 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         card.timestamp = (System.currentTimeMillis() / 1000).toInt()
 
         // Set OnClickListeners for buttons
-        val addCategories = findViewById(R.id.add_categories) as Button
+        val addCategories = findViewById<Button>(R.id.add_categories)
         addCategories.setOnClickListener(View.OnClickListener { addCategories() })
 
-        val publishBtn = findViewById(R.id.publish_card) as Button
+        val publishBtn = findViewById<Button>(R.id.publish_card)
         publishBtn.setOnClickListener(View.OnClickListener { publishCard() })
 
-        val linkBtn = findViewById(R.id.link_btn) as Button
+        val linkBtn = findViewById<Button>(R.id.link_btn)
         linkBtn.setOnClickListener(View.OnClickListener { addLink() })
 
-        var multimetiaBtn = findViewById(R.id.multimedia_btn) as Button
+        var multimetiaBtn = findViewById<Button>(R.id.multimedia_btn)
         multimetiaBtn.setOnClickListener(View.OnClickListener() {
             var popup = PopupMenu(this, multimetiaBtn);
-            popup.getMenuInflater().inflate(R.menu.multimedia, popup.getMenu())
+            popup.menuInflater.inflate(R.menu.multimedia, popup.menu)
 
             popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener() {
-                if (it.title == "Image") {
+                if (it.title == this.getString(R.string.multimedia_image)) {
                     chooseFile("image", 1)
                     true
-                } else if (it.title == "Video") {
+                } else if (it.title == this.getString(R.string.multimedia_video)) {
                     chooseFile("video", 2)
                     true
                 }
@@ -106,7 +106,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 return true
@@ -123,8 +123,8 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 card.user = user.id
 
                 // Set User info
-                (findViewById(R.id.user) as TextView).text = "${user!!.name} ${user!!.surname}"
-                val profile_image = findViewById(R.id.profile_image) as ImageView
+                findViewById<TextView>(R.id.user).text = this.getString(R.string.name_surname, user.name, user.surname)
+                val profile_image = findViewById<ImageView>(R.id.profile_image)
                 if(user.profile_image != "") {
                     Glide.with(this).load(user.profile_image)
                         .centerCrop().circleCrop()
@@ -144,29 +144,28 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
     fun addLink(): Boolean {
         var taskEditText = EditText(this)
-        taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-        var errorEditText = EditText(this)
+        taskEditText.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         var dialog = AlertDialog.Builder(this)
-        .setTitle("Add Link")
-        .setMessage("Write or paste here a link")
+        .setTitle(this.getString(R.string.add_link_dialog_title))
+        .setMessage(this.getString(R.string.add_link_dialog_message))
         .setView(taskEditText)
-        .setPositiveButton("Add", DialogInterface.OnClickListener() { dialog, which ->
+        .setPositiveButton(this.getString(R.string.add_link_dialog_positive_button), DialogInterface.OnClickListener() { dialog, which ->
             Log.d("[DIALOG]", taskEditText.text.toString())
 
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             val linkPreviewFragment = LinkPreviewFragment()
             val arguments = Bundle()
-            var addedLinkLayout = findViewById(R.id.added_link) as LinearLayout
+            var addedLinkLayout = findViewById<LinearLayout>(R.id.added_link)
             addedLinkLayout.removeAllViews()
             arguments.putString("URL", taskEditText.text.toString())
-            linkPreviewFragment.setArguments(arguments)
+            linkPreviewFragment.arguments = arguments
             fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
             fragmentTransaction.commit()
             addedLinkLayout.requestFocus()
             addedLink = taskEditText.text.toString()
         })
-        .setNegativeButton("Cancel", null)
+        .setNegativeButton(this.getString(R.string.dialog_negative_button), null)
         .create()
         dialog.show()
         return true
@@ -175,7 +174,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     private fun chooseFile(type: String, requestCode: Int) {
         val pictureDialog = AlertDialog.Builder(this)
         pictureDialog.setTitle("Select Action")
-        val pictureDialogItems = arrayOf("Select ${type} from gallery", "Do ${type} with camera")
+        val pictureDialogItems = arrayOf(this.getString(R.string.select_media_text, type), this.getString(R.string.do_media_text, type))
         pictureDialog.setItems(pictureDialogItems,
             DialogInterface.OnClickListener { dialog, which ->
                 when (which) {
@@ -205,7 +204,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         pictureDialog.show()
     }
 
-    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == 5) { // CASE Add Tab
@@ -217,7 +215,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
             listOfSelectedTabs = data?.extras?.get("added_categories") as ArrayList<Tab>
 
-            var addedCategories = findViewById(R.id.added_categories) as ChipGroup
+            var addedCategories = findViewById<ChipGroup>(R.id.added_categories)
 
             addedCategories.setOnCheckedChangeListener(ChipGroup.OnCheckedChangeListener() {chipGroup, id ->
                 Log.d("[CHIP-GROUP]", chipGroup.toString())
@@ -226,7 +224,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             addedCategories.removeAllViews()
             for(tab in listOfSelectedTabs) {
                 // Add id to publish card
-                listOfTabsIds.add(tab.id.toInt())
+                listOfTabsIds.add(tab.id)
 
                 // View value
                 var chip = Chip(this)
@@ -238,27 +236,26 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
                 chip.setOnCloseIconClickListener(View.OnClickListener { v ->
                     addedCategories.removeView(v)
-                    listOfTabsIds.remove(tab.id.toInt())
+                    listOfTabsIds.remove(tab.id)
                     listOfSelectedTabs.remove(tab)
                 })
             }
         } else { // CASE Add Multimedia
             if (data != null) {
-                val context = getApplicationContext()
-                val addedMultimediaLayout = findViewById(R.id.added_multimedia) as LinearLayout
+                val addedMultimediaLayout = findViewById<LinearLayout>(R.id.added_multimedia)
                 var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
                 val scale = resources.displayMetrics.density
 
                 if (row.childCount == 2) {
-                    row = LinearLayout(context)
+                    row = LinearLayout(this)
                     var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
                     row.layoutParams = params
                     row.orientation = LinearLayout.HORIZONTAL
                     addedMultimediaLayout.addView(row)
                 }
 
-                if (requestCode == 1 || requestCode == 3) { // PHOTO: 1 = select, 3 = do
-                    var imageView = ImageView(context)
+                if (requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) { // PHOTO: 1 = select, 3 = do <-> VIDEO: 2 = select, 4 = do
+                    var imageView = ImageView(this)
                     var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
                     imageView.setPadding(5,5,5,5)
                     imageView.layoutParams = params
@@ -278,33 +275,12 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(imageView)
 
-                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, "image")
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                } else if (requestCode == 2 || requestCode == 4) { // VIDEO: 2 = select, 4 = do
-                    try {
-                        var filePath = data?.data
+                        var type = "image"
+                        if (filePath.toString().contains("video")) {
+                            type = "video"
+                        }
 
-                        var playerView = PlayerView(applicationContext)
-                        val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
-                        var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(filePath)
-                        var thumbnail = ImageView(applicationContext)
-
-                        listOfVideoPlayers.add(player)
-                        playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-                        playerView.setPadding(5,5,5,5)
-                        playerView.player = player
-                        playerView.useController = false
-
-                        thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
-                        thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
-                        thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-                        playerView.overlayFrameLayout.addView(thumbnail)
-                        player.prepare(mediaSource)
-
-                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, playerView, "video")
+                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -322,13 +298,13 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
         val context = getApplicationContext()
         val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Uploading...")
+        progressDialog.setTitle(this.getString(R.string.upload_media_dialog_title))
         progressDialog.show()
 
         ref.putFile(filePath)
         .addOnFailureListener { e ->
             progressDialog.dismiss()
-            Toast.makeText(context, "Failed " + e.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
         }
         .addOnProgressListener { taskSnapshot ->
             if (taskSnapshot.totalByteCount > 3145728) { // If file is major than 3MB
@@ -336,11 +312,11 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             } else {
                 val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                     .totalByteCount
-                progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
+                progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress, progress.toInt()))
             }
         }
         .addOnCanceledListener {
-            Toast.makeText(context, "The file is major than 3 megabytes", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, this.getString(R.string.upload_toast_error_file_size), Toast.LENGTH_LONG).show()
             progressDialog.dismiss()
         }
         .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
@@ -358,7 +334,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 listOfDownloadUri.add(task.result.toString())
                 view.setOnClickListener { deleteMedia(task.result.toString(), row, view) }
                 progressDialog.dismiss()
-                Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
             } else {
                 // Handle failures
             }
@@ -369,29 +345,28 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     fun deleteMedia(uri: String, row: LinearLayout, view: View) {
         if (listOfDownloadUri.size > 0) {
             var taskEditText = EditText(this)
-            taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+            taskEditText.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             var dialog = AlertDialog.Builder(this)
-                .setTitle("Delete media")
-                .setMessage("Do you want delete this media?")
-                .setPositiveButton("Yes", DialogInterface.OnClickListener() { _, _ ->
+                .setTitle(this.getString(R.string.delete_media_dialog_title))
+                .setMessage(this.getString(R.string.delete_media_dialog_message))
+                .setPositiveButton(this.getString(R.string.delete_media_dialog_positive_button), DialogInterface.OnClickListener() { _, _ ->
                     listOfDownloadUri.remove(uri)
                     Log.d("[DELETE MEDIA]", uri)
                     row.removeView(view)
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton(this.getString(R.string.dialog_negative_button), null)
                 .create()
             dialog.show()
         }
     }
 
     fun publishCard() {
-        val context = getApplicationContext()
-        val titleText = (findViewById(R.id.title_text) as EditText).text.toString()
-        val descriptionText = (findViewById(R.id.desc_text) as EditText).text.toString()
+        val titleText = findViewById<EditText>(R.id.title_text).text.toString()
+        val descriptionText = findViewById<EditText>(R.id.desc_text).text.toString()
 
         if ((titleText != "" || descriptionText != "") && listOfTabsIds.size != 0) {
-            card.title = (findViewById(R.id.title_text) as EditText).text.toString()
-            card.description = (findViewById(R.id.desc_text) as EditText).text.toString()
+            card.title = findViewById<EditText>(R.id.title_text).text.toString()
+            card.description = findViewById<EditText>(R.id.desc_text).text.toString()
             card.category = listOfTabsIds
             card.multimedia = listOfDownloadUri
             card.ratings_average = 0.0F
@@ -405,42 +380,16 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             println(card.multimedia)
             println(card.toMutableMap())
             FirebaseUtils.updateData("cards/${card.id}/", card.toMutableMap())
-            Toast.makeText(context, "Card published.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, this.getString(R.string.new_card_toast_response), Toast.LENGTH_SHORT).show()
             finish()
 
         } else {
-
-            var errorMessage = "You can't publish new card because "
-            var listOfErrors: ArrayList<Any> = ArrayList()
-
-            if (descriptionText == "") listOfErrors.add("Description")
-            if (listOfTabsIds.size == 0) listOfErrors.add("Tab")
-
-            for (i in listOfErrors.indices) {
-                if (i == 0) {
-                    errorMessage += listOfErrors[i]
-                } else if (i == listOfErrors.size-1) {
-                    errorMessage += " and " + listOfErrors[i]
-                }
-            }
-
-            if (listOfErrors.size > 1) {
-                errorMessage += " are mandatory."
-            } else {
-                errorMessage += " is mandatory."
-            }
-
-            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.new_card_toast_error), Toast.LENGTH_LONG).show()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         userObs.deleteObserver(this)
-        if (listOfVideoPlayers.size > 0) {
-            for (player in listOfVideoPlayers) {
-                player.release()
-            }
-        }
     }
 }

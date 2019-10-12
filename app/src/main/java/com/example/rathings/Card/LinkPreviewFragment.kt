@@ -79,10 +79,15 @@ class LinkPreviewFragment : Fragment() {
                         return
                     }
                 } else {
-                    Glide.with(view!!.context).load(R.drawable.ic_broken_image_black_24dp)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(view?.findViewById(R.id.image) as ImageView)
+                    try {
+                        Glide.with(view!!.context).load(R.drawable.ic_broken_image_black_24dp)
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(view?.findViewById(R.id.image) as ImageView)
+                    } catch(e: Exception){
+                        Log.w("[LINK-FRAGMENT]", e.toString())
+                        return
+                    }
                 }
                 (view?.findViewById(R.id.title) as TextView)?.text = if (metaData.title.length > 32) metaData.title.substring(0, 30) + "..." else metaData.title
                 (view?.findViewById(R.id.description) as TextView)?.text = if (metaData.description.length > 32) metaData.description.substring(0, 55) + "..." else metaData.description

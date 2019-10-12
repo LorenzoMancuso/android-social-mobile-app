@@ -3,6 +3,7 @@ package com.example.rathings.Card
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.provider.Settings.Global.getString
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
@@ -52,7 +53,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         holder.setIsRecyclable(false)
 
         // Init all data
-        holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
+        holder.user.text = holder.itemView.context.resources.getString(R.string.name_surname, mDataList[position].userObj.name, mDataList[position].userObj.surname)
         holder.id_user.text = mDataList[position].user
         holder.title.text = mDataList[position].title
         if (mDataList[position].title == "") {
@@ -60,7 +61,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         }
         holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
-        holder.comments_size.text = "Comments: " + mDataList[position].comments.size
+        holder.comments_size.text = holder.itemView.context.resources.getString(R.string.comment_size, mDataList[position].comments.size)
         holder.ratings.rating = mDataList[position].ratings_average
         holder.date.text =  java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(Date(mDataList[position].timestamp.toLong() * 1000))
         Log.d("[PROFILE-IMAGE]", mDataList[position].userObj.profile_image)
@@ -93,7 +94,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                 }
             } else {
                 holder.other_categories_text.visibility = View.VISIBLE
-                holder.other_categories_text.text = "+ ${mDataList[position].category.size - i} Tabs"
+                holder.other_categories_text.text = holder.itemView.context.resources.getString(R.string.other_tabs, mDataList[position].category.size - i)
                 break
             }
         }
@@ -105,7 +106,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                     manageMedia(holder, position, i)
                 } else {
                     holder.more_images_text.visibility = View.VISIBLE
-                    holder.more_images_text.text = "+ ${mDataList[position].multimedia.size - i} media"
+                    holder.more_images_text.text = holder.itemView.context.resources.getString(R.string.other_media, mDataList[position].multimedia.size - i)
                 }
             }
 

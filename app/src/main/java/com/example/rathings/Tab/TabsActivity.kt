@@ -28,14 +28,14 @@ class TabsActivity : AppCompatActivity() {
         Log.d("[TABS-ACTIVITY]", intent.extras.get("list_of_selected_tabs").toString())
         listOfSelectedTabs = intent.extras.get("list_of_selected_tabs") as ArrayList<Tab>
 
-        val addCategories = findViewById(R.id.done) as Button
+        val addCategories = findViewById<Button>(R.id.done)
         addCategories.setOnClickListener(View.OnClickListener { addCategories() })
 
         initTabs()
     }
 
     fun initTabs() {
-        val container = findViewById(R.id.container) as LinearLayout
+        val container = findViewById<LinearLayout>(R.id.container)
 
         // Clean TableLayout
         container.removeAllViews()

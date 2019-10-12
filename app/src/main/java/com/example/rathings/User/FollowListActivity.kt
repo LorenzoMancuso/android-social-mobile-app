@@ -38,7 +38,7 @@ class FollowListActivity : AppCompatActivity(), Observer {
                 var followList = intent.getStringArrayListExtra("followList")
                 var allUsers = allUsersObs.getValue() as ArrayList<User>
 
-                findViewById<TextView>(R.id.request_type).text = "${requestType}: ${followList.size}"
+                findViewById<TextView>(R.id.request_type).text = this.getString(R.string.followed_followers_size, requestType, followList.size)
 
                 var filteredList = allUsers.filter{ followList.contains(it.id) } as ArrayList<User>
 

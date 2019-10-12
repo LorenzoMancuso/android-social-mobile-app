@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardUseCompatPadding="true">
@@ -21,12 +20,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:icon="@drawable/ic_language_red_24dp"
-                        android:text="Popular Cards"/>
+                        android:text="@string/popular_cards"/>
                 <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:icon="@drawable/ic_star_border_red_24dp"
-                        android:text="Interest Cards"/>
+                        android:text="@string/interest_cards"/>
         </com.google.android.material.tabs.TabLayout>
 
         <FrameLayout

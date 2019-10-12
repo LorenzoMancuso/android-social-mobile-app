@@ -73,7 +73,7 @@ class MultimediaActivity : AppCompatActivity() {
                 val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
                 listOfVideoPlayers.add(player)
                 playerView.player = player
-                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
+                playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
                 var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(Uri.parse(multimedia[i]))
                 player.prepare(mediaSource)
@@ -85,7 +85,7 @@ class MultimediaActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 return true

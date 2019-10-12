@@ -107,9 +107,6 @@ class TabsFragment : Fragment(), Observer {
                 var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (100 * resources.displayMetrics.density + 0.5f).toInt(), 1F)
                 button.layoutParams = params
                 button.gravity = Gravity.CENTER
-
-                // button.setCompoundDrawablesWithIntrinsicBounds( 0, 0, 0, R.drawable.ic_star_border_black_24dp);
-
                 button.setBackgroundColor(Color.parseColor("#eeecec"))
                 button.setTextColor(Color.BLACK)
                 button.text = tabs[i].value
@@ -134,11 +131,11 @@ class TabsFragment : Fragment(), Observer {
         Log.d("[TABS-FRAGMENT]", "Clicked Tab ${tab} with User Value ${value}")
         val user = primaryUserProfileObs.getValue() as User
         if (!value) {
-            user.interests.add(tab.id.toInt())
+            user.interests.add(tab.id)
         } else {
             for (i in 0 until user.interests.size) {
                 Log.e("[TABS-FRAGMENT]", user.interests[i].toString() + " " + tab.id)
-                if (user.interests[i] == tab.id.toInt()) {
+                if (user.interests[i] == tab.id) {
                     val result = user.interests.remove(user.interests[i])
                     break
                 }

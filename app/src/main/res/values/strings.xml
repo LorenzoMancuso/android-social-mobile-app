@@ -1,12 +1,122 @@
 <resources>
     <string name="app_name">Rathings</string>
+    <string name="app_subtitle">Select your content based on your preferences!</string>
+
+    <!-- Login -->
     <string name="title_activity_login">Sign in</string>
-    <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="sign_in_button">Sign in</string>
+    <string name="sign_up_button">Sign up</string>
+    <string name="google_button">Continue with Google</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- General -->
+    <string name="image_profile_description">Profile image</string>
+    <string name="separator_text">OR</string>
+    <string name="edit_button">Edit</string>
+    <string name="name_surname">%1$s %2$s</string>
+    <string name="dialog_negative_button">Cancel</string>
+
+    <!-- Detailed Card -->
+    <string name="rate_question">What do you think about this Card?</string>
+    <string name="rate_text">Ratings average</string>
+    <string name="toast_rate_response">Thanks for your rate</string>
+    <string name="comment_hint">Write a comment</string>
+    <string name="write_card_title_hint">Write your Card Title</string>
+    <string name="write_card_description_hint">Write your Card Description</string>
+    <string name="categories_section_title">List of categories</string>
+    <string name="categories_section_button">+ tabs</string>
+    <string name="add_comment_done">Add comment done.</string>
+    <string name="comment_toast_error">Comment is mandatory.</string>
+
+    <!-- Edit Card -->
+    <string name="edit_card_title">Edit your card with his information</string>
+    <string name="multimedia_section_title">Added multimedia</string>
+    <string name="multimedia_section_button">+ media</string>
+    <string name="link_section_title">Link to external source</string>
+    <string name="link_section_button">+ link</string>
+    <string name="add_link_dialog_title">Add Link</string>
+    <string name="add_link_dialog_message">Write or paste here a link</string>
+    <string name="add_link_dialog_positive_button">Add</string>
+    <string name="delete_media_dialog_title">Delete media</string>
+    <string name="delete_media_dialog_message">Do you want delete this media?</string>
+    <string name="delete_media_dialog_positive_button">Delete</string>
+    <string name="toast_edit_response">Edit done.</string>
+
+    <!-- Modify Account -->
+    <string name="change_image_button">Change image</string>
+    <string name="name_hint">Name</string>
+    <string name="surname_hint">Surname</string>
+    <string name="date_of_birth_hint">Date of Birth (gg/mm/aaaa)</string>
+    <string name="city_hint">City</string>
+    <string name="country_hint">Country</string>
+    <string name="profession_hint">Profession</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="date_of_birth_error">Invalid date format (gg/mm/yyyy)</string>
+    <string name="change_image_dialog_title">Select Action</string>
+    <string name="change_image_dialog_select">Select image from gallery</string>
+    <string name="change_image_dialog_do">Make a photo with camera</string>
+
+    <!-- Multimedia -->
+    <string name="list_of_images_title">List of Card\'s images</string>
+    <string name="list_of_videos_title">List of Card\'s images</string>
+
+    <!-- New Card -->
+    <string name="new_card_button">Publish</string>
+    <string name="new_card_title">Add a new Card</string>
+    <string name="new_card_subtitle">Make your card with his information</string>
+    <string name="select_media_text">Select %1$s from gallery</string>
+    <string name="do_media_text">Do %1$s with camera</string>
+    <string name="upload_media_dialog_title">Uploading...</string>
+    <string name="upload_media_dialog_progress">Uploaded %1$d \%</string>
+    <string name="upload_toast_error">Error during upload.</string>
+    <string name="upload_toast_error_file_size">The file is major than 3 megabytes.</string>
+    <string name="upload_toast_response">File uploaded correctly.</string>
+    <string name="new_card_toast_response">Card published correctly.</string>
+    <string name="new_card_toast_error">You can\'t publish new card because Title, Description and Tabs are mandatory.</string>
+
+    <!-- Follow List -->
+    <string name="followed_followers_size">%1$s: %2$d</string>
+
+    <!-- Profile -->
+    <string name="add_follow">follow +</string>
+    <string name="remove_follow">unfollow -</string>
+
+    <!-- Tabs -->
+    <string name="done_button">Done</string>
+
+    <!-- Cards Fragment -->
+    <string name="popular_cards">Popular cards</string>
+    <string name="interest_cards">Interest cards</string>
+
+    <!-- Link Preview Fragment -->
+    <string name="image_link_description">Image link</string>
+
+    <!-- Profile Fragment -->
+    <string name="sign_out_button">Sign out</string>
+
+    <!-- Search Fragment -->
+    <string name="search_hint">Search user by name</string>
+    <string name="search_error">There are no users with this name.</string>
+
+    <!-- Multimedia Menu -->
+    <string name="multimedia_image">Image</string>
+    <string name="multimedia_video">Video</string>
+
+    <!-- Navigation Menu -->
+    <string name="navigation_home">home</string>
+    <string name="navigation_tabs">tabs</string>
+    <string name="navigation_profile">profile</string>
+    <string name="navigation_notifications">notifications</string>
+    <string name="navigation_search">search</string>
+
+    <!-- Settings Detailed Card Menu -->
+    <string name="settings_detailed_card_edit">Edit Card</string>
+    <string name="settings_detailed_card_delete">Delete Card</string>
+
+    <!-- Card -->
+    <string name="comment_size">Comments: %1$d</string>
+    <string name="other_tabs">+ %1$d Tabs</string>
+    <string name="other_media">+ %1$d Media</string>
+
 </resources>

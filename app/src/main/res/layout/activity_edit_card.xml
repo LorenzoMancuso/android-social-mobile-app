@@ -32,8 +32,8 @@
                                 android:id="@+id/toolbar"
                                 app:theme="@style/ToolbarTheme">
                             <Button
-                                    android:layout_gravity="right"
-                                    android:text="Edit"
+                                    android:layout_gravity="end"
+                                    android:text="@string/edit_button"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="?android:attr/borderlessButtonStyle"
@@ -53,7 +53,7 @@
                         <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Edit your card with his information"
+                                android:text="@string/edit_card_title"
                                 android:paddingBottom="5dp"/>
                         <EditText
                                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                                 android:inputType="text"
                                 android:id="@+id/txt_title"
                                 android:background="#fff"
-                                android:hint="Write your Card Title"
+                                android:hint="@string/write_card_title_hint"
                                 android:padding="10dp"/>
                         <EditText
                                 android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                                 android:inputType="textMultiLine"
                                 android:id="@+id/txt_description"
                                 android:background="#fff"
-                                android:hint="Write your Card Description"
+                                android:hint="@string/write_card_description_hint"
                                 android:layout_marginTop="10dp"
                                 android:paddingLeft="10dp"
                                 android:paddingTop="10dp"
@@ -89,17 +89,17 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="List of categories"
-                                    android:gravity="left"
+                                    android:text="@string/categories_section_title"
+                                    android:gravity="start"
                                     android:layout_gravity="center"/>
                             <Space
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"/>
                             <Button
                                     android:fontFamily="sans-serif"
                                     android:id="@+id/add_categories"
-                                    android:text="+ tabs"
+                                    android:text="@string/categories_section_button"
                                     android:textColor="@color/redPrimary"
                                     android:textAllCaps="false"
                                     android:layout_width="wrap_content"
@@ -135,18 +135,18 @@
                                 android:orientation="horizontal"
                                 android:layout_height="match_parent">
                             <TextView
-                                    android:text="Added multimedia"
+                                    android:text="@string/multimedia_section_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:gravity="left"
+                                    android:gravity="start"
                                     android:layout_gravity="center"/>
                             <Space
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"/>
                             <Button
                                     android:fontFamily="sans-serif"
-                                    android:text="+ multimedia"
+                                    android:text="@string/multimedia_section_button"
                                     android:textColor="@color/redPrimary"
                                     android:textAllCaps="false"
                                     android:layout_width="wrap_content"
@@ -159,7 +159,7 @@
                                     android:id="@+id/multimedia_btn"/>
                         </LinearLayout>
                         <LinearLayout android:layout_width="wrap_content"
-                                      android:layout_height="wrap_content"
+                                      android:layout_height="0dp"
                                       android:orientation="vertical"
                                       android:gravity="center"
                                       android:layout_gravity="center"
@@ -183,11 +183,11 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:gravity="left"
-                                    android:text="Link to external source"
+                                    android:gravity="start"
+                                    android:text="@string/link_section_title"
                                     android:layout_gravity="center"/>
                             <Space
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"/>
                             <Button
@@ -202,7 +202,7 @@
                                     android:textStyle="normal"
                                     android:backgroundTint="@color/whitePrimary"
                                     android:id="@+id/link_btn"
-                                    android:text="+ link"/>
+                                    android:text="@string/link_section_button"/>
                         </LinearLayout>
                         <LinearLayout android:layout_width="match_parent"
                                       android:layout_height="match_parent"

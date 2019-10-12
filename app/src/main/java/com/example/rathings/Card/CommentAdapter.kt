@@ -23,8 +23,8 @@ class CommentAdapter(private val mDataList: ArrayList<Comment>) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
-        val date = java.util.Date(mDataList[position].timestamp.toLong() * 1000)
+        holder.user.text = holder.itemView.context.resources.getString(R.string.name_surname, mDataList[position].userObj.name, mDataList[position].userObj.surname)
+        val date = Date(mDataList[position].timestamp.toLong() * 1000)
         holder.date.text = java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(date)
         holder.text.text = mDataList[position].text
         if(mDataList[position].userObj.profile_image != "") {

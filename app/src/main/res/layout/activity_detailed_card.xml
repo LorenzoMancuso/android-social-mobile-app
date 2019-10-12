@@ -48,7 +48,7 @@
                                     android:layout_height="15dp"
                                     android:backgroundTint="#FFF"
                                     android:visibility="gone"
-                                    android:layout_gravity="right"
+                                    android:layout_gravity="end"
                                     app:iconSize="30dp"
                                     app:icon="@drawable/ic_more_horiz_black_24dp"
                                     app:rippleColor="#FFF"
@@ -59,10 +59,10 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent">
                                 <ImageView
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
                                         android:id="@+id/profile_image"
                                         android:layout_width="50dp"
                                         android:layout_height="50dp"
+                                        android:contentDescription="@string/image_profile_description"
                                         android:src="@drawable/default_avatar"/>
                                 <LinearLayout
                                         android:orientation="vertical"
@@ -73,18 +73,18 @@
                                             android:layout_height="wrap_content"
                                             android:gravity="center_vertical"
                                             android:id="@+id/user"
-                                            android:text="Nome Utente"
                                             android:textSize="16sp"
-                                            android:paddingLeft="10dp"
+                                            android:paddingStart="10dp"
+                                            android:paddingEnd="10dp"
                                             android:textStyle="bold"/>
                                     <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:gravity="center_vertical"
                                             android:id="@+id/date"
-                                            android:text="Data"
                                             android:textSize="13sp"
-                                            android:paddingLeft="10dp"
+                                            android:paddingStart="10dp"
+                                            android:paddingEnd="10dp"
                                             android:textStyle="bold"/>
                                 </LinearLayout>
                             </LinearLayout>
@@ -110,17 +110,15 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:id="@+id/title"
-                                        android:text="Titolo"
                                         android:clickable="true"
                                         android:focusable="true"
                                         android:textSize="20sp"/>
                                 <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Descrizione"
                                         android:id="@+id/description"/>
                                 <LinearLayout android:layout_width="wrap_content"
-                                              android:layout_height="wrap_content"
+                                              android:layout_height="0dp"
                                               android:orientation="vertical"
                                               android:gravity="center"
                                               android:layout_gravity="center"
@@ -140,7 +138,7 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:textColor="@color/redPrimary"
-                                            android:text="What do you think about this Card?"
+                                            android:text="@string/rate_question"
                                             android:textSize="16sp"/>
                                     <RatingBar
                                             android:layout_width="wrap_content"
@@ -201,12 +199,12 @@
             android:layout_gravity="bottom"
             android:orientation="horizontal">
         <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:id="@+id/added_comment"
                 android:background="#fff"
-                android:hint="Write a comment"
+                android:hint="@string/comment_hint"
                 android:padding="10dp"
                 android:layout_weight="1"/>
         <com.google.android.material.button.MaterialButton

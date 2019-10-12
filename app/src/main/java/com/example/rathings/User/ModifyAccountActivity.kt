@@ -78,15 +78,15 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
             intent.putExtra("mode", "profile")
             startActivity(intent)
         }else{
-            txt_birthdate?.error="Formato della data invalido"
+            txt_birthdate?.error = this.getString(R.string.date_of_birth_error)
         }
 
     }
 
     fun changeImage() {
         val pictureDialog = AlertDialog.Builder(this)
-        pictureDialog.setTitle("Select Action")
-        val pictureDialogItems = arrayOf("Select image from gallery", "Make a photo with camera")
+        pictureDialog.setTitle(this.getString(R.string.change_image_dialog_title))
+        val pictureDialogItems = arrayOf(this.getString(R.string.change_image_dialog_select), this.getString(R.string.change_image_dialog_do))
         pictureDialog.setItems(pictureDialogItems,
             DialogInterface.OnClickListener { dialog, which ->
                 when (which) {
@@ -113,7 +113,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
 
     fun createImageFile(): File {
         var timeStamp = System.currentTimeMillis()
-        var imageFileName = "rathings_photo" + timeStamp
+        var imageFileName = "rathings_photo_$timeStamp"
         val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         val image = File.createTempFile(imageFileName,".jpg",storageDir)
         return image;
@@ -158,13 +158,13 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         val ref = storageReference.child("profile_images/${user.id}_${(System.currentTimeMillis() / 1000).toInt()}")
 
         val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Uploading...")
+        progressDialog.setTitle(this.getString(R.string.upload_media_dialog_title))
         progressDialog.show()
 
         ref.putFile(filePath)
             .addOnFailureListener { e ->
                 progressDialog.dismiss()
-                Toast.makeText(applicationContext, "Failed " + e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
             }
             .addOnProgressListener { taskSnapshot ->
                 if (taskSnapshot.totalByteCount > 3145728) { // If file is major than 3MB
@@ -172,11 +172,11 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 } else {
                     val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                         .totalByteCount
-                    progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
+                    progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress, progress.toInt()))
                 }
             }
             .addOnCanceledListener {
-                Toast.makeText(applicationContext, "The file is major than 3 megabytes", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, this.getString(R.string.upload_toast_error_file_size), Toast.LENGTH_LONG).show()
                 progressDialog.dismiss()
             }
             .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
@@ -191,7 +191,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                     newProfileImageUri = task.result.toString()
 
                     progressDialog.dismiss()
-                    Toast.makeText(applicationContext, "Uploaded", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
                 } else {
                     // Handle failures
                 }
@@ -204,12 +204,12 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 val value=localUserProfileObservable.getValue()
                 if(value is User){
                     user = value
-                    txt_name?.text = Editable.Factory.getInstance().newEditable("${user.name}")
-                    txt_surname?.text = Editable.Factory.getInstance().newEditable("${user.surname}")
-                    txt_birthdate?.text = Editable.Factory.getInstance().newEditable("${user.birth_date}")
-                    txt_city?.text = Editable.Factory.getInstance().newEditable("${user.city}")
-                    txt_country?.text = Editable.Factory.getInstance().newEditable("${user.country}")
-                    txt_profession?.text = Editable.Factory.getInstance().newEditable("${user.profession}")
+                    txt_name?.text = Editable.Factory.getInstance().newEditable(user.name)
+                    txt_surname?.text = Editable.Factory.getInstance().newEditable(user.surname)
+                    txt_birthdate?.text = Editable.Factory.getInstance().newEditable(user.birth_date)
+                    txt_city?.text = Editable.Factory.getInstance().newEditable(user.city)
+                    txt_country?.text = Editable.Factory.getInstance().newEditable(user.country)
+                    txt_profession?.text = Editable.Factory.getInstance().newEditable(user.profession)
 
                     if (user.profile_image != "") {
                         Glide.with(this).load(user.profile_image)

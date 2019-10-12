@@ -100,6 +100,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
 
         val timestamp = System.currentTimeMillis() / 1000L
         val split = userProfile.id.length/2
+        // TODO: Ripartire da qui con la localizzazione
         val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
             otherUserProfile.id,
             "${otherUserProfile.name} ${otherUserProfile.surname} started to follow you.",

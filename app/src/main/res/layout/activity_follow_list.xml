@@ -28,7 +28,7 @@
                         </androidx.appcompat.widget.Toolbar>
                         <TextView
                                 android:id="@+id/request_type"
-                                android:textSize="20dp"
+                                android:textSize="20sp"
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 android:padding="10dp"

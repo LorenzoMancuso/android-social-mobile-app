@@ -24,12 +24,12 @@
                             android:layout_gravity="top"
                             android:orientation="horizontal">
                         <EditText
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:inputType="text"
                                 android:id="@+id/user_text"
                                 android:background="#fff"
-                                android:hint="Search user by name"
+                                android:hint="@string/search_hint"
                                 android:padding="10dp"
                                 android:layout_weight="1"/>
                         <com.google.android.material.button.MaterialButton
@@ -48,7 +48,7 @@
                             android:id="@+id/no_users"
                             android:layout_gravity="center_horizontal"
                             android:visibility="gone"
-                            android:text="There are no users with this name."
+                            android:text="@string/search_error"
                             android:layout_height="wrap_content"/>
                     <LinearLayout
                             android:orientation="vertical"
