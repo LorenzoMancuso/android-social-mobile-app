@@ -38,10 +38,10 @@ object NotificationUtils {
 
         var builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_star_border_red_24dp)
-            .setContentTitle("You have a new notification!")
-            .setContentText("Enter in Rathings for see what's up")
+            .setContentTitle(context.getString(R.string.push_notification_title))
+            .setContentText(context.getString(R.string.push_notification_message))
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("Enter in Rathings for see what's up"))
+                .bigText(context.getString(R.string.push_notification_message)))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             // Set the intent that will fire when the user taps the notification
             .setContentIntent(pendingIntent)

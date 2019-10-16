@@ -17,10 +17,6 @@ object UserController: Observer {
         FirebaseUtils.getProfile(uid)
     }
 
-    fun getProfile(){
-        FirebaseUtils.getProfile(FirebaseAuth.getInstance().currentUser!!.uid)
-    }
-
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             userProfileObservable -> {

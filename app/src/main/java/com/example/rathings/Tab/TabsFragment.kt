@@ -41,7 +41,7 @@ class TabsFragment : Fragment(), Observer {
     var flatPalette: ArrayList<String> = ArrayList(Arrays.asList("#1abc9c", "#16a085", "#2ecc71", "#27ae60", "#3498db", "#2980b9", "#f1c40f", "#f39c12", "#e67e22", "#d35400", "#e74c3c", "#c0392b", "#9b59b6", "#8e44ad"))
 
     var tabsObs = TabController.tabsObs
-    var userProfileObs = FirebaseUtils.userProfileObservable
+    var primaryUserProfileObs = FirebaseUtils.getPrimaryProfile()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +51,7 @@ class TabsFragment : Fragment(), Observer {
         }
 
         tabsObs.addObserver(this)
-        userProfileObs.addObserver(this)
+        primaryUserProfileObs.addObserver(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,7 +64,7 @@ class TabsFragment : Fragment(), Observer {
             tabsObs -> {
                 initTabs()
             }
-            userProfileObs -> {
+            primaryUserProfileObs -> {
                 // After setTab function (remove or add Tab)
                 TabController.getTabs()
             }
@@ -79,7 +79,7 @@ class TabsFragment : Fragment(), Observer {
         container.removeAllViews()
 
         val value = tabsObs.getValue()
-        val userInterests = (userProfileObs.getValue() as User).interests
+        val userInterests = (primaryUserProfileObs.getValue() as User).interests
         Log.d("[TABS-FRAGMENT]", userInterests.toString())
         Log.d("[TABS-FRAGMENT]", value.toString())
         if (value is ArrayList<*>) {
@@ -107,9 +107,6 @@ class TabsFragment : Fragment(), Observer {
                 var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (100 * resources.displayMetrics.density + 0.5f).toInt(), 1F)
                 button.layoutParams = params
                 button.gravity = Gravity.CENTER
-
-                // button.setCompoundDrawablesWithIntrinsicBounds( 0, 0, 0, R.drawable.ic_star_border_black_24dp);
-
                 button.setBackgroundColor(Color.parseColor("#eeecec"))
                 button.setTextColor(Color.BLACK)
                 button.text = tabs[i].value
@@ -132,13 +129,13 @@ class TabsFragment : Fragment(), Observer {
 
     fun setTab(tab: Tab, value: Boolean) {
         Log.d("[TABS-FRAGMENT]", "Clicked Tab ${tab} with User Value ${value}")
-        val user = userProfileObs.getValue() as User
+        val user = primaryUserProfileObs.getValue() as User
         if (!value) {
-            user.interests.add(tab.id.toInt())
+            user.interests.add(tab.id)
         } else {
             for (i in 0 until user.interests.size) {
                 Log.e("[TABS-FRAGMENT]", user.interests[i].toString() + " " + tab.id)
-                if (user.interests[i] == tab.id.toInt()) {
+                if (user.interests[i] == tab.id) {
                     val result = user.interests.remove(user.interests[i])
                     break
                 }
@@ -154,7 +151,7 @@ class TabsFragment : Fragment(), Observer {
 
     override fun onDestroy() {
         super.onDestroy()
-        userProfileObs.deleteObserver(this)
+        primaryUserProfileObs.deleteObserver(this)
         tabsObs.deleteObserver(this)
     }
 

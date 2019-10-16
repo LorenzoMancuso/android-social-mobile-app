@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_width="match_parent"
                                                    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
@@ -11,31 +11,46 @@
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toTopOf="parent">
             <LinearLayout
-                    android:id="@+id/layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:background="@color/md_grey_300">
+                    android:orientation="horizontal"
+                    android:background="@color/md_grey_300"
+                    android:padding="4dp"
+                    android:id="@+id/global_container"
+                    android:layout_height="wrap_content">
+                    <!--<ImageView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/profile_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/default_avatar"/>-->
+                    <LinearLayout
+                            android:id="@+id/layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingEnd="20dp"
+                            android:paddingBottom="20dp"
+                            android:paddingTop="20dp"
+                            android:paddingStart="10dp"
+                            android:background="@color/md_grey_300">
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:id="@+id/date"
+                                android:textSize="16sp"
+                                android:textStyle="bold"/>
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:id="@+id/text"
+                                android:textSize="16sp"
+                                android:textStyle="bold"/>
+                    </LinearLayout>
 
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:id="@+id/date"
-                        android:text="17/07/19 15.00"
-                        android:textSize="16sp"
-                        android:textStyle="bold"/>
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:id="@+id/text"
-                        android:text="L' utente Utente Demo ha fatto una certa cosa sul tuo profilo"
-                        android:textSize="16sp"
-                        android:textStyle="bold"/>
             </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout >

@@ -64,13 +64,6 @@ class CardsPopularFragment : Fragment(), Observer {
         popularCardObs.deleteObserver(this)
     }
 
-    /*override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            popularCardObs.addObserver(this)
-        }
-    }*/
-
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             popularCardObs -> {

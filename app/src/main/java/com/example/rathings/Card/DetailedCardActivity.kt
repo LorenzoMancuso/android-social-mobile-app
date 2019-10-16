@@ -18,6 +18,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabController
@@ -118,7 +120,10 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         // Profile Image
         Log.e("[DETAILED-CARD]", selectedCard.userObj.profile_image)
         if(profile_image != null && selectedCard.userObj.profile_image != "") {
-            Picasso.get().load(selectedCard.userObj.profile_image).into(profile_image)
+            Glide.with(this).load(selectedCard.userObj.profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(profile_image)
         }
 
         // To initialize Rating Bar
@@ -128,25 +133,25 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     }
 
     fun initUser() {
-        findViewById<TextView>(R.id.user).text = "${selectedCard.userObj.name} ${selectedCard.userObj.surname}"
+        findViewById<TextView>(R.id.user).text = this.resources.getString(R.string.name_surname, selectedCard.userObj.name, selectedCard.userObj.surname)
 
         findViewById<TextView>(R.id.user)!!.setOnClickListener {
             val uid = selectedCard.userObj.id
             if(FirebaseUtils.isCurrentUser(uid)){
                 val intent = Intent(it.context, HomeActivity::class.java)
-                intent.putExtra("mode", "profile");
+                intent.putExtra("mode", "profile")
                 it.context.startActivity(intent)
             }else{
                 val intent = Intent(it.context, ProfileActivity::class.java)
-                intent.putExtra("user", uid);
+                intent.putExtra("user", uid)
                 it.context.startActivity(intent)
             }
         }
     }
 
     fun initRatingBar(user: User) {
-        var ratingBar = findViewById(R.id.ratings) as RatingBar
-        var finalRatingBar = findViewById(R.id.final_ratings) as RatingBar
+        var ratingBar = findViewById<RatingBar>(R.id.ratings)
+        var finalRatingBar = findViewById<RatingBar>(R.id.final_ratings)
         ratingBar.rating = selectedCard.ratings_average
         finalRatingBar.rating = selectedCard.ratings_average
 
@@ -154,20 +159,20 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         if(selectedCard.ratings_users.containsKey(user.id)) {
             ratingBar.visibility = View.GONE
             finalRatingBar.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.ratings_title).text = "Ratings average"
+            findViewById<TextView>(R.id.ratings_title).text = this.getString(R.string.rate_text)
         }
 
         ratingBar.setOnRatingBarChangeListener { ratings, value, fromUser ->
             run {
                 if (fromUser) {
-                    findViewById<TextView>(R.id.ratings_title).text = "Ratings average"
+                    findViewById<TextView>(R.id.ratings_title).text = this.getString(R.string.rate_text)
 
                     // Calc the average
                     selectedCard.ratings_average = ((selectedCard.ratings_average * selectedCard.ratings_count) + value) / (selectedCard.ratings_count + 1)
                     selectedCard.ratings_count++
                     selectedCard.ratings_users.set(user.id, value)
 
-                    Toast.makeText(this, "Thanks for your Rate.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getString(R.string.toast_rate_response), Toast.LENGTH_SHORT).show()
 
                     // Set new Value on RatingBar
                     ratings.rating = selectedCard.ratings_average
@@ -204,8 +209,13 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
             var imageView = ImageView(applicationContext)
             imageView.setPadding(5,5,5,5)
+            imageView.layoutParams = LinearLayout.LayoutParams((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt(), 1F)
 
-            Picasso.get().load(selectedCard.multimedia[0]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).onlyScaleDown().centerInside().into(imageView)
+            Glide.with(this).load(selectedCard.multimedia[0])
+                .centerCrop().centerInside()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+
             row.addView(imageView)
         } else if (selectedCard.multimedia.size > 0) {
 
@@ -220,50 +230,23 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                     containerMultimedia.addView(row)
                 }
 
-                if (selectedCard.multimedia[i].contains("video")) { // If media is a video, setThumbnail to imageView and user ExoPlayer with disabled controls
-                    manageVideo(row, selectedCard.multimedia[i])
-
-                } else if (selectedCard.multimedia[i].contains("image")) { // else, set image
-                    manageImage(row, selectedCard.multimedia[i])
-                }
+                manageMedia(row, selectedCard.multimedia[i])
             }
         }
     }
 
-    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
-    fun manageVideo(row: LinearLayout, videoPath: String) {
-        val scale = resources.displayMetrics.density
-
-        var playerView = PlayerView(applicationContext)
-        val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
-        var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(Uri.parse(videoPath))
-        var thumbnail = ImageView(applicationContext)
-
-        listOfVideoPlayers.add(player)
-        playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-        playerView.setPadding(5,5,5,5)
-        playerView.player = player
-        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
-        playerView.useController = false
-
-        thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
-        thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
-        thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-        playerView.overlayFrameLayout.addView(thumbnail)
-        player.prepare(mediaSource)
-
-        row.addView(playerView)
-    }
-
-    fun manageImage(row: LinearLayout, imagePath: String) {
+    fun manageMedia(row: LinearLayout, imagePath: String) {
         val scale = resources.displayMetrics.density
 
         var imageView = ImageView(applicationContext)
         imageView.setPadding(5,5,5,5)
         imageView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
 
-        Picasso.get().load(imagePath).centerCrop().fit().into(imageView)
+        Glide.with(this).load(imagePath)
+            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(imageView)
+
         row.addView(imageView)
     }
 
@@ -286,12 +269,12 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     }
 
     fun initCategories() {
-        var containerCategories = findViewById(R.id.container_categories) as ChipGroup
+        var containerCategories = findViewById<ChipGroup>(R.id.container_categories)
         containerCategories.removeAllViews()
         var tabs = tabsObs.getValue() as ArrayList<Tab>
         for (i in 0 until selectedCard.category.size) {
             for (j in 0 until tabs.size) {
-                if (selectedCard.category[i] == tabs[j].id.toInt()) {
+                if (selectedCard.category[i] == tabs[j].id) {
                     var chip = Chip(this)
                     chip.text = tabs[j].value
                     chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
@@ -306,13 +289,11 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         if (selectedCard.link != "") {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val linkPreviewFragment = LinkPreviewFragment()
             val arguments = Bundle()
-            var containerLink = findViewById(R.id.container_link) as LinearLayout
-            containerLink.removeAllViews()
+            var linkPreviewFragment = LinkPreviewFragment()
             arguments.putString("URL", selectedCard.link)
-            linkPreviewFragment.setArguments(arguments)
-            fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
+            linkPreviewFragment.arguments = arguments
+            fragmentTransaction.replace(R.id.container_link, linkPreviewFragment)
             fragmentTransaction.commit()
         }
     }
@@ -321,10 +302,10 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         if (FirebaseUtils.isCurrentUser(selectedCard.userObj.id)) {
             findViewById<MaterialButton>(R.id.settings_button).visibility = View.VISIBLE
 
-            var settingsButton = findViewById(R.id.settings_button) as Button
+            var settingsButton = findViewById<Button>(R.id.settings_button)
             settingsButton.setOnClickListener(View.OnClickListener() {
-                var popup = PopupMenu(this, settingsButton);
-                popup.getMenuInflater().inflate(R.menu.settings_detailed_card, popup.getMenu())
+                var popup = PopupMenu(this, settingsButton)
+                popup.menuInflater.inflate(R.menu.settings_detailed_card, popup.menu)
 
                 popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener() {
                     if (it.title == "Edit Card") {
@@ -343,6 +324,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         val intent = Intent(applicationContext, EditCardActivity::class.java)
         intent.putExtra("card", selectedCard)
         applicationContext.startActivity(intent)
+        Log.d("[AFTER ACTIVITY]", "Init Card")
         init()
     }
 
@@ -351,7 +333,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     }
 
     fun addComment(user: User) {
-        var comment = (findViewById( R.id.added_comment) as EditText)
+        var comment = findViewById<EditText>(R.id.added_comment)
         if (comment.text.toString() != "") {
             var newComment = Comment()
             newComment.id = selectedCard.comments.size.toLong()
@@ -361,14 +343,14 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
 
             FirebaseUtils.updateData("cards/${selectedCard.id}/comments/${newComment.id }", newComment.toMutableMap())
-            Toast.makeText(this, "Add Comment done.", Toast.LENGTH_SHORT)
+            Toast.makeText(this, this.getString(R.string.add_comment_done), Toast.LENGTH_SHORT)
 
             comment.setText("")
 
             addNotification(user, selectedCard, "comment")
 
         } else {
-            Toast.makeText(this, "Comment is mandatory.", Toast.LENGTH_SHORT)
+            Toast.makeText(this, this.getString(R.string.comment_toast_error), Toast.LENGTH_SHORT)
         }
     }
 
@@ -398,11 +380,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         tabsObs.deleteObserver(this)
         cardsObs.deleteObserver(this)
         userObs.deleteObserver(this)
-        if (listOfVideoPlayers.size > 0) {
-            for (player in listOfVideoPlayers) {
-                player.release()
-            }
-        }
     }
 
 }

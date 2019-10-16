@@ -1,34 +1,53 @@
 package com.example.rathings.Card
 
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.rathings.FirebaseUtils
+import com.example.rathings.HomeActivity
 import com.example.rathings.R
-import com.squareup.picasso.Picasso
+import com.example.rathings.User.ProfileActivity
 import java.util.*
 
 class CommentAdapter(private val mDataList: ArrayList<Comment>) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.comment, parent, false)
-        /*view?.findViewById<CardView>(R.id.cv)!!.setOnClickListener {
-            val intent = Intent(parent.context, DetailedCardActivity::class.java)
-            intent.putExtra("card_position", view?.findViewById<TextView>(R.id.card_position).text);
-            parent.context.startActivity(intent)
-        }*/
         return CommentViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
-        val date = java.util.Date(mDataList[position].timestamp.toLong() * 1000)
+        holder.user.text = holder.itemView.context.resources.getString(R.string.name_surname, mDataList[position].userObj.name, mDataList[position].userObj.surname)
+        val date = Date(mDataList[position].timestamp.toLong() * 1000)
         holder.date.text = java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(date)
         holder.text.text = mDataList[position].text
         if(mDataList[position].userObj.profile_image != "") {
-            Picasso.get().load(mDataList[position].userObj.profile_image).into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(mDataList[position].userObj.profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
+        }
+
+        holder.profile_image.setOnClickListener { moveToUser(holder, position) }
+        holder.user.setOnClickListener { moveToUser(holder, position) }
+    }
+
+    fun moveToUser(holder: CommentViewHolder, position: Int) {
+        val uid = mDataList[position].userObj.id
+        if(FirebaseUtils.isCurrentUser(uid)){
+            val intent = Intent(holder.itemView.context, HomeActivity::class.java)
+            intent.putExtra("mode", "profile")
+            holder.itemView.context.startActivity(intent)
+        }else{
+            val intent = Intent(holder.itemView.context, ProfileActivity::class.java)
+            intent.putExtra("user", uid)
+            holder.itemView.context.startActivity(intent)
         }
     }
 

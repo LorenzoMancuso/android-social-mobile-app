@@ -6,14 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.rathings.Card.DetailedCardActivity
-import com.example.rathings.R
 import com.example.rathings.User.ProfileActivity
-import com.squareup.picasso.Picasso
 import java.util.*
 
 class NotificationAdapter(private val mDataList: ArrayList<Notification>) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
@@ -24,7 +21,7 @@ class NotificationAdapter(private val mDataList: ArrayList<Notification>) : Recy
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-        val dateTime = java.util.Date(mDataList[position].timestamp.toLong() * 1000)
+        val dateTime = Date(mDataList[position].timestamp * 1000)
         holder.date.text = java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(dateTime)
         holder.text.text = "${mDataList[position].text}"
 

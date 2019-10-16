@@ -2,10 +2,8 @@ package com.example.rathings.Card
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.media.MediaMetadataRetriever
-import android.net.Uri
+import android.provider.Settings.Global.getString
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
@@ -16,21 +14,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.User.ProfileActivity
-import com.example.rathings.utils.CustomObservable
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -57,21 +48,12 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         return CardViewHolder(view)
     }
 
-    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         // Set to false Recyclable to avoid delay on image download
         holder.setIsRecyclable(false)
 
-        // Clean old video players
-        // TODO: Find a method to RELEASE all players
-        if (listOfVideoPlayers.size > 0) {
-            for (player in listOfVideoPlayers) {
-                player.release()
-            }
-        }
-
         // Init all data
-        holder.user.text = "${mDataList[position].userObj.name} ${mDataList[position].userObj.surname}"
+        holder.user.text = holder.itemView.context.resources.getString(R.string.name_surname, mDataList[position].userObj.name, mDataList[position].userObj.surname)
         holder.id_user.text = mDataList[position].user
         holder.title.text = mDataList[position].title
         if (mDataList[position].title == "") {
@@ -79,18 +61,22 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         }
         holder.title.text = mDataList[position].title
         holder.description.text = mDataList[position].description
-        holder.comments_size.text = "Comments: " + mDataList[position].comments.size
+        holder.comments_size.text = holder.itemView.context.resources.getString(R.string.comment_size, mDataList[position].comments.size)
         holder.ratings.rating = mDataList[position].ratings_average
         holder.date.text =  java.text.SimpleDateFormat("dd-MM-yyyy' - 'HH:mm", Locale.ITALY).format(Date(mDataList[position].timestamp.toLong() * 1000))
         Log.d("[PROFILE-IMAGE]", mDataList[position].userObj.profile_image)
 
-        val scale = holder.itemView.resources.displayMetrics.density
-
         // Set Profile Image
         if(mDataList[position].userObj.profile_image != "") {
-            Picasso.get().load(mDataList[position].userObj.profile_image).resize((50 * scale + 0.5f).toInt(), (50 * scale + 0.5f).toInt()).centerCrop().into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(mDataList[position].userObj.profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
         } else {
-            Picasso.get().load(R.drawable.default_avatar).resize((50 * scale + 0.5f).toInt(), (50 * scale + 0.5f).toInt()).centerCrop().into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(R.drawable.default_avatar)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
         }
 
         // Set Categories
@@ -108,32 +94,19 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                 }
             } else {
                 holder.other_categories_text.visibility = View.VISIBLE
-                holder.other_categories_text.text = "+ ${mDataList[position].category.size - i} Tabs"
+                holder.other_categories_text.text = holder.itemView.context.resources.getString(R.string.other_tabs, mDataList[position].category.size - i)
                 break
             }
         }
 
-        /*for (i in 0 until mDataList[position].category.size) {
-            for (j in 0 until tabs.size) {
-                if (mDataList[position].category[i] == tabs[j].id) {
-                    var chip = Chip(holder.itemView.context)
-                    chip.text = tabs[j].value
-                    chip.chipBackgroundColor = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(Color.parseColor(tabs[j].color)))
-                    chip.setTextColor(Color.WHITE)
-                    holder.container_categories.addView(chip)
-                }
-            }
-        }*/
-
         // Set Multimedia
         if(mDataList[position].multimedia.size > 0) {
-
             for (i in mDataList[position].multimedia.indices) {
                 if (i <= 3) {
                     manageMedia(holder, position, i)
                 } else {
                     holder.more_images_text.visibility = View.VISIBLE
-                    holder.more_images_text.text = "+ ${mDataList[position].multimedia.size - i} media"
+                    holder.more_images_text.text = holder.itemView.context.resources.getString(R.string.other_media, mDataList[position].multimedia.size - i)
                 }
             }
 
@@ -148,74 +121,28 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
 
     }
 
-    fun retriveVideoFrameFromVideo(videoPath: String): Bitmap {
-        var mediaMetadataRetriever = MediaMetadataRetriever()
-        mediaMetadataRetriever.setDataSource(videoPath, HashMap<String, String>())
-        var bitmap = mediaMetadataRetriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST)
-        mediaMetadataRetriever.release()
-        return bitmap
-    }
-
     fun manageMedia(holder: CardViewHolder, position: Int, index: Int) {
         val scale = holder.itemView.resources.displayMetrics.density
 
-        if (mDataList[position].multimedia[index].contains("image")) {
-            if (index == 0) {
-                var media = ImageView(holder.itemView.context)
-                Picasso.get().load(mDataList[position].multimedia[index]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).centerInside().into(media)
-                holder.first_element.addView(media)
+        var imageView = ImageView(holder.itemView.context)
+        imageView.setPadding(5, 5, 5, 5)
+        imageView.layoutParams = LinearLayout.LayoutParams((120 * scale + 0.5f).toInt(), (120 * scale + 0.5f).toInt(), 1F)
 
-            } else {
-                var imageView = ImageView(holder.itemView.context)
-                imageView.setPadding(5, 5, 5, 5)
-                Picasso.get().load(mDataList[position].multimedia[index]).centerCrop().resize((100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt()).into(imageView)
-                holder.container_other_images.addView(imageView)
-            }
+        if (mDataList[position].multimedia[index].contains("image")) {
+            Glide.with(holder.itemView.context).load(mDataList[position].multimedia[index])
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
 
         } else if (mDataList[position].multimedia[index].contains("video")) {
-            var playerView = PlayerView(holder.itemView.context)
-            val player = ExoPlayerFactory.newSimpleInstance(holder.itemView.context, DefaultTrackSelector())
-            var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(holder.itemView.context, "rathings")).createMediaSource(Uri.parse(mDataList[position].multimedia[index]))
-            var thumbnail = ImageView(holder.itemView.context)
-
-            if (index == 0) {
-                playerView.layoutParams = LinearLayout.LayoutParams((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt(), 1F)
-                holder.first_element.addView(playerView)
-            } else {
-                playerView.layoutParams = LinearLayout.LayoutParams((100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt(), 1F)
-                holder.container_other_images.addView(playerView)
-            }
-
-            listOfVideoPlayers.add(player)
-            playerView.setPadding(5,5,5,5)
-            playerView.player = player
-            playerView.useController = false
-
-            thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
-            thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
-            thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-            playerView.overlayFrameLayout.addView(thumbnail)
-            player.prepare(mediaSource)
-
-            /* Version 2: Thumbnail with BITMAP
-            * PROBLEM: Really slow
-            **/
-            /*var imageView = ImageView(holder.itemView.context)
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            var bitmap = retriveVideoFrameFromVideo(mDataList[position].multimedia[index])
-            if (index == 0) {
-                bitmap = Bitmap.createScaledBitmap(bitmap, (300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt(), false)
-                imageView.setImageBitmap(bitmap)
-                holder.first_element.addView(imageView)
-            } else {
-                bitmap = Bitmap.createScaledBitmap(bitmap, (100 * scale + 0.5f).toInt(), (100 * scale + 0.5f).toInt(), false)
-                imageView.setPadding(5, 5, 5, 5)
-                imageView.setImageBitmap(bitmap)
-                holder.container_other_images.addView(imageView)
-            }*/
+            val options = RequestOptions().frame(1000.toLong())
+            Glide.with(holder.itemView.context).asBitmap().load(mDataList[position].multimedia[index]).apply(options)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
         }
 
+        holder.container_other_images.addView(imageView)
     }
 
     override fun getItemCount(): Int {
@@ -225,7 +152,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var user: TextView
         internal var id_user: TextView
-        internal var profile_image: CircleImageView
+        internal var profile_image: ImageView
         internal var container_multimedia: LinearLayout
         internal var first_element: LinearLayout
         internal var container_other_images: LinearLayout
@@ -243,7 +170,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             user = itemView.findViewById<View>(R.id.user) as TextView
             id_user = itemView.findViewById<View>(R.id.id_user) as TextView
             card = Card()
-            profile_image = itemView.findViewById<View>(R.id.profile_image) as CircleImageView
+            profile_image = itemView.findViewById<View>(R.id.profile_image) as ImageView
             container_multimedia = itemView.findViewById<View>(R.id.container_multimedia) as LinearLayout
             container_other_images = itemView.findViewById<View>(R.id.container_other_images) as LinearLayout
             title = itemView.findViewById<View>(R.id.title) as TextView

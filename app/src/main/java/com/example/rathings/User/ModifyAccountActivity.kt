@@ -7,14 +7,16 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.HomeActivity
 import com.example.rathings.R
@@ -22,8 +24,12 @@ import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_modify_account.*
+import kotlinx.android.synthetic.main.activity_modify_account.profile_image
+import kotlinx.android.synthetic.main.activity_modify_account.txt_country
+import kotlinx.android.synthetic.main.activity_modify_account.txt_name
+import kotlinx.android.synthetic.main.activity_modify_account.txt_profession
+import java.io.File
 import java.io.IOException
 import java.util.*
 
@@ -37,6 +43,9 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         setContentView(R.layout.activity_modify_account)
 
         localUserProfileObservable.addObserver(this)
+
+        var builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
 
         //call for get profile info
         FirebaseUtils.getProfile(null)
@@ -69,15 +78,15 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
             intent.putExtra("mode", "profile")
             startActivity(intent)
         }else{
-            txt_birthdate?.error="Formato della data invalido"
+            txt_birthdate?.error = this.getString(R.string.date_of_birth_error)
         }
 
     }
 
     fun changeImage() {
         val pictureDialog = AlertDialog.Builder(this)
-        pictureDialog.setTitle("Select Action")
-        val pictureDialogItems = arrayOf("Select image from gallery", "Make a photo with camera")
+        pictureDialog.setTitle(this.getString(R.string.change_image_dialog_title))
+        val pictureDialogItems = arrayOf(this.getString(R.string.change_image_dialog_select), this.getString(R.string.change_image_dialog_do))
         pictureDialog.setItems(pictureDialogItems,
             DialogInterface.OnClickListener { dialog, which ->
                 when (which) {
@@ -89,6 +98,9 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                     }
                     1 -> {
                         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                            // TODO: Use these methods to upload an image and not a thumbnail
+                            //var photoFile = createImageFile()
+                            //takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
                             takePictureIntent.resolveActivity(packageManager)?.also {
                                 startActivityForResult(takePictureIntent, 1)
                             }
@@ -97,6 +109,14 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 }
             })
         pictureDialog.show()
+    }
+
+    fun createImageFile(): File {
+        var timeStamp = System.currentTimeMillis()
+        var imageFileName = "rathings_photo_$timeStamp"
+        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(imageFileName,".jpg",storageDir)
+        return image;
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -122,7 +142,10 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 }
             }
             uploadImage(filePath)
-            Picasso.get().load(filePath).centerCrop().fit().into(profileImageView)
+            Glide.with(this).load(filePath)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(profileImageView)
         }
     }
 
@@ -135,13 +158,13 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         val ref = storageReference.child("profile_images/${user.id}_${(System.currentTimeMillis() / 1000).toInt()}")
 
         val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Uploading...")
+        progressDialog.setTitle(this.getString(R.string.upload_media_dialog_title))
         progressDialog.show()
 
         ref.putFile(filePath)
             .addOnFailureListener { e ->
                 progressDialog.dismiss()
-                Toast.makeText(applicationContext, "Failed " + e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
             }
             .addOnProgressListener { taskSnapshot ->
                 if (taskSnapshot.totalByteCount > 3145728) { // If file is major than 3MB
@@ -149,11 +172,11 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 } else {
                     val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                         .totalByteCount
-                    progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
+                    progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress, progress.toInt()))
                 }
             }
             .addOnCanceledListener {
-                Toast.makeText(applicationContext, "The file is major than 3 megabytes", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, this.getString(R.string.upload_toast_error_file_size), Toast.LENGTH_LONG).show()
                 progressDialog.dismiss()
             }
             .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
@@ -168,7 +191,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                     newProfileImageUri = task.result.toString()
 
                     progressDialog.dismiss()
-                    Toast.makeText(applicationContext, "Uploaded", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
                 } else {
                     // Handle failures
                 }
@@ -181,15 +204,18 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 val value=localUserProfileObservable.getValue()
                 if(value is User){
                     user = value
-                    txt_name?.text = Editable.Factory.getInstance().newEditable("${user.name}")
-                    txt_surname?.text = Editable.Factory.getInstance().newEditable("${user.surname}")
-                    txt_birthdate?.text = Editable.Factory.getInstance().newEditable("${user.birth_date}")
-                    txt_city?.text = Editable.Factory.getInstance().newEditable("${user.city}")
-                    txt_country?.text = Editable.Factory.getInstance().newEditable("${user.country}")
-                    txt_profession?.text = Editable.Factory.getInstance().newEditable("${user.profession}")
+                    txt_name?.text = Editable.Factory.getInstance().newEditable(user.name)
+                    txt_surname?.text = Editable.Factory.getInstance().newEditable(user.surname)
+                    txt_birthdate?.text = Editable.Factory.getInstance().newEditable(user.birth_date)
+                    txt_city?.text = Editable.Factory.getInstance().newEditable(user.city)
+                    txt_country?.text = Editable.Factory.getInstance().newEditable(user.country)
+                    txt_profession?.text = Editable.Factory.getInstance().newEditable(user.profession)
 
                     if (user.profile_image != "") {
-                        Picasso.get().load(user.profile_image).centerCrop().fit().into(profile_image)
+                        Glide.with(this).load(user.profile_image)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
                     }
 
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")

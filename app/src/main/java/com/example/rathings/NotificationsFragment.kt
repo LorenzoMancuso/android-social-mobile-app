@@ -22,16 +22,19 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class NotificationsFragment : Fragment(){
+class NotificationsFragment : Fragment(), Observer{
     private var mListener: OnFragmentInteractionListener? = null
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
 
-    private var localNotification = ArrayList<Notification>()
+    var notification: CustomObservable? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
+
+        notification = FirebaseUtils.getNotifications();
+        notification?.addObserver(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,16 +44,9 @@ class NotificationsFragment : Fragment(){
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        FirebaseUtils.getNotifications().addObserver(object: Observer {
-            override fun update(o: Observable?, arg: Any?) {
-                val notifications = (o as CustomObservable).getValue() as ArrayList<Notification>
-                localNotification = notifications
-                updateNotifications(notifications)
-            }
-        })
+    override fun update(o: Observable?, arg: Any?) {
+        val notifications = (o as CustomObservable).getValue() as ArrayList<Notification>
+        updateNotifications(notifications)
     }
 
     fun updateNotifications(notification: ArrayList<Notification>){
@@ -83,21 +79,20 @@ class NotificationsFragment : Fragment(){
 
 
     override fun onDestroy() {
+        Log.i("[NOTIFICATION-FRAGMENT]", "DESTROY NOTIFICATION FRAGMENT")
+
         super.onDestroy()
+        val user = FirebaseUtils.getPrimaryProfile().getValue() as User
 
-        FirebaseUtils.getPrimaryProfile().addObserver(object: Observer {
-            override fun update(o: Observable?, arg: Any?) {
-                val user = (o as CustomObservable).getValue() as User
+        for (notification in user.notifications)
+            notification.read = true
 
-                for (notification in user.notifications)
-                    notification.read = true
+        FirebaseUtils.updateData(
+            "users/${user.id}/",
+            user.toMutableMap()
+        )
 
-                FirebaseUtils.updateData(
-                    "users/${user.id}/",
-                    user.toMutableMap()
-                )
-            }
-        })
+        notification?.deleteObserver(this)
 
     }
 

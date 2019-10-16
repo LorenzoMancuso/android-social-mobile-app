@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.HomeActivity
 import com.example.rathings.R
-import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
 class UserAdapter(private val mDataList: ArrayList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -35,11 +35,14 @@ class UserAdapter(private val mDataList: ArrayList<User>) : RecyclerView.Adapter
             }
         }
 
-        holder.name.text = "${mDataList[position].name} ${mDataList[position].surname}"
+        holder.name.text = holder.itemView.context.getString(R.string.name_surname, mDataList[position].name, mDataList[position].surname)
         holder.profession.text = mDataList[position].profession
-        holder.country.text = mDataList[position].city + ", " + mDataList[position].country
+        holder.country.text = holder.itemView.context.getString(R.string.city_country, mDataList[position].city, mDataList[position].country)
         if(mDataList[position].profile_image != "") {
-            Picasso.get().load(mDataList[position].profile_image).into(holder.profile_image)
+            Glide.with(holder.itemView.context).load(mDataList[position].profile_image)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.profile_image)
         }
     }
 
@@ -51,13 +54,13 @@ class UserAdapter(private val mDataList: ArrayList<User>) : RecyclerView.Adapter
         internal var name: TextView
         internal var profession: TextView
         internal var country: TextView
-        internal var profile_image: CircleImageView
+        internal var profile_image: ImageView
 
         init {
             name = itemView.findViewById<View>(R.id.name) as TextView
             profession = itemView.findViewById<View>(R.id.profession) as TextView
             country = itemView.findViewById<View>(R.id.country) as TextView
-            profile_image = itemView.findViewById<View>(R.id.profile_image) as CircleImageView
+            profile_image = itemView.findViewById<View>(R.id.profile_image) as ImageView
         }
     }
 }

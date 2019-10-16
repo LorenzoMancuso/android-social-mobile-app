@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rathings</string>
+    <string name="app_subtitle">Scegli il contenuto in base alle tue preferenze!</string>
+
+    <!-- Login -->
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="sign_in_button">Entra</string>
+    <string name="sign_up_button">Registrati</string>
+    <string name="google_button">Continua con Google</string>
+    <string name="sign_in_failed">Autenticazione fallita %1$s</string>
+    <string name="sign_up_failed">Registrazione fallita %1$s</string>
+
+    <!-- General -->
+    <string name="image_profile_description">Immagine del profilo</string>
+    <string name="separator_text">O</string>
+    <string name="edit_button">Modifica</string>
+    <string name="name_surname">%1$s %2$s</string>
+    <string name="city_country">%1$s, %2$s</string>
+    <string name="dialog_negative_button">Cancella</string>
+
+    <!-- Detailed Card -->
+    <string name="rate_question">Cosa ne pensi di questa Card?</string>
+    <string name="rate_text">Media dei voti</string>
+    <string name="toast_rate_response">Grazie per il tuo voto</string>
+    <string name="comment_hint">Scrivi un commento</string>
+    <string name="write_card_title_hint">Scrivi il titolo della Card</string>
+    <string name="write_card_description_hint">Scrivi la descrizione della Card</string>
+    <string name="categories_section_title">Lista delle categorie</string>
+    <string name="categories_section_button">+ tabs</string>
+    <string name="add_comment_done">Commento aggiunto.</string>
+    <string name="comment_toast_error">Il commento è obbligatorio.</string>
+
+    <!-- Edit Card -->
+    <string name="edit_card_title">Aggiorna la tua Card con le sue informazioni</string>
+    <string name="multimedia_section_title">Multimedia aggiunti</string>
+    <string name="multimedia_section_button">+ media</string>
+    <string name="link_section_title">Link esterno</string>
+    <string name="link_section_button">+ link</string>
+    <string name="add_link_dialog_title">Aggiungi link</string>
+    <string name="add_link_dialog_message">Scrivi o incolla qui un link</string>
+    <string name="add_link_dialog_positive_button">Aggiungi</string>
+    <string name="delete_media_dialog_title">Elimina media</string>
+    <string name="delete_media_dialog_message">Vuoi eliminare questo media?</string>
+    <string name="delete_media_dialog_positive_button">Elimina</string>
+    <string name="toast_edit_response">Aggiornamento completato.</string>
+
+    <!-- Modify Account -->
+    <string name="change_image_button">Cambia immagine</string>
+    <string name="name_hint">Nome</string>
+    <string name="surname_hint">Cognome</string>
+    <string name="date_of_birth_hint">Data di nascita (gg/mm/aaaa)</string>
+    <string name="city_hint">Città</string>
+    <string name="country_hint">Stato</string>
+    <string name="profession_hint">Professione</string>
+    <string name="confirm_button">Conferma</string>
+    <string name="date_of_birth_error">Formato della data invalido (gg/mm/yyyy)</string>
+    <string name="change_image_dialog_title">Seleziona l\'azione</string>
+    <string name="change_image_dialog_select">Seleziona l\'immagine dalla galleria</string>
+    <string name="change_image_dialog_do">Fai una foto</string>
+
+    <!-- Multimedia -->
+    <string name="list_of_images_title">Lista delle immagini della Card</string>
+    <string name="list_of_videos_title">Lista dei video della Card</string>
+
+    <!-- New Card -->
+    <string name="new_card_button">Pubblica</string>
+    <string name="new_card_title">Aggiungi una nuova card</string>
+    <string name="new_card_subtitle">Costruisci la tua card con le sue informazioni</string>
+    <string name="select_media_text">Seleziona %1$s dalla galleria</string>
+    <string name="do_media_text">Fai %1$s con la fotocamera</string>
+    <string name="upload_media_dialog_title">Caricamento...</string>
+    <string name="upload_media_dialog_progress">Caricamento %1$d \%</string>
+    <string name="upload_toast_error">Errore durante l\'upload.</string>
+    <string name="upload_toast_error_file_size">Il file è maggiore di 3 megabytes.</string>
+    <string name="upload_toast_response">File caricato correttamente.</string>
+    <string name="new_card_toast_response">Card pubblicata correttamente.</string>
+    <string name="new_card_toast_error">Non puoi pubblicare la nuova card perchè Titolo, Descrizione o Tabs sono vuoti.</string>
+
+    <!-- Follow List -->
+    <string name="followed_followers_size">%1$s: %2$d</string>
+
+    <!-- Profile -->
+    <string name="add_follow">segui +</string>
+    <string name="remove_follow">smetti di seguire -</string>
+    <string name="cards_size">%1$d cards</string>
+    <string name="profile_rathing">Voto %1$s</string>
+    <string name="followers_size">Followers: %1$d</string>
+    <string name="followed_size">Followed: %1$d</string>
+
+    <!-- Tabs -->
+    <string name="done_button">Fatto</string>
+
+    <!-- Cards Fragment -->
+    <string name="popular_cards">Card popolari</string>
+    <string name="interest_cards">Card d\'interesse</string>
+
+    <!-- Link Preview Fragment -->
+    <string name="image_link_description">Immagine del link</string>
+
+    <!-- Profile Fragment -->
+    <string name="sign_out_button">Sign out</string>
+
+    <!-- Search Fragment -->
+    <string name="search_hint">Cerca utente</string>
+    <string name="search_error">Non ci sono utenti con questo nome.</string>
+
+    <!-- Multimedia Menu -->
+    <string name="multimedia_image">Immagine</string>
+    <string name="multimedia_video">Video</string>
+
+    <!-- Navigation Menu -->
+    <string name="navigation_home">home</string>
+    <string name="navigation_tabs">tabs</string>
+    <string name="navigation_profile">profilo</string>
+    <string name="navigation_notifications">notifiche</string>
+    <string name="navigation_search">cerca</string>
+
+    <!-- Settings Detailed Card Menu -->
+    <string name="settings_detailed_card_edit">Aggiorna Card</string>
+    <string name="settings_detailed_card_delete">Elimina Card</string>
+
+    <!-- Card -->
+    <string name="comment_size">Commenti: %1$d</string>
+    <string name="other_tabs">+ %1$d Tabs</string>
+    <string name="other_media">+ %1$d Media</string>
+
+    <!-- Notifications -->
+    <string name="follow_you">%1$s %2$s ha iniziato a seguirti.</string>
+    <string name="push_notification_title">Hai una nuova notifica!</string>
+    <string name="push_notification_message">Entra in Rathings per scoprire le novità</string>
+</resources>

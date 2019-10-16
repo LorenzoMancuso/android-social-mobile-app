@@ -14,6 +14,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.*
 import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabController
@@ -27,7 +29,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_card.*
 import kotlinx.android.synthetic.main.activity_modify_account.confirm_button
 import java.util.ArrayList
@@ -49,8 +50,8 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         selectedCard = intent.getSerializableExtra("card") as Card
 
         // Title and Description
-        txt_title.text = Editable.Factory.getInstance().newEditable("${selectedCard.title}")
-        txt_description.text = Editable.Factory.getInstance().newEditable("${selectedCard.description}")
+        txt_title.text = Editable.Factory.getInstance().newEditable(selectedCard.title)
+        txt_description.text = Editable.Factory.getInstance().newEditable(selectedCard.description)
 
         initToolbar()
         initCategories()
@@ -61,7 +62,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 return true
@@ -78,18 +79,16 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
     }
 
     fun initLink() {
-        val linkBtn = findViewById(R.id.link_btn) as Button
+        val linkBtn = findViewById<Button>(R.id.link_btn)
         linkBtn.setOnClickListener(View.OnClickListener { addLink() })
 
         if (selectedCard.link != "") {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val linkPreviewFragment = LinkPreviewFragment()
             val arguments = Bundle()
-            var addedLinkLayout = findViewById(R.id.added_link) as LinearLayout
-            addedLinkLayout.removeAllViews()
+            var linkPreviewFragment = LinkPreviewFragment()
             arguments.putString("URL", selectedCard.link)
-            linkPreviewFragment.setArguments(arguments)
+            linkPreviewFragment.arguments = arguments
             fragmentTransaction.add(R.id.added_link, linkPreviewFragment)
             fragmentTransaction.commit()
         }
@@ -97,27 +96,27 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
 
     fun addLink(): Boolean {
         var taskEditText = EditText(this)
-        taskEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+        taskEditText.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         var dialog = AlertDialog.Builder(this)
-            .setTitle("Add Link")
-            .setMessage("Write or paste here a link")
+            .setTitle(this.getString(R.string.add_link_dialog_title))
+            .setMessage(this.getString(R.string.add_link_dialog_message))
             .setView(taskEditText)
-            .setPositiveButton("Add", DialogInterface.OnClickListener() { _, _ ->
+            .setPositiveButton(this.getString(R.string.add_link_dialog_positive_button), DialogInterface.OnClickListener() { _, _ ->
                 Log.d("[DIALOG]", taskEditText.text.toString())
 
                 val fragmentManager = supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val linkPreviewFragment = LinkPreviewFragment()
                 val arguments = Bundle()
-                var containerLink = findViewById(R.id.container_link) as LinearLayout
+                var containerLink = findViewById<LinearLayout>(R.id.container_link)
                 containerLink.removeAllViews()
                 arguments.putString("URL", taskEditText.text.toString())
-                linkPreviewFragment.setArguments(arguments)
+                linkPreviewFragment.arguments = arguments
                 fragmentTransaction.add(R.id.container_link, linkPreviewFragment)
                 fragmentTransaction.commit()
                 selectedCard.link = taskEditText.text.toString()
             })
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(this.getString(R.string.dialog_negative_button), null)
             .create()
         dialog.show()
         return true
@@ -167,7 +166,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
 
             listOfSelectedTabs = data.extras?.get("added_categories") as ArrayList<Tab>
 
-            var addedCategories = findViewById(R.id.added_categories) as ChipGroup
+            var addedCategories = findViewById<ChipGroup>(R.id.added_categories)
             addedCategories.removeAllViews()
             for(tab in listOfSelectedTabs) {
                 // Add id to publish card
@@ -191,7 +190,6 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
     }
 
     fun initMultimedia() {
-        val scale = resources.displayMetrics.density
         val addedMultimedia = findViewById<LinearLayout>(R.id.added_multimedia)
         addedMultimedia.removeAllViews()
 
@@ -202,77 +200,51 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
 
         var paramsRow : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
 
-        if (selectedCard.multimedia.size == 1) {
+        for (i in selectedCard.multimedia.indices) {
             var row = addedMultimedia.getChildAt(addedMultimedia.childCount - 1) as LinearLayout
-
-            var imageView = ImageView(applicationContext)
-            imageView.setPadding(5,5,5,5)
-
-            Picasso.get().load(selectedCard.multimedia[0]).resize((300 * scale + 0.5f).toInt(), (300 * scale + 0.5f).toInt()).onlyScaleDown().centerInside().into(imageView)
-            row.addView(imageView)
-        } else if (selectedCard.multimedia.size > 0) {
-
-            for (i in selectedCard.multimedia.indices) {
-                var row = addedMultimedia.getChildAt(addedMultimedia.childCount - 1) as LinearLayout
-                // row.setOnClickListener{ openMultimediaActivity() }
-
-                if (row.childCount == 2) {
-                    row = LinearLayout(applicationContext)
-                    row.layoutParams = paramsRow
-                    row.orientation = LinearLayout.HORIZONTAL
-                    addedMultimedia.addView(row)
-                }
-
-                if (selectedCard.multimedia[i].contains("video")) { // If media is a video, setThumbnail to imageView and user ExoPlayer with disabled controls
-                    manageVideo(row, selectedCard.multimedia[i])
-                } else if (selectedCard.multimedia[i].contains("image")) { // else, set image
-                    manageImage(row, selectedCard.multimedia[i])
-                }
+            if (row.childCount == 2) {
+                row = LinearLayout(applicationContext)
+                row.layoutParams = paramsRow
+                row.orientation = LinearLayout.HORIZONTAL
+                addedMultimedia.addView(row)
             }
+
+            manageMedia(row, selectedCard.multimedia[i], i)
         }
 
     }
 
-    fun deleteMedia(path: String) {
-        Log.d("[DELETE MEDIA]", path)
+    fun deleteMedia(index: Int) {
+        if (selectedCard.multimedia.size > 0) {
+            var taskEditText = EditText(this)
+            taskEditText.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+            var dialog = AlertDialog.Builder(this)
+                .setTitle(this.getString(R.string.delete_media_dialog_title))
+                .setMessage(this.getString(R.string.delete_media_dialog_message))
+                .setPositiveButton(this.getString(R.string.delete_media_dialog_positive_button), DialogInterface.OnClickListener() { _, _ ->
+                    selectedCard.multimedia.removeAt(index)
+                    Log.d("[DELETE MEDIA]", index.toString())
+                    initMultimedia()
+                })
+                .setNegativeButton(this.getString(R.string.dialog_negative_button), null)
+                .create()
+            dialog.show()
+        }
     }
 
-    var listOfVideoPlayers: ArrayList<ExoPlayer> = ArrayList()
-    fun manageVideo(row: LinearLayout, videoPath: String) {
-        val scale = resources.displayMetrics.density
-
-        var playerView = PlayerView(applicationContext)
-        val player = ExoPlayerFactory.newSimpleInstance(applicationContext,  DefaultTrackSelector())
-        var mediaSource = ExtractorMediaSource.Factory(DefaultDataSourceFactory(applicationContext, "rathings")).createMediaSource(Uri.parse(videoPath))
-        var thumbnail = ImageView(applicationContext)
-
-        listOfVideoPlayers.add(player)
-        playerView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-        playerView.setPadding(5,5,5,5)
-        playerView.player = player
-        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
-        playerView.useController = false
-
-        thumbnail.setBackgroundColor(Color.parseColor("#90111111"))
-        thumbnail.setImageResource(R.drawable.ic_slow_motion_video_white_48dp)
-        thumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        thumbnail.setOnClickListener { deleteMedia(videoPath) }
-
-        playerView.overlayFrameLayout.addView(thumbnail)
-        player.prepare(mediaSource)
-
-        row.addView(playerView)
-    }
-
-    fun manageImage(row: LinearLayout, imagePath: String) {
+    fun manageMedia(row: LinearLayout, imagePath: String, index: Int) {
         val scale = resources.displayMetrics.density
 
         var imageView = ImageView(applicationContext)
         imageView.setPadding(5,5,5,5)
         imageView.layoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-        imageView.setOnClickListener { deleteMedia(imagePath) }
+        imageView.setOnClickListener { deleteMedia(index) }
 
-        Picasso.get().load(imagePath).centerCrop().fit().into(imageView)
+        Glide.with(this).load(imagePath)
+            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(imageView)
+
         row.addView(imageView)
     }
 
@@ -281,18 +253,12 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
         selectedCard.title = txt_title.text.toString()
         selectedCard.description = txt_description.text.toString()
         FirebaseUtils.updateData("cards/${selectedCard.id}/", selectedCard.toMutableMap())
-        Toast.makeText(baseContext, "Edit done.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(baseContext, this.getString(R.string.toast_edit_response), Toast.LENGTH_SHORT).show()
         finish()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        if (listOfVideoPlayers.size > 0) {
-            for (player in listOfVideoPlayers) {
-                player.release()
-            }
-        }
     }
 
 }

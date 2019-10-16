@@ -17,11 +17,13 @@
                     <ImageView
                             android:layout_width="100dp"
                             android:layout_height="100dp"
+                            android:contentDescription="@string/image_link_description"
                             android:id="@+id/image"/>
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:paddingLeft="10dp"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
                             android:orientation="vertical">
                         <TextView android:layout_width="match_parent"
                                   android:layout_height="match_parent"

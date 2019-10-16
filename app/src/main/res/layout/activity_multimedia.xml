@@ -28,8 +28,8 @@
                         <TextView android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
                                   android:padding="10dp"
-                                  android:textSize="20dp"
-                                  android:text="List of Card's images"/>
+                                  android:textSize="20sp"
+                                  android:text="@string/list_of_images_title"/>
                         <LinearLayout android:layout_width="match_parent"
                                       android:layout_height="wrap_content"
                                       android:orientation="vertical"
@@ -39,8 +39,8 @@
                         <TextView android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
                                   android:padding="10dp"
-                                  android:textSize="20dp"
-                                  android:text="List of Card's videos"/>
+                                  android:textSize="20sp"
+                                  android:text="@string/list_of_videos_title"/>
                         <LinearLayout android:layout_width="match_parent"
                                       android:layout_height="wrap_content"
                                       android:orientation="vertical"

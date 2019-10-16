@@ -19,10 +19,6 @@ object CardController: Observer {
         interestCardsObservable.addObserver(this)
     }
 
-    fun getUserCards(uid:String){
-        return FirebaseUtils.getUserCards(uid)
-    }
-
     fun popularCards(cards: ArrayList<Card>){
 
         val user = FirebaseUtils.getPrimaryProfile().getValue() as User

@@ -28,23 +28,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/container_user">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <ImageView
                     android:id="@+id/profile_image"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/default_avatar"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="#FFF"/>
+                    android:contentDescription="@string/image_profile_description"
+                    android:src="@drawable/default_avatar"/>
                 <LinearLayout
-                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="match_parent"
-                        android:text="Nome Utente"
                         android:textStyle="bold"
                         android:layout_height="wrap_content"
                         android:id="@+id/name"
@@ -53,15 +51,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/profession"
-                            android:text="Professione"
                             android:textSize="18sp"/>
                     <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/country"
-                            android:text="Country"
                             android:textSize="18sp"/>
-
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.rathings.User
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -13,11 +14,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.Card.Card
 import com.example.rathings.Card.CardAdapter
 import com.example.rathings.FirebaseUtils
+import com.example.rathings.LoginActivity
 import com.example.rathings.R
-import com.squareup.picasso.Picasso
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 
@@ -45,6 +52,9 @@ class ProfileFragment : Fragment(), Observer {
 
     private var listener: OnFragmentInteractionListener? = null
 
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         /**CONSTRUCTOR INIT*/
         super.onCreate(savedInstanceState)
@@ -54,10 +64,37 @@ class ProfileFragment : Fragment(), Observer {
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
+        /**LOGOUT INIT*/
+        auth = FirebaseAuth.getInstance()
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this.activity as Activity, gso)
+        /**END LOGOUT INIT*/
+
     }
 
     fun goToEdit(){
         val intent = Intent(this.context, ModifyAccountActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun signOut() {
+        //Firebase Sign Out
+        auth.signOut()
+
+        // Google revoke access
+        googleSignInClient.revokeAccess().addOnCompleteListener(this.activity as Activity) {
+            Log.e("[SIGN OUT]", "googleRevokeAccess:success")
+        }
+
+        googleSignInClient.signOut().addOnCompleteListener(this.activity as Activity) {
+            Log.e("[SIGN OUT]", "googleSignOut:success")
+        }
+
+        val intent = Intent(this.activity as Activity, LoginActivity::class.java)
         startActivity(intent)
     }
 
@@ -72,6 +109,7 @@ class ProfileFragment : Fragment(), Observer {
         super.onViewCreated(view, savedInstanceState)
 
         view?.findViewById<Button>(R.id.btn_edit)!!.setOnClickListener { goToEdit() }
+        view?.findViewById<Button>(R.id.btn_signout)!!.setOnClickListener { signOut() }
 
         //call for get profile info
         FirebaseUtils.getProfile(null)
@@ -114,14 +152,21 @@ class ProfileFragment : Fragment(), Observer {
                 val value=localUserProfileObservable.getValue()
                 if(value is User){
                     val user= value
-                    txt_name?.text = "${user.name} ${user.surname}"
-                    txt_profession?.text = "${user.profession}"
-                    txt_country?.text = "${user.city}, ${user.country}"
-                    txt_followers?.text = "Followers: ${user.followers.size}"
-                    txt_followed?.text = "Followed: ${user.followed.size}"
+                    txt_name?.text = this.getString(R.string.name_surname, user.name, user.surname)
+                    txt_profession?.text = user.profession
+                    txt_country?.text = this.getString(R.string.city_country, user.city, user.country)
+                    txt_followers?.text = this.getString(R.string.followers_size, user.followers.size)
+                    txt_followed?.text = this.getString(R.string.followed_size, user.followed.size)
                     if(profile_image!=null && user.profile_image != "") {
-                        val scale = resources.displayMetrics.density
-                        Picasso.get().load(user.profile_image).resize((200 * scale + 0.5f).toInt(), (200 * scale + 0.5f).toInt()).centerCrop().into(profile_image)
+                        Glide.with(this).load(user.profile_image)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
+                    } else {
+                        Glide.with(this).load(R.drawable.default_avatar)
+                            .centerCrop().circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profile_image)
                     }
 
                     view?.findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }
@@ -136,12 +181,12 @@ class ProfileFragment : Fragment(), Observer {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
                     Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
 
-                    txt_post.text = "${cards.size} cards"
+                    txt_post.text = this.getString(R.string.cards_size, cards.size)
 
                     val tmp = ArrayList(cards.filter { it.ratings_average > 0 })
                     val avg = tmp.map { card -> card.ratings_average }.average().toFloat()
 
-                    txt_score.text = "Rathing ${Math.round((avg) * 10.0) / 10.0}"
+                    txt_score.text = this.getString(R.string.profile_rathing, (Math.round((avg) * 10.0) / 10.0).toString())
 
                     cardRecyclerView = view?.findViewById(R.id.user_cards_recycler_view)
                     val mLayoutManager = LinearLayoutManager(super.getContext(),RecyclerView.VERTICAL,false)
