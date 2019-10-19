@@ -7,6 +7,7 @@ import android.text.TextUtils
 
 import android.util.Log
 import android.widget.Toast
+import com.example.rathings.User.ModifyAccountActivity
 import com.example.rathings.User.UserController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -106,9 +107,10 @@ class LoginActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
                     createUserInstance()
-                    goToHome()
-                    /*val intent = Intent(this, ModifyAccountActivity::class.java)
-                    startActivity(intent)*/
+                    // goToHome()
+                    val intent = Intent(this, ModifyAccountActivity::class.java)
+                    intent.putExtra("signup", true)
+                    startActivity(intent)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)

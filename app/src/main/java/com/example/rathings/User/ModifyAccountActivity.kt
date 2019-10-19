@@ -37,6 +37,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
 
     var localUserProfileObservable = FirebaseUtils.userProfileObservable
     var user: User = User()
+    var signup: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,10 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         change_image.setOnClickListener { changeImage() }
 
         confirm_button.setOnClickListener { updateInfo() }
+        signup = intent.getBooleanExtra("signup", false)
+        Log.d("[MODIFY-ACCOUNT]", "The signup intent value is " + signup )
+
+
     }
 
     fun updateInfo() {
@@ -75,7 +80,14 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
             //send hash map of user object for firebase update
             FirebaseUtils.updateData("users/${user.id}/", user.toMutableMap())
             val intent = Intent(this, HomeActivity::class.java)
-            intent.putExtra("mode", "profile")
+
+            if (signup){
+                Log.d("[MODIFY-ACCOUNT]", "IF")
+                intent.putExtra("mode", "tabs")
+            } else {
+                Log.d("[MODIFY-ACCOUNT]", "ELSE")
+                intent.putExtra("mode", "profile")
+            }
             startActivity(intent)
         }else{
             txt_birthdate?.error = this.getString(R.string.date_of_birth_error)

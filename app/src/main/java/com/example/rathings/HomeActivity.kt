@@ -35,6 +35,7 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
 
         // Initialize Tabs
         TabController.getTabs()
+        FirebaseUtils.getPrimaryProfile()
 
         switchFragment(intent.getStringExtra("mode"))
 
@@ -63,14 +64,13 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
             }
             return@setOnNavigationItemSelectedListener true
         }
-
     }
 
     private fun switchFragment(mode:String?){
         Log.e("[MODE]", "$mode")
         when(mode){
             "tabs"->{
-                val fragment = CardsFragment()
+                val fragment = TabsFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragment, "Tabs").commit()
                 selectItem(R.id.action_tabs)
             }
