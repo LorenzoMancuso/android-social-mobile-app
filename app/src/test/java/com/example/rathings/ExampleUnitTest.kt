@@ -11,12 +11,38 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun emailValidator_CorrectEmailSimple_ReturnsTrue() {
+        assertTrue(LoginActivity.isValidEmail("name@email.com"))
     }
 
     @Test
-    fun getUsers_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun emailValidator_CorrectEmailSubDomain_ReturnsTrue() {
+        assertTrue(LoginActivity.isValidEmail("name@email.co.uk"))
     }
+
+    @Test
+    fun emailValidator_InvalidEmailNoTld_ReturnsFalse() {
+        assertFalse(LoginActivity.isValidEmail("name@email"))
+    }
+
+    @Test
+    fun emailValidator_InvalidEmailDoubleDot_ReturnsFalse() {
+        assertFalse(LoginActivity.isValidEmail("name@email..com"))
+    }
+
+    @Test
+    fun emailValidator_InvalidEmailNoUsername_ReturnsFalse() {
+        assertFalse(LoginActivity.isValidEmail("@email.com"))
+    }
+
+    @Test
+    fun emailValidator_EmptyString_ReturnsFalse() {
+        assertFalse(LoginActivity.isValidEmail(""))
+    }
+
+    @Test
+    fun emailValidator_NullEmail_ReturnsFalse() {
+        assertFalse(LoginActivity.isValidEmail(null))
+    }
+
 }
