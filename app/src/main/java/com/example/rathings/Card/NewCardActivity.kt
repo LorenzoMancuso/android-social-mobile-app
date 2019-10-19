@@ -1,6 +1,7 @@
 package com.example.rathings.Card
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -16,12 +17,15 @@ import androidx.appcompat.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
 import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Environment
 import android.text.InputType
 import android.util.Log
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.*
@@ -35,6 +39,8 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_new_card.*
+import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -193,7 +199,8 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     }
                     1 -> {
                         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), requestCode)
                         } else {
                             if (type == "image") {
@@ -208,10 +215,28 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         pictureDialog.show()
     }
 
+    var photoFile: File = File("")
     fun doImageCamera() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        intent.also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity(packageManager)?.also {
-                startActivityForResult(takePictureIntent, 3)
+                // Create the File where the photo should go
+                photoFile = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    Log.e("[PHOTOS]", "Errore durante l'inserimento della foto")
+                    File("")
+                }
+                // Continue only if the File was successfully created
+                photoFile.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", it)
+                    Log.e("[PHOTOS]", photoURI.toString())
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, 3)
+                }
             }
         }
     }
@@ -219,19 +244,37 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     fun doVideoCamera() {
         Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
-                startActivityForResult(takePictureIntent, 3)
+                startActivityForResult(takePictureIntent, 4)
             }
+        }
+    }
+
+    var currentPhotoPath: String = ""
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir = File((Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).toString() + "/Rathings")
+        if (!storageDir.exists())
+            storageDir.mkdirs()
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             1 -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) { doImageCamera() }
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) { doImageCamera() }
                 return
             }
             2 -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) { doVideoCamera() }
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) { doVideoCamera() }
                 return
             }
             else -> {
@@ -242,6 +285,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.e("[PHOTOS Request Code]", requestCode.toString())
         if (resultCode == 5) { // CASE Add Tab
             Log.d("[EXTRAS]", data?.extras?.get("added_categories").toString())
 
@@ -277,49 +321,45 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 })
             }
         } else { // CASE Add Multimedia
-            if (data != null) {
-                val addedMultimediaLayout = findViewById<LinearLayout>(R.id.added_multimedia)
-                var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
-                val scale = resources.displayMetrics.density
+            val addedMultimediaLayout = findViewById<LinearLayout>(R.id.added_multimedia)
+            var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
+            val scale = resources.displayMetrics.density
 
-                if (row.childCount == 2) {
-                    row = LinearLayout(this)
-                    var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
-                    row.layoutParams = params
-                    row.orientation = LinearLayout.HORIZONTAL
-                    addedMultimediaLayout.addView(row)
-                }
+            if (row.childCount == 2) {
+                row = LinearLayout(this)
+                var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
+                row.layoutParams = params
+                row.orientation = LinearLayout.HORIZONTAL
+                addedMultimediaLayout.addView(row)
+            }
 
-                if (requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) { // PHOTO: 1 = select, 3 = do --- VIDEO: 2 = select, 4 = do
-                    var imageView = ImageView(this)
-                    var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-                    imageView.setPadding(5,5,5,5)
-                    imageView.layoutParams = params
-                    try {
-                        var filePath: Uri
-                        var bitmap:Bitmap
-
-                        if (requestCode == 3) {
-                            bitmap = data.extras.get("data") as Bitmap
-                            filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
-                        } else {
-                            filePath = data.data
-                        }
-
-                        Glide.with(this).load(filePath)
-                            .centerCrop()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(imageView)
-
-                        var type = "image"
-                        if (filePath.toString().contains("video")) {
-                            type = "video"
-                        }
-
-                        uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
+            if (requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) { // PHOTO: 1 = select, 3 = do --- VIDEO: 2 = select, 4 = do
+                var imageView = ImageView(this)
+                var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
+                imageView.setPadding(5,5,5,5)
+                imageView.layoutParams = params
+                try {
+                    var filePath: Uri
+                    if (requestCode == 3) {
+                        filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
+                    } else {
+                        Log.d("[SELECT IMAGE]", data?.data.toString())
+                        filePath = data?.data as Uri
                     }
+
+                    Glide.with(this).load(filePath)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(imageView)
+
+                    var type = "image"
+                    if (filePath.toString().contains("video")) {
+                        type = "video"
+                    }
+
+                    uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
             }
         }
@@ -340,13 +380,13 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             Toast.makeText(context, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
         }
         .addOnProgressListener { taskSnapshot ->
-            if (taskSnapshot.totalByteCount > 3145728) { // If file is major than 3MB
+            /*if (taskSnapshot.totalByteCount > 3145728) { // If file is major than 3MB
                 taskSnapshot.task.cancel()
             } else {
                 val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                     .totalByteCount
                 //progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress) + " " + progress.toInt() + "%")
-            }
+            }*/
         }
         .addOnCanceledListener {
             Toast.makeText(context, this.getString(R.string.upload_toast_error_file_size), Toast.LENGTH_LONG).show()
