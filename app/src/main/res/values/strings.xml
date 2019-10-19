@@ -71,7 +71,7 @@
     <string name="select_media_text">Select %1$s from gallery</string>
     <string name="do_media_text">Do %1$s with camera</string>
     <string name="upload_media_dialog_title">Uploading...</string>
-    <string name="upload_media_dialog_progress">Uploaded %1$d \%</string>
+    <string name="upload_media_dialog_progress">Uploaded</string>
     <string name="upload_toast_error">Error during upload.</string>
     <string name="upload_toast_error_file_size">The file is major than 3 megabytes.</string>
     <string name="upload_toast_response">File uploaded correctly.</string>

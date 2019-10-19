@@ -174,7 +174,15 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     private fun chooseFile(type: String, requestCode: Int) {
         val pictureDialog = AlertDialog.Builder(this)
         pictureDialog.setTitle("Select Action")
-        val pictureDialogItems = arrayOf(this.getString(R.string.select_media_text, type), this.getString(R.string.do_media_text, type))
+
+        var textType = ""
+        if (type == "image") {
+            textType = this.getString(R.string.multimedia_image)
+        } else {
+            textType = this.getString(R.string.multimedia_video)
+        }
+
+        val pictureDialogItems = arrayOf(this.getString(R.string.select_media_text, textType), this.getString(R.string.do_media_text, textType))
         pictureDialog.setItems(pictureDialogItems,
             DialogInterface.OnClickListener { dialog, which ->
                 when (which) {
@@ -182,17 +190,17 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                         val intent = Intent()
                         intent.type = "${type}/*"
                         intent.action = Intent.ACTION_GET_CONTENT
-                        startActivityForResult(Intent.createChooser(intent, "Select ${type}"), requestCode)
+                        startActivityForResult(Intent.createChooser(intent, "Select $textType"), requestCode)
                     }
                     1 -> {
                         if (type == "image") {
-                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
                                 takePictureIntent.resolveActivity(packageManager)?.also {
                                     startActivityForResult(takePictureIntent, 3)
                                 }
                             }
                         } else {
-                            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
+                            Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
                                 takePictureIntent.resolveActivity(packageManager)?.also {
                                     startActivityForResult(takePictureIntent, 4)
                                 }
@@ -312,7 +320,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             } else {
                 val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                     .totalByteCount
-                progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress, progress.toInt()))
+                progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress) + " " + progress.toInt() + "%")
             }
         }
         .addOnCanceledListener {
