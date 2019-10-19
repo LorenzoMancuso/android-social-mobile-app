@@ -1,5 +1,6 @@
 package com.example.rathings.Card
 
+import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,6 +10,7 @@ import android.graphics.Bitmap
 import android.widget.*
 import java.io.IOException
 import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
@@ -18,6 +20,8 @@ import android.graphics.Color
 import android.text.InputType
 import android.util.Log
 import android.view.MenuItem
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.rathings.*
@@ -48,7 +52,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     // Tabs List from TabsActivity
     var listOfSelectedTabs: ArrayList<Tab> = ArrayList()
     var addedLink = ""
-
 
     override fun onFragmentInteraction(uri: Uri) {}
 
@@ -170,9 +173,11 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         pictureDialog.setTitle("Select Action")
 
         var textType: String
+        var requestCode = 1
         if (type == "image") {
             textType = this.getString(R.string.multimedia_image)
         } else {
+            requestCode = 2
             textType = this.getString(R.string.multimedia_video)
         }
 
@@ -187,23 +192,52 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                         startActivityForResult(Intent.createChooser(intent, "Select $textType"), requestCode)
                     }
                     1 -> {
-                        if (type == "image") {
-                            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                                takePictureIntent.resolveActivity(packageManager)?.also {
-                                    startActivityForResult(takePictureIntent, 3)
-                                }
-                            }
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), requestCode)
                         } else {
-                            Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
-                                takePictureIntent.resolveActivity(packageManager)?.also {
-                                    startActivityForResult(takePictureIntent, 4)
-                                }
+                            if (type == "image") {
+                                doImageCamera()
+                            } else {
+                                doVideoCamera()
                             }
                         }
                     }
                 }
             })
         pictureDialog.show()
+    }
+
+    fun doImageCamera() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, 3)
+            }
+        }
+    }
+
+    fun doVideoCamera() {
+        Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, 3)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            1 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) { doImageCamera() }
+                return
+            }
+            2 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) { doVideoCamera() }
+                return
+            }
+            else -> {
+                // Ignore all other requests.
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -256,7 +290,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     addedMultimediaLayout.addView(row)
                 }
 
-                if (requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) { // PHOTO: 1 = select, 3 = do <-> VIDEO: 2 = select, 4 = do
+                if (requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) { // PHOTO: 1 = select, 3 = do --- VIDEO: 2 = select, 4 = do
                     var imageView = ImageView(this)
                     var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
                     imageView.setPadding(5,5,5,5)
