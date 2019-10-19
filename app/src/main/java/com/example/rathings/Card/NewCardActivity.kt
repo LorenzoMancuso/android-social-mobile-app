@@ -26,12 +26,6 @@ import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabsActivity
 import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
@@ -149,7 +143,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         .setTitle(this.getString(R.string.add_link_dialog_title))
         .setMessage(this.getString(R.string.add_link_dialog_message))
         .setView(taskEditText)
-        .setPositiveButton(this.getString(R.string.add_link_dialog_positive_button), DialogInterface.OnClickListener() { dialog, which ->
+        .setPositiveButton(this.getString(R.string.add_link_dialog_positive_button), DialogInterface.OnClickListener() { _, _ ->
             Log.d("[DIALOG]", taskEditText.text.toString())
 
             val fragmentManager = supportFragmentManager
@@ -175,7 +169,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         val pictureDialog = AlertDialog.Builder(this)
         pictureDialog.setTitle("Select Action")
 
-        var textType = ""
+        var textType: String
         if (type == "image") {
             textType = this.getString(R.string.multimedia_image)
         } else {
@@ -184,7 +178,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
         val pictureDialogItems = arrayOf(this.getString(R.string.select_media_text, textType), this.getString(R.string.do_media_text, textType))
         pictureDialog.setItems(pictureDialogItems,
-            DialogInterface.OnClickListener { dialog, which ->
+            DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     0 -> {
                         val intent = Intent()
@@ -272,10 +266,10 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                         var bitmap:Bitmap
 
                         if (requestCode == 3) {
-                            bitmap = data.getExtras().get("data") as Bitmap
+                            bitmap = data.extras.get("data") as Bitmap
                             filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
                         } else {
-                            filePath = data?.data
+                            filePath = data.data
                         }
 
                         Glide.with(this).load(filePath)
@@ -310,7 +304,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         progressDialog.show()
 
         ref.putFile(filePath)
-        .addOnFailureListener { e ->
+        .addOnFailureListener { _ ->
             progressDialog.dismiss()
             Toast.makeText(context, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
         }
