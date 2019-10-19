@@ -13,7 +13,6 @@ import android.net.Uri
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
-import android.app.ProgressDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.InputType
@@ -31,6 +30,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
+import kotlinx.android.synthetic.main.activity_new_card.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -299,13 +299,10 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         val ref = storageReference.child("${type}/${name}")
 
         val context = getApplicationContext()
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle(this.getString(R.string.upload_media_dialog_title))
-        progressDialog.show()
-
+        progressBar.visibility = View.VISIBLE
         ref.putFile(filePath)
         .addOnFailureListener { _ ->
-            progressDialog.dismiss()
+            progressBar.visibility = View.GONE
             Toast.makeText(context, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
         }
         .addOnProgressListener { taskSnapshot ->
@@ -314,12 +311,12 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             } else {
                 val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                     .totalByteCount
-                progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress) + " " + progress.toInt() + "%")
+                //progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress) + " " + progress.toInt() + "%")
             }
         }
         .addOnCanceledListener {
             Toast.makeText(context, this.getString(R.string.upload_toast_error_file_size), Toast.LENGTH_LONG).show()
-            progressDialog.dismiss()
+            progressBar.visibility = View.GONE
         }
         .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
             if (!task.isSuccessful) {
@@ -335,7 +332,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
                 listOfDownloadUri.add(task.result.toString())
                 view.setOnClickListener { deleteMedia(task.result.toString(), row, view) }
-                progressDialog.dismiss()
+                progressBar.visibility = View.GONE
                 Toast.makeText(context, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
             } else {
                 // Handle failures

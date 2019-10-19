@@ -71,8 +71,7 @@
     <string name="new_card_subtitle">Costruisci la tua card con le sue informazioni</string>
     <string name="select_media_text">Seleziona %1$s dalla galleria</string>
     <string name="do_media_text">Fai %1$s con la fotocamera</string>
-    <string name="upload_media_dialog_title">Caricamento...</string>
-    <string name="upload_media_dialog_progress">Caricamento</string>
+    <string name="upload_media_progress_bar">Caricamento...</string>
     <string name="upload_toast_error">Errore durante l\'upload.</string>
     <string name="upload_toast_error_file_size">Il file è maggiore di 3 megabytes.</string>
     <string name="upload_toast_response">File caricato correttamente.</string>
