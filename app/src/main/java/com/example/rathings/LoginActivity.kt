@@ -20,6 +20,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 
 import kotlinx.android.synthetic.main.activity_login.*
+import java.util.regex.Pattern
 
 /**
  * A login screen that offers login via email/password.
@@ -31,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
     //private var mAuthTask: UserLoginTask? = null
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -165,12 +167,18 @@ class LoginActivity : AppCompatActivity() {
         UserController.getProfile(auth.currentUser!!.uid)
     }
 
+
+
+
     private fun validateForm(): Boolean {
         var valid = true
 
         val email = txt_email.text.toString()
         if (TextUtils.isEmpty(email)) {
             txt_email.error = "Required."
+            valid = false
+        } else if (!isValidEmail(email)){
+            txt_email.error = "Invalid email."
             valid = false
         } else {
             txt_email.error = null
@@ -190,5 +198,18 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "[SIGNIN]"
         private const val RC_SIGN_IN = 9001
+
+        val EMAIL_PATTERN = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                    "\\@" +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(" +
+                    "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    ")+"
+        )
+        fun isValidEmail(email: CharSequence?): Boolean {
+            return email != null && EMAIL_PATTERN.matcher(email).matches()
+        }
     }
 }

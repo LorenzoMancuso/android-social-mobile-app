@@ -180,7 +180,6 @@ object FirebaseUtils {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val tempArray: ArrayList<Tab?> = ArrayList()
                 for (singleSnapshot in dataSnapshot.children) {
-                    Log.e("[FIREBASE-UTILS] Data", singleSnapshot.key + ' ' + singleSnapshot.getValue())
                     val tab = singleSnapshot.getValue(Tab::class.java)
                     tempArray.add(tab)
                 }

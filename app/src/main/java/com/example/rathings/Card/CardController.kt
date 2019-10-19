@@ -58,7 +58,8 @@ object CardController: Observer {
             it.likelihood = count / (interests.size + it.category.size)
             it.likelihood > 0
         })
-        interestCards = ArrayList(cards.filter { it.likelihood <= 0 })
+
+        // interestCards = ArrayList(cards.filter { it.likelihood <= 0 })
 
         interestCards = ArrayList(interestCards.sortedWith(compareByDescending({ (it.ratings_average - 3) * it.ratings_count + (it.timestamp / 86400) + it.likelihood })))
         interestCardObs.setValue(interestCards)

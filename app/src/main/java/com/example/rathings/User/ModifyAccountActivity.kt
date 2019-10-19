@@ -1,6 +1,5 @@
 package com.example.rathings.User
 
-import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,6 +11,7 @@ import android.os.StrictMode
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -157,13 +157,10 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
 
         val ref = storageReference.child("profile_images/${user.id}_${(System.currentTimeMillis() / 1000).toInt()}")
 
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle(this.getString(R.string.upload_media_dialog_title))
-        progressDialog.show()
-
+        progressBar.visibility = View.VISIBLE
         ref.putFile(filePath)
             .addOnFailureListener { e ->
-                progressDialog.dismiss()
+                progressBar.visibility = View.GONE
                 Toast.makeText(applicationContext, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
             }
             .addOnProgressListener { taskSnapshot ->
@@ -172,12 +169,11 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 } else {
                     val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                         .totalByteCount
-                    progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress, progress.toInt()))
                 }
             }
             .addOnCanceledListener {
                 Toast.makeText(applicationContext, this.getString(R.string.upload_toast_error_file_size), Toast.LENGTH_LONG).show()
-                progressDialog.dismiss()
+                progressBar.visibility = View.GONE
             }
             .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                 if (!task.isSuccessful) {
@@ -190,7 +186,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                 if (task.isSuccessful) {
                     newProfileImageUri = task.result.toString()
 
-                    progressDialog.dismiss()
+                    progressBar.visibility = View.GONE
                     Toast.makeText(applicationContext, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
                 } else {
                     // Handle failures

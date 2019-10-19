@@ -32,7 +32,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TabsFragment : Fragment(), Observer {
+class TabsFragment : Fragment()/*, Observer*/ {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -50,14 +50,15 @@ class TabsFragment : Fragment(), Observer {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        tabsObs.addObserver(this)
-        primaryUserProfileObs.addObserver(this)
+        // tabsObs.addObserver(this)
+        // primaryUserProfileObs.addObserver(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initTabs()
     }
+    /*
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
@@ -71,6 +72,7 @@ class TabsFragment : Fragment(), Observer {
             else -> Log.d("[TABS-FRAGMENT]", "observable not recognized $data")
         }
     }
+    */
 
     fun initTabs() {
         val container = view?.findViewById(R.id.container) as LinearLayout
@@ -80,10 +82,12 @@ class TabsFragment : Fragment(), Observer {
 
         val value = tabsObs.getValue()
         val userInterests = (primaryUserProfileObs.getValue() as User).interests
+
         Log.d("[TABS-FRAGMENT]", userInterests.toString())
         Log.d("[TABS-FRAGMENT]", value.toString())
         if (value is ArrayList<*>) {
             val tabs: ArrayList<Tab> = ArrayList(value.filterIsInstance<Tab>())
+
             Log.d("[TABS-FRAGMENT]", "observable TABS " + tabs.toString())
             for (i in 0 until tabs.size) {
                 var linearLayout = LinearLayout(context)
@@ -147,12 +151,15 @@ class TabsFragment : Fragment(), Observer {
             "users/${user.id}/interests/",
             TabController.toMutableMapForUser(user.interests)
         )
+        initTabs()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        /*
         primaryUserProfileObs.deleteObserver(this)
         tabsObs.deleteObserver(this)
+        */
     }
 
     override fun onCreateView(

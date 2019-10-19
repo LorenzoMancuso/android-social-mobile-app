@@ -308,9 +308,9 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 popup.menuInflater.inflate(R.menu.settings_detailed_card, popup.menu)
 
                 popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener() {
-                    if (it.title == "Edit Card") {
+                    if (it.title == this.getString(R.string.settings_detailed_card_edit)) {
                         editCard()
-                    } else if (it.title == "Delete Card") {
+                    } else if (it.title == this.getString(R.string.settings_detailed_card_delete)) {
                         deleteCard()
                     }
                     true

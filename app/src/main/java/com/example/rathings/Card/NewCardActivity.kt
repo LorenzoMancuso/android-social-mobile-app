@@ -13,7 +13,6 @@ import android.net.Uri
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.storage.FirebaseStorage
 import android.widget.Toast
-import android.app.ProgressDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.InputType
@@ -26,17 +25,12 @@ import com.example.rathings.Tab.Tab
 import com.example.rathings.Tab.TabsActivity
 import com.example.rathings.User.User
 import com.example.rathings.utils.CustomObservable
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.storage.UploadTask
+import kotlinx.android.synthetic.main.activity_new_card.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -149,7 +143,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         .setTitle(this.getString(R.string.add_link_dialog_title))
         .setMessage(this.getString(R.string.add_link_dialog_message))
         .setView(taskEditText)
-        .setPositiveButton(this.getString(R.string.add_link_dialog_positive_button), DialogInterface.OnClickListener() { dialog, which ->
+        .setPositiveButton(this.getString(R.string.add_link_dialog_positive_button), DialogInterface.OnClickListener() { _, _ ->
             Log.d("[DIALOG]", taskEditText.text.toString())
 
             val fragmentManager = supportFragmentManager
@@ -174,25 +168,33 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     private fun chooseFile(type: String, requestCode: Int) {
         val pictureDialog = AlertDialog.Builder(this)
         pictureDialog.setTitle("Select Action")
-        val pictureDialogItems = arrayOf(this.getString(R.string.select_media_text, type), this.getString(R.string.do_media_text, type))
+
+        var textType: String
+        if (type == "image") {
+            textType = this.getString(R.string.multimedia_image)
+        } else {
+            textType = this.getString(R.string.multimedia_video)
+        }
+
+        val pictureDialogItems = arrayOf(this.getString(R.string.select_media_text, textType), this.getString(R.string.do_media_text, textType))
         pictureDialog.setItems(pictureDialogItems,
-            DialogInterface.OnClickListener { dialog, which ->
+            DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     0 -> {
                         val intent = Intent()
                         intent.type = "${type}/*"
                         intent.action = Intent.ACTION_GET_CONTENT
-                        startActivityForResult(Intent.createChooser(intent, "Select ${type}"), requestCode)
+                        startActivityForResult(Intent.createChooser(intent, "Select $textType"), requestCode)
                     }
                     1 -> {
                         if (type == "image") {
-                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
                                 takePictureIntent.resolveActivity(packageManager)?.also {
                                     startActivityForResult(takePictureIntent, 3)
                                 }
                             }
                         } else {
-                            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
+                            Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takePictureIntent ->
                                 takePictureIntent.resolveActivity(packageManager)?.also {
                                     startActivityForResult(takePictureIntent, 4)
                                 }
@@ -264,10 +266,10 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                         var bitmap:Bitmap
 
                         if (requestCode == 3) {
-                            bitmap = data.getExtras().get("data") as Bitmap
+                            bitmap = data.extras.get("data") as Bitmap
                             filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
                         } else {
-                            filePath = data?.data
+                            filePath = data.data
                         }
 
                         Glide.with(this).load(filePath)
@@ -297,13 +299,10 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
         val ref = storageReference.child("${type}/${name}")
 
         val context = getApplicationContext()
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle(this.getString(R.string.upload_media_dialog_title))
-        progressDialog.show()
-
+        progressBar.visibility = View.VISIBLE
         ref.putFile(filePath)
-        .addOnFailureListener { e ->
-            progressDialog.dismiss()
+        .addOnFailureListener { _ ->
+            progressBar.visibility = View.GONE
             Toast.makeText(context, this.getString(R.string.upload_toast_error), Toast.LENGTH_SHORT).show()
         }
         .addOnProgressListener { taskSnapshot ->
@@ -312,12 +311,12 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             } else {
                 val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
                     .totalByteCount
-                progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress, progress.toInt()))
+                //progressDialog.setMessage(this.getString(R.string.upload_media_dialog_progress) + " " + progress.toInt() + "%")
             }
         }
         .addOnCanceledListener {
             Toast.makeText(context, this.getString(R.string.upload_toast_error_file_size), Toast.LENGTH_LONG).show()
-            progressDialog.dismiss()
+            progressBar.visibility = View.GONE
         }
         .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
             if (!task.isSuccessful) {
@@ -333,7 +332,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
 
                 listOfDownloadUri.add(task.result.toString())
                 view.setOnClickListener { deleteMedia(task.result.toString(), row, view) }
-                progressDialog.dismiss()
+                progressBar.visibility = View.GONE
                 Toast.makeText(context, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
             } else {
                 // Handle failures

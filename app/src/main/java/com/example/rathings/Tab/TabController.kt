@@ -23,9 +23,9 @@ object TabController: Observer {
             tabsObservable -> {
                 val tabs = tabsObservable.getValue()
                 tabsObs.setValue(tabs)
-                Log.d("[USER-CONTROLLER]", "observable " + tabs?.toString())
+                Log.d("[TAB-CONTROLLER]", "observable " + tabs?.toString())
             }
-            else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
+            else -> Log.d("[TAB-CONTROLLER]", "observable not recognized $data")
         }
     }
 
