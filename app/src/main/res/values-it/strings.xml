@@ -19,7 +19,7 @@
     <string name="edit_button">Modifica</string>
     <string name="name_surname">%1$s %2$s</string>
     <string name="city_country">%1$s, %2$s</string>
-    <string name="dialog_negative_button">Cancella</string>
+    <string name="dialog_negative_button">No</string>
 
     <!-- Detailed Card -->
     <string name="rate_question">Cosa ne pensi di questa Card?</string>
