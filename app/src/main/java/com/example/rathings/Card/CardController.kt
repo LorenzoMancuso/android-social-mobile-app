@@ -1,10 +1,14 @@
 package com.example.rathings.Card
 
+import android.os.Environment
 import android.util.Log
 import com.example.rathings.utils.CustomObservable
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.User.User
 import io.github.ponnamkarthik.richlinkpreview.ResponseListener
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -73,22 +77,18 @@ object CardController: Observer {
         }
     }
 
-    fun deleteMedia(idMedia: String, idCard: String) {
-        var cards = interestCardsObservable.getValue() as ArrayList<Card>
-        var found = false
-        for (card in cards) {
-            for (media in card.multimedia) {
-                if (media == idMedia && card.id == idCard) {
-                    card.multimedia.removeAt(card.multimedia.indexOf(media))
-                    found = true
-                    break
-                }
-            }
-            if(found) {
-                break
-            }
-        }
-        FirebaseUtils.deleteData("cards/${idCard}/${idMedia}")
+    @Throws(IOException::class)
+    fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir = File((Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).toString() + "/Rathings")
+        if (!storageDir.exists())
+            storageDir.mkdirs()
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        )
     }
 
     override fun update(observableObj: Observable?, data: Any?) {

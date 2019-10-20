@@ -1,7 +1,9 @@
 package com.example.rathings.User
 
+import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +17,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.rathings.BuildConfig
+import com.example.rathings.Card.CardController
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.HomeActivity
 import com.example.rathings.R
@@ -94,16 +101,15 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                         val intent = Intent()
                         intent.type = "image/*"
                         intent.action = Intent.ACTION_GET_CONTENT
-                        startActivityForResult(Intent.createChooser(intent, "Select image"), 0)
+                        startActivityForResult(Intent.createChooser(intent, "Select image"), 1)
                     }
                     1 -> {
-                        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                            // TODO: Use these methods to upload an image and not a thumbnail
-                            //var photoFile = createImageFile()
-                            //takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
-                            takePictureIntent.resolveActivity(packageManager)?.also {
-                                startActivityForResult(takePictureIntent, 1)
-                            }
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                        } else {
+                            doImageCamera()
                         }
                     }
                 }
@@ -111,42 +117,68 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         pictureDialog.show()
     }
 
-    fun createImageFile(): File {
-        var timeStamp = System.currentTimeMillis()
-        var imageFileName = "rathings_photo_$timeStamp"
-        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        val image = File.createTempFile(imageFileName,".jpg",storageDir)
-        return image;
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            1 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) { doImageCamera() }
+                return
+            }
+            else -> {
+                // Ignore all other requests.
+            }
+        }
+    }
+
+    var photoFile: File = File("")
+    fun doImageCamera() {
+        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        intent.also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                // Create the File where the photo should go
+                photoFile = try {
+                    CardController.createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    Log.e("[PHOTOS]", "Errore durante l'inserimento della foto")
+                    File("")
+                }
+                // Continue only if the File was successfully created
+                photoFile.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", it)
+                    Log.e("[PHOTOS]", photoURI.toString())
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, 3)
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null) {
-            var filePath: Uri = Uri.parse("")
-            var profileImageView = findViewById<ImageView>(R.id.profile_image)
+        var filePath: Uri = Uri.parse("")
+        var profileImageView = findViewById<ImageView>(R.id.profile_image)
 
-            if (requestCode == 0) { // PHOTO: 1 = select, 3 = do
-                try {
-                    filePath = data?.data
-                    Log.d("SELECT PHOTO", filePath.toString())
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            } else {
-                try {
-                    var bitmap = data.getExtras().get("data") as Bitmap
-                    filePath = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "image", null))
-                    Log.d("MAKE A PHOTO PHOTO", filePath.toString())
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+        if (requestCode == 1) { // PHOTO: 1 = select, 3 = do
+            try {
+                filePath = data?.data as Uri
+                Log.d("SELECT PHOTO", filePath.toString())
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-            uploadImage(filePath)
-            Glide.with(this).load(filePath)
-                .centerCrop().circleCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(profileImageView)
+        } else {
+            try {
+                filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
+        uploadImage(filePath)
+        Glide.with(this).load(filePath)
+            .centerCrop().circleCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(profileImageView)
     }
 
     var newProfileImageUri: String = ""

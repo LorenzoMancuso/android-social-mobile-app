@@ -224,7 +224,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             takePictureIntent.resolveActivity(packageManager)?.also {
                 // Create the File where the photo should go
                 photoFile = try {
-                    createImageFile()
+                    CardController.createImageFile()
                 } catch (ex: IOException) {
                     // Error occurred while creating the File
                     Log.e("[PHOTOS]", "Errore durante l'inserimento della foto")
@@ -246,24 +246,6 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             takePictureIntent.resolveActivity(packageManager)?.also {
                 startActivityForResult(takePictureIntent, 4)
             }
-        }
-    }
-
-    var currentPhotoPath: String = ""
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir = File((Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).toString() + "/Rathings")
-        if (!storageDir.exists())
-            storageDir.mkdirs()
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
         }
     }
 
