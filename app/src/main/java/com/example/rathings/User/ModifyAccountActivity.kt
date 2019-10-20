@@ -160,25 +160,29 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
         var filePath: Uri = Uri.parse("")
         var profileImageView = findViewById<ImageView>(R.id.profile_image)
 
-        if (requestCode == 1) { // PHOTO: 1 = select, 3 = do
-            try {
-                filePath = data?.data as Uri
-                Log.d("SELECT PHOTO", filePath.toString())
-            } catch (e: IOException) {
-                e.printStackTrace()
+        if ((requestCode == 1 || requestCode == 3) && resultCode == -1) { // Success CASE
+            if (requestCode == 1) { // Select PHOTO
+                try {
+                    filePath = data?.data as Uri
+                    Log.d("SELECT PHOTO", filePath.toString())
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            } else { // Do PHOTO
+                try {
+                    filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
-        } else {
-            try {
-                filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+            uploadImage(filePath)
+            Glide.with(this).load(filePath)
+                .centerCrop().circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(profileImageView)
+        } else if (requestCode == 3 && resultCode == 0) { // Failure CASE
+            photoFile.delete()
         }
-        uploadImage(filePath)
-        Glide.with(this).load(filePath)
-            .centerCrop().circleCrop()
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(profileImageView)
     }
 
     var newProfileImageUri: String = ""

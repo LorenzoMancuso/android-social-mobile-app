@@ -219,25 +219,23 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     fun doImageCamera() {
         var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-        if (intent.resolveActivity(packageManager) != null) {
-            intent.also { takePictureIntent ->
-                // Ensure that there's a camera activity to handle the intent
-                takePictureIntent.resolveActivity(packageManager)?.also {
-                    // Create the File where the photo should go
-                    photoFile = try {
-                        CardController.createImageFile()
-                    } catch (ex: IOException) {
-                        // Error occurred while creating the File
-                        Log.e("[PHOTOS]", "Errore durante l'inserimento della foto")
-                        File("")
-                    }
-                    // Continue only if the File was successfully created
-                    photoFile.also {
-                        val photoURI: Uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", it)
-                        Log.e("[PHOTOS]", photoURI.toString())
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        startActivityForResult(takePictureIntent, 3)
-                    }
+        intent.also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                // Create the File where the photo should go
+                photoFile = try {
+                    CardController.createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    Log.e("[PHOTOS]", "Errore durante l'inserimento della foto")
+                    File("")
+                }
+                // Continue only if the File was successfully created
+                photoFile.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", it)
+                    Log.e("[PHOTOS]", photoURI.toString())
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, 3)
                 }
             }
         }
@@ -319,34 +317,32 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 addedMultimediaLayout.addView(row)
             }
 
-            if (requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) { // PHOTO: 1 = select, 3 = do --- VIDEO: 2 = select, 4 = do
-                var imageView = ImageView(this)
-                var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-                imageView.setPadding(5,5,5,5)
-                imageView.layoutParams = params
-                try {
-                    var filePath: Uri
-                    if (requestCode == 3) {
-                        filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
-                    } else {
-                        Log.d("[SELECT IMAGE]", data?.data.toString())
-                        filePath = data?.data as Uri
-                    }
-
-                    Glide.with(this).load(filePath)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(imageView)
-
-                    var type = "image"
-                    if (filePath.toString().contains("video")) {
-                        type = "video"
-                    }
-
-                    uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
-                } catch (e: IOException) {
-                    e.printStackTrace()
+            var imageView = ImageView(this)
+            var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
+            imageView.setPadding(5,5,5,5)
+            imageView.layoutParams = params
+            try {
+                var filePath: Uri
+                if (requestCode == 3) {
+                    filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
+                } else {
+                    Log.d("[SELECT IMAGE]", data?.data.toString())
+                    filePath = data?.data as Uri
                 }
+
+                Glide.with(this).load(filePath)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView)
+
+                var type = "image"
+                if (filePath.toString().contains("video")) {
+                    type = "video"
+                }
+
+                uploadFile(filePath, (card.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         } else if (requestCode == 3 && resultCode == 0) { // Case DO PHOTO (FAIL)
             photoFile.delete()

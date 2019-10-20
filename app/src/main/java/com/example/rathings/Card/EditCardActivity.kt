@@ -203,7 +203,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
                 })
 
             }
-        } else {
+        } else if ((requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) && resultCode == -1) {
             Log.e("[PHOTOS Request Code]", requestCode.toString())
             val addedMultimediaLayout = findViewById<LinearLayout>(R.id.added_multimedia)
             var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
@@ -217,35 +217,35 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
                 addedMultimediaLayout.addView(row)
             }
 
-            if (requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) { // PHOTO: 1 = select, 3 = do --- VIDEO: 2 = select, 4 = do
-                var imageView = ImageView(this)
-                var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
-                imageView.setPadding(5,5,5,5)
-                imageView.layoutParams = params
-                try {
-                    var filePath: Uri
-                    if (requestCode == 3) {
-                        filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
-                    } else {
-                        Log.d("[SELECT IMAGE]", data?.data.toString())
-                        filePath = data?.data as Uri
-                    }
-
-                    Glide.with(this).load(filePath)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(imageView)
-
-                    var type = "image"
-                    if (filePath.toString().contains("video")) {
-                        type = "video"
-                    }
-
-                    uploadFile(filePath, (selectedCard.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
-                } catch (e: IOException) {
-                    e.printStackTrace()
+            var imageView = ImageView(this)
+            var params : LinearLayout.LayoutParams = LinearLayout.LayoutParams((150 * scale + 0.5f).toInt(), (150 * scale + 0.5f).toInt(), 1F)
+            imageView.setPadding(5,5,5,5)
+            imageView.layoutParams = params
+            try {
+                var filePath: Uri
+                if (requestCode == 3) {
+                    filePath = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
+                } else {
+                    Log.d("[SELECT IMAGE]", data?.data.toString())
+                    filePath = data?.data as Uri
                 }
+
+                Glide.with(this).load(filePath)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView)
+
+                var type = "image"
+                if (filePath.toString().contains("video")) {
+                    type = "video"
+                }
+
+                uploadFile(filePath, (selectedCard.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
+        } else if (requestCode == 3 && resultCode == 0) { // Case DO PHOTO (FAIL)
+            photoFile.delete()
         }
     }
 
