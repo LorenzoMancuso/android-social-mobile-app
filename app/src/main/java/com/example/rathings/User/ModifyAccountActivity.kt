@@ -42,24 +42,43 @@ import java.util.*
 
 class ModifyAccountActivity : AppCompatActivity(), Observer {
 
-    var localUserProfileObservable = FirebaseUtils.userProfileObservable
     var user: User = User()
+    var signup: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modify_account)
 
-        localUserProfileObservable.addObserver(this)
-
         var builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
 
-        //call for get profile info
-        FirebaseUtils.getProfile(null)
+        val value=FirebaseUtils.primaryUserProfileObservable.getValue()
+        if(value is User){
+            user = value
+            txt_name?.text = Editable.Factory.getInstance().newEditable(user.name)
+            txt_surname?.text = Editable.Factory.getInstance().newEditable(user.surname)
+            txt_birthdate?.text = Editable.Factory.getInstance().newEditable(user.birth_date)
+            txt_city?.text = Editable.Factory.getInstance().newEditable(user.city)
+            txt_country?.text = Editable.Factory.getInstance().newEditable(user.country)
+            txt_profession?.text = Editable.Factory.getInstance().newEditable(user.profession)
+
+            if (user.profile_image != "") {
+                Glide.with(this).load(user.profile_image)
+                    .centerCrop().circleCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(profile_image)
+            }
+
+            Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
+        }
 
         change_image.setOnClickListener { changeImage() }
 
         confirm_button.setOnClickListener { updateInfo() }
+        signup = intent.getBooleanExtra("signup", false)
+        Log.d("[MODIFY-ACCOUNT]", "The signup intent value is " + signup )
+
+
     }
 
     fun updateInfo() {
@@ -82,7 +101,14 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
             //send hash map of user object for firebase update
             FirebaseUtils.updateData("users/${user.id}/", user.toMutableMap())
             val intent = Intent(this, HomeActivity::class.java)
-            intent.putExtra("mode", "profile")
+
+            if (signup){
+                Log.d("[MODIFY-ACCOUNT]", "IF")
+                intent.putExtra("mode", "tabs")
+            } else {
+                Log.d("[MODIFY-ACCOUNT]", "ELSE")
+                intent.putExtra("mode", "profile")
+            }
             startActivity(intent)
         }else{
             txt_birthdate?.error = this.getString(R.string.date_of_birth_error)
@@ -232,6 +258,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
+            /*
             localUserProfileObservable -> {
                 val value=localUserProfileObservable.getValue()
                 if(value is User){
@@ -253,12 +280,13 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
                     Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
                 }
             }
+            */
             else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        localUserProfileObservable.deleteObserver(this)
+        // localUserProfileObservable.deleteObserver(this)
     }
 }

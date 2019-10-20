@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 
 object FirebaseUtils {
 
-    private var primaryUserProfileObservable: CustomObservable = CustomObservable()
+    var primaryUserProfileObservable: CustomObservable = CustomObservable()
     private var allUsers: CustomObservable = CustomObservable()
 
     var userProfileObservable: CustomObservable = CustomObservable()
@@ -60,8 +60,8 @@ object FirebaseUtils {
     // ------------------
     // BEGIN User methods
     // ------------------
-    @JvmStatic fun createUserInstance(uid:String) {
-        database.child("users").child(uid).child("id").setValue(uid)
+    @JvmStatic fun createUserInstance(uid:String): CustomObservable {
+        // database.child("users").child(uid).child("id").setValue(uid)
 
         database.child("users").orderByChild("id").equalTo(uid).addValueEventListener(
             object : ValueEventListener {
@@ -76,6 +76,7 @@ object FirebaseUtils {
                 }
             }
         )
+        return primaryUserProfileObservable
     }
 
     fun isCurrentUser(user_id:String):Boolean {
@@ -142,11 +143,9 @@ object FirebaseUtils {
         return primaryUserProfileObservable
     }
 
-    @JvmStatic fun getProfile(uid:String?) {
+    @JvmStatic fun getProfile(uid:String?): CustomObservable {
         /**GET CURRENT AUTH USER IF UID IS NULL*/
         var id_user=uid
-        if(uid==null)
-            id_user=FirebaseAuth.getInstance().currentUser!!.uid
 
         val ref = FirebaseUtils.database.child("users")
         var user: User?
@@ -154,11 +153,15 @@ object FirebaseUtils {
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (singleSnapshot in dataSnapshot.children) {
-                    user = singleSnapshot.getValue(User::class.java)
+                if(dataSnapshot.children.count()==0){
+                    userProfileObservable.setValue(null)
+                } else {
+                    for (singleSnapshot in dataSnapshot.children) {
+                        user = singleSnapshot.getValue(User::class.java)
 
-                    userProfileObservable.setValue(user)
-                    Log.e("[FIREBASE-UTILS]", "getProfile " + user?.toString())
+                        userProfileObservable.setValue(user)
+                        Log.e("[FIREBASE-UTILS]", "getProfile " + user?.toString())
+                    }
                 }
             }
 
@@ -167,6 +170,7 @@ object FirebaseUtils {
             }
         }
         phoneQuery.addValueEventListener(postListener)
+        return userProfileObservable
     }
 
 

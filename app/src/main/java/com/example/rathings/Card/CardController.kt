@@ -29,7 +29,7 @@ object CardController: Observer {
 
     fun popularCards(cards: ArrayList<Card>){
 
-        val user = FirebaseUtils.getPrimaryProfile().getValue() as User
+        val user = FirebaseUtils.primaryUserProfileObservable.getValue() as User
         var popularCards: ArrayList<Card>
         val interests = user.interests
 
