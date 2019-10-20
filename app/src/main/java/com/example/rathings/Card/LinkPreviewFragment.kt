@@ -92,7 +92,7 @@ class LinkPreviewFragment : Fragment() {
                 (view?.findViewById(R.id.title) as TextView)?.text = if (metaData.title.length > 32) metaData.title.substring(0, 30) + "..." else metaData.title
                 (view?.findViewById(R.id.description) as TextView)?.text = if (metaData.description.length > 32) metaData.description.substring(0, 55) + "..." else metaData.description
                 (view?.findViewById(R.id.link) as TextView)?.text = if (metaData.url.length > 32) metaData.url.substring(0, 20) + "..." else metaData.url
-                (view?.findViewById(R.id.container) as LinearLayout).setOnClickListener(View.OnClickListener { openLink() })
+                (view?.findViewById(R.id.container) as LinearLayout).setOnClickListener(View.OnClickListener { openLink(link) })
             }
             override fun onError(e: Exception) {
                 //handle error
@@ -110,8 +110,8 @@ class LinkPreviewFragment : Fragment() {
     }
 
 
-    fun openLink() {
-        var uri = Uri.parse(URL)
+    fun openLink(link: String) {
+        var uri = Uri.parse(link)
         var intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)
     }

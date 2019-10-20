@@ -107,6 +107,7 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
                 } else {
                     holder.more_images_text.visibility = View.VISIBLE
                     holder.more_images_text.text = holder.itemView.context.resources.getString(R.string.other_media, mDataList[position].multimedia.size - i)
+                    break
                 }
             }
 
