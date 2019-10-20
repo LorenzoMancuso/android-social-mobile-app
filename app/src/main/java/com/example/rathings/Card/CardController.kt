@@ -1,7 +1,11 @@
 package com.example.rathings.Card
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import com.example.rathings.utils.CustomObservable
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.User.User
@@ -89,6 +93,13 @@ object CardController: Observer {
             ".jpg", /* suffix */
             storageDir /* directory */
         )
+    }
+
+    fun galleryAddPic(photo: File, context: Context) {
+        Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
+            mediaScanIntent.data = Uri.fromFile(photo)
+            context.sendBroadcast(mediaScanIntent)
+        }
     }
 
     override fun update(observableObj: Observable?, data: Any?) {

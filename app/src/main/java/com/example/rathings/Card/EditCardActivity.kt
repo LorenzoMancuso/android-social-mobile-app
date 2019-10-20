@@ -422,6 +422,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
                 // Add ImageView or PlayerView only if UPLOAD done
                 row.addView(view)
                 selectedCard.multimedia.add(task.result.toString())
+                CardController.galleryAddPic(photoFile, this)
                 view.setOnClickListener { deleteMedia(selectedCard.multimedia.indexOf(task.result.toString())) }
                 progressbar.visibility = View.GONE
                 Toast.makeText(context, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()

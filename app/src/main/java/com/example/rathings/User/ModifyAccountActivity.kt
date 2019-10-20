@@ -217,7 +217,7 @@ class ModifyAccountActivity : AppCompatActivity(), Observer {
             }).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     newProfileImageUri = task.result.toString()
-
+                    CardController.galleryAddPic(photoFile, this)
                     progressBar.visibility = View.GONE
                     Toast.makeText(applicationContext, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
                 } else {

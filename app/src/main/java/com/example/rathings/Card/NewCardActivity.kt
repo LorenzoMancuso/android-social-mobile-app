@@ -385,8 +385,8 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
             if (task.isSuccessful) {
                 // Add ImageView or PlayerView only if UPLOAD done
                 row.addView(view)
-
                 listOfDownloadUri.add(task.result.toString())
+                CardController.galleryAddPic(photoFile, this)
                 view.setOnClickListener { deleteMedia(task.result.toString(), row, view) }
                 progressBar.visibility = View.GONE
                 Toast.makeText(context, this.getString(R.string.upload_toast_response), Toast.LENGTH_SHORT).show()
