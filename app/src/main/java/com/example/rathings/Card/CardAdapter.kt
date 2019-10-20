@@ -154,7 +154,6 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
         internal var id_user: TextView
         internal var profile_image: ImageView
         internal var container_multimedia: LinearLayout
-        internal var first_element: LinearLayout
         internal var container_other_images: LinearLayout
         internal var title: TextView
         internal var card: Card
@@ -179,7 +178,6 @@ class CardAdapter(private val mDataList: ArrayList<Card>) : RecyclerView.Adapter
             ratings = itemView.findViewById<View>(R.id.ratings) as RatingBar
             date = itemView.findViewById<View>(R.id.date) as TextView
             more_images_text = itemView.findViewById<View>(R.id.more_images_text) as TextView
-            first_element = itemView.findViewById<View>(R.id.first_element) as LinearLayout
             container_categories = itemView.findViewById<View>(R.id.container_categories) as ChipGroup
             other_categories_text = itemView.findViewById<View>(R.id.other_categories_text) as TextView
         }
