@@ -219,23 +219,25 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     fun doImageCamera() {
         var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-        intent.also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                // Create the File where the photo should go
-                photoFile = try {
-                    CardController.createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    Log.e("[PHOTOS]", "Errore durante l'inserimento della foto")
-                    File("")
-                }
-                // Continue only if the File was successfully created
-                photoFile.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", it)
-                    Log.e("[PHOTOS]", photoURI.toString())
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, 3)
+        if (intent.resolveActivity(packageManager) != null) {
+            intent.also { takePictureIntent ->
+                // Ensure that there's a camera activity to handle the intent
+                takePictureIntent.resolveActivity(packageManager)?.also {
+                    // Create the File where the photo should go
+                    photoFile = try {
+                        CardController.createImageFile()
+                    } catch (ex: IOException) {
+                        // Error occurred while creating the File
+                        Log.e("[PHOTOS]", "Errore durante l'inserimento della foto")
+                        File("")
+                    }
+                    // Continue only if the File was successfully created
+                    photoFile.also {
+                        val photoURI: Uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", it)
+                        Log.e("[PHOTOS]", photoURI.toString())
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        startActivityForResult(takePictureIntent, 3)
+                    }
                 }
             }
         }
@@ -268,7 +270,9 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.e("[PHOTOS Request Code]", requestCode.toString())
-        if (resultCode == 5) { // CASE Add Tab
+        Log.e("[PHOTOS Result Code]", resultCode.toString())
+
+        if (requestCode == 5 && resultCode == 5) { // CASE Add Tab (SUCCESS)
             Log.d("[EXTRAS]", data?.extras?.get("added_categories").toString())
 
             // Re-initialize lists
@@ -302,7 +306,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     listOfSelectedTabs.remove(tab)
                 })
             }
-        } else { // CASE Add Multimedia
+        } else if ((requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) && resultCode == -1) { // CASE Add Multimedia (SUCCESS)
             val addedMultimediaLayout = findViewById<LinearLayout>(R.id.added_multimedia)
             var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
             val scale = resources.displayMetrics.density
@@ -344,6 +348,8 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                     e.printStackTrace()
                 }
             }
+        } else if (requestCode == 3 && resultCode == 0) { // Case DO PHOTO (FAIL)
+            // TODO: Delete created image
         }
     }
 
