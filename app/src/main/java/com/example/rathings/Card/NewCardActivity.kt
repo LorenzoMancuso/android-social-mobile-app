@@ -349,7 +349,7 @@ class NewCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInter
                 }
             }
         } else if (requestCode == 3 && resultCode == 0) { // Case DO PHOTO (FAIL)
-            // TODO: Delete created image
+            photoFile.delete()
         }
     }
 

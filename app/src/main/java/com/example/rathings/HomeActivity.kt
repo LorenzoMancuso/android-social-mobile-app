@@ -102,6 +102,9 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
         mBtmView.menu.findItem(action).setChecked(true);
     }
 
+    override fun onBackPressed() {
+    }
+
     override fun onCardsFragmentInteraction(uri: Uri) {}
     override fun onTabsFragmentInteraction(uri: Uri) {}
     override fun onProfileFragmentInteraction(uri: Uri) {}
