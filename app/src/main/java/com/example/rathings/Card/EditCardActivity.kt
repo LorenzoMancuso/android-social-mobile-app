@@ -204,7 +204,6 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
 
             }
         } else if ((requestCode == 1 || requestCode == 2 || requestCode == 3 || requestCode == 4) && resultCode == -1) {
-            Log.e("[PHOTOS Request Code]", requestCode.toString())
             val addedMultimediaLayout = findViewById<LinearLayout>(R.id.added_multimedia)
             var row = addedMultimediaLayout.getChildAt(addedMultimediaLayout.childCount - 1) as LinearLayout
             val scale = resources.displayMetrics.density
@@ -240,7 +239,7 @@ class EditCardActivity : AppCompatActivity(), LinkPreviewFragment.OnFragmentInte
                     type = "video"
                 }
 
-                uploadFile(filePath, (selectedCard.id) + "_" + (listOfDownloadUri.size+1), row, imageView, type)
+                uploadFile(filePath, (selectedCard.id) + "_" + (selectedCard.multimedia.size+1), row, imageView, type)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
