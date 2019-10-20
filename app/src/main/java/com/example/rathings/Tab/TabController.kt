@@ -14,8 +14,9 @@ object TabController: Observer {
         tabsObservable.addObserver(this)
     }
 
-    fun getTabs(){
+    fun getTabs(): CustomObservable{
         FirebaseUtils.getTabs()
+        return tabsObservable
     }
 
     override fun update(observableObj: Observable?, data: Any?) {

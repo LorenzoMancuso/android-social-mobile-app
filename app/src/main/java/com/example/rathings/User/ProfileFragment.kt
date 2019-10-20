@@ -44,7 +44,6 @@ private const val ARG_PARAM2 = "param2"
  */
 class ProfileFragment : Fragment(), Observer {
 
-    var localUserProfileObservable= FirebaseUtils.userProfileObservable
     var localUserCardsObservable= FirebaseUtils.userCardsObservable
 
     private var cardRecyclerView: RecyclerView? = null
@@ -61,7 +60,6 @@ class ProfileFragment : Fragment(), Observer {
         arguments?.let {}
 
         /**OBSERVER INIT*/
-        localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
         /**LOGOUT INIT*/
@@ -112,9 +110,36 @@ class ProfileFragment : Fragment(), Observer {
         view?.findViewById<Button>(R.id.btn_signout)!!.setOnClickListener { signOut() }
 
         //call for get profile info
-        FirebaseUtils.getProfile(null)
-        //call for get card of current user
-        FirebaseUtils.getUserCards(null)
+        val value=FirebaseUtils.primaryUserProfileObservable.getValue()
+        if(value is User){
+            val user= value
+            txt_name?.text = this.getString(R.string.name_surname, user.name, user.surname)
+            txt_profession?.text = user.profession
+            txt_country?.text = this.getString(R.string.city_country, user.city, user.country)
+            txt_followers?.text = this.getString(R.string.followers_size, user.followers.size)
+            txt_followed?.text = this.getString(R.string.followed_size, user.followed.size)
+            if(profile_image!=null && user.profile_image != "") {
+                Glide.with(this).load(user.profile_image)
+                    .centerCrop().circleCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(profile_image)
+            } else {
+                Glide.with(this).load(R.drawable.default_avatar)
+                    .centerCrop().circleCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(profile_image)
+            }
+
+            view?.findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }
+            view?.findViewById<TextView>(R.id.txt_followed)!!.setOnClickListener{ goToFollowList("Followed", user.followed) }
+
+            Log.d("[PROFILE-FRAGMENT]", "PROFILE $user")
+
+            //call for get card of current user
+            FirebaseUtils.getUserCards(user.id)
+        }
+
+
         user_cards_recycler_view.isNestedScrollingEnabled = false
 
     }
@@ -148,33 +173,7 @@ class ProfileFragment : Fragment(), Observer {
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
-            localUserProfileObservable -> {
-                val value=localUserProfileObservable.getValue()
-                if(value is User){
-                    val user= value
-                    txt_name?.text = this.getString(R.string.name_surname, user.name, user.surname)
-                    txt_profession?.text = user.profession
-                    txt_country?.text = this.getString(R.string.city_country, user.city, user.country)
-                    txt_followers?.text = this.getString(R.string.followers_size, user.followers.size)
-                    txt_followed?.text = this.getString(R.string.followed_size, user.followed.size)
-                    if(profile_image!=null && user.profile_image != "") {
-                        Glide.with(this).load(user.profile_image)
-                            .centerCrop().circleCrop()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(profile_image)
-                    } else {
-                        Glide.with(this).load(R.drawable.default_avatar)
-                            .centerCrop().circleCrop()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(profile_image)
-                    }
 
-                    view?.findViewById<TextView>(R.id.txt_followers)!!.setOnClickListener{ goToFollowList("Followers", user.followers) }
-                    view?.findViewById<TextView>(R.id.txt_followed)!!.setOnClickListener{ goToFollowList("Followed", user.followed) }
-
-                    Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
-                }
-            }
             localUserCardsObservable -> {
                 val value = localUserCardsObservable.getValue()
                 if (value is List<*>) {
@@ -201,7 +200,6 @@ class ProfileFragment : Fragment(), Observer {
 
     override fun onDestroy() {
         super.onDestroy()
-        localUserProfileObservable.deleteObserver(this)
         localUserCardsObservable.deleteObserver(this)
     }
 

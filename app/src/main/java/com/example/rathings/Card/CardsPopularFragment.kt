@@ -36,6 +36,8 @@ class CardsPopularFragment : Fragment(), Observer {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
 
+
+
     var popularCardObs = CardController.popularCardObs
 
     override fun onCreate(savedInstanceState: Bundle?) {

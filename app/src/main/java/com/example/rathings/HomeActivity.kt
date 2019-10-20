@@ -35,7 +35,6 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
 
         // Initialize Tabs
         TabController.getTabs()
-        FirebaseUtils.getPrimaryProfile()
 
         switchFragment(intent.getStringExtra("mode"))
 

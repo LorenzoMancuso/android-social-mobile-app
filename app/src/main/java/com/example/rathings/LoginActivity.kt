@@ -6,9 +6,8 @@ import android.os.Bundle
 import android.text.TextUtils
 
 import android.util.Log
-import android.widget.Toast
 import com.example.rathings.User.ModifyAccountActivity
-import com.example.rathings.User.UserController
+import com.example.rathings.utils.CustomObservable
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -21,19 +20,22 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 
 import kotlinx.android.synthetic.main.activity_login.*
+import java.util.*
 import java.util.regex.Pattern
 
 /**
  * A login screen that offers login via email/password.
  */
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), Observer {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     //private var mAuthTask: UserLoginTask? = null
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-
+    private var primaryUser = FirebaseUtils.primaryUserProfileObservable
+    private var localUser = FirebaseUtils.userProfileObservable
+    private var signup = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
         Log.d(TAG, "FirebaseApp:initialized")
         auth = FirebaseAuth.getInstance()
+
         Log.d(TAG, "FirebaseAuth:initialized")
 
         // Configure Google Sign In
@@ -59,16 +62,48 @@ class LoginActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
+        primaryUser.addObserver(this)
+
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            goToHome()
+            Log.d(TAG, "User already autenticated")
+            // get primary profile
+            FirebaseUtils.getPrimaryProfile()
+        }
+    }
+
+    override fun update(observableObj: Observable?, data: Any?) {
+        when(observableObj) {
+            primaryUser -> {
+                primaryUser.deleteObserver(this)
+                if (signup) {
+                    Log.d(TAG, "SIGNUP: go to information")
+                    val intent = Intent(this, ModifyAccountActivity::class.java)
+                    intent.putExtra("signup", true)
+                    startActivity(intent)
+                } else {
+                    Log.d(TAG, "SIGNIN: go to home")
+                    goToHome()
+                }
+            }
+            localUser -> {
+                localUser.deleteObserver(this)
+                val profile = localUser.getValue()
+
+                if (profile != null) {
+                    goToHome()
+                } else {
+                    signup = true
+                    FirebaseUtils.createUserInstance(auth.currentUser!!.uid)
+                    FirebaseUtils.getPrimaryProfile()
+                }
+            }
+            else -> Log.d(TAG, "Observable not recognized $data")
         }
     }
 
     private fun goToHome() {
-        //go to login
-        FirebaseUtils.getProfile(null)
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
@@ -106,11 +141,10 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
-                    createUserInstance()
-                    // goToHome()
-                    val intent = Intent(this, ModifyAccountActivity::class.java)
-                    intent.putExtra("signup", true)
-                    startActivity(intent)
+                    signup = true
+                    FirebaseUtils.createUserInstance(auth.currentUser!!.uid)
+                    FirebaseUtils.getPrimaryProfile()
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
@@ -151,9 +185,13 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
-                    createUserInstance()
-                    goToHome()
+                    Log.d(TAG, "signInWithGoogleCredential:success")
+
+                    // check if already exists the users (sing-in case)
+                    Log.w(TAG, "Current user: ${auth.currentUser!!.uid}")
+                    localUser.addObserver(this)
+                    FirebaseUtils.getProfile(auth.currentUser!!.uid)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -161,15 +199,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-
-    private fun createUserInstance() {
-        Log.d(TAG, "createUserInstance")
-
-        FirebaseUtils.createUserInstance(auth.currentUser!!.uid)
-        UserController.getProfile(auth.currentUser!!.uid)
-    }
-
-
 
 
     private fun validateForm(): Boolean {

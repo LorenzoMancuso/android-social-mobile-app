@@ -15,6 +15,7 @@ import android.widget.*
 import com.example.rathings.FirebaseUtils
 import com.example.rathings.R
 import com.example.rathings.User.User
+import com.example.rathings.utils.CustomObservable
 import java.util.*
 
 
@@ -32,7 +33,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TabsFragment : Fragment()/*, Observer*/ {
+class TabsFragment : Fragment(), Observer {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -40,8 +41,7 @@ class TabsFragment : Fragment()/*, Observer*/ {
 
     var flatPalette: ArrayList<String> = ArrayList(Arrays.asList("#1abc9c", "#16a085", "#2ecc71", "#27ae60", "#3498db", "#2980b9", "#f1c40f", "#f39c12", "#e67e22", "#d35400", "#e74c3c", "#c0392b", "#9b59b6", "#8e44ad"))
 
-    var tabsObs = TabController.tabsObs
-    var primaryUserProfileObs = FirebaseUtils.getPrimaryProfile()
+    lateinit var tabsObs: CustomObservable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +50,8 @@ class TabsFragment : Fragment()/*, Observer*/ {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        // tabsObs.addObserver(this)
+        tabsObs = TabController.getTabs()
+        tabsObs.addObserver(this)
         // primaryUserProfileObs.addObserver(this)
     }
 
@@ -58,21 +59,24 @@ class TabsFragment : Fragment()/*, Observer*/ {
         super.onViewCreated(view, savedInstanceState)
         initTabs()
     }
-    /*
+
 
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             tabsObs -> {
+                tabsObs.deleteObserver(this)
                 initTabs()
             }
+            /*
             primaryUserProfileObs -> {
                 // After setTab function (remove or add Tab)
                 TabController.getTabs()
             }
+            */
             else -> Log.d("[TABS-FRAGMENT]", "observable not recognized $data")
         }
     }
-    */
+
 
     fun initTabs() {
         val container = view?.findViewById(R.id.container) as LinearLayout
@@ -81,7 +85,7 @@ class TabsFragment : Fragment()/*, Observer*/ {
         container.removeAllViews()
 
         val value = tabsObs.getValue()
-        val userInterests = (primaryUserProfileObs.getValue() as User).interests
+        val userInterests = (FirebaseUtils.primaryUserProfileObservable.getValue() as User).interests
 
         Log.d("[TABS-FRAGMENT]", userInterests.toString())
         Log.d("[TABS-FRAGMENT]", value.toString())
@@ -133,7 +137,7 @@ class TabsFragment : Fragment()/*, Observer*/ {
 
     fun setTab(tab: Tab, value: Boolean) {
         Log.d("[TABS-FRAGMENT]", "Clicked Tab ${tab} with User Value ${value}")
-        val user = primaryUserProfileObs.getValue() as User
+        val user = FirebaseUtils.primaryUserProfileObservable.getValue() as User
         if (!value) {
             user.interests.add(tab.id)
         } else {
