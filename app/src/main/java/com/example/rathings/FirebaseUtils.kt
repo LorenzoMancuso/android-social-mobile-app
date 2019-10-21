@@ -210,11 +210,13 @@ object FirebaseUtils {
 
         Log.e("[FIREBASE-UTILS-USER]", "user uid ${id_user}")
         val ref = FirebaseUtils.database.child("cards")
-        var cards: ArrayList<Card> = ArrayList()
+
         val phoneQuery = ref.orderByChild("user").equalTo(id_user)
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var cards: ArrayList<Card> = ArrayList()
+
                 for (singleSnapshot in dataSnapshot.children) {
                     var card=singleSnapshot.getValue(Card::class.java)
                     if(card is Card)

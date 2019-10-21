@@ -47,7 +47,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     var tabsObs = TabController.tabsObs
     var cardsObs = FirebaseUtils.interestCardsObservable
-    var userObs = CustomObservable()
     var selectedCard: Card = Card()
 
     override fun onFragmentInteraction(uri: Uri) {}
@@ -83,21 +82,19 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     override fun update(observableObj: Observable?, data: Any?) {
         when(observableObj) {
             cardsObs -> {
+                Log.d("[DETAILED CARD ACT]", "card observable")
                 var valuesObs = cardsObs.getValue()
                 if (valuesObs is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(valuesObs.filterIsInstance<Card>())
                     val filteredCards = (cards.filter { it.id == intent.getStringExtra("idCard") })
                     if (filteredCards.isNotEmpty()) {
                         selectedCard = filteredCards[0]
+                        Log.d("[DETAILED CARD ACT]", "selectedCard $selectedCard")
                         init()
                     } else {
                         finish()
                     }
                 }
-            }
-            userObs -> {
-                initRatingBar(userObs.getValue() as User)
-                initComments(userObs.getValue() as User)
             }
             else -> Log.d("[DETAILED-CARD]", "observable not recognized $data")
         }
@@ -105,13 +102,19 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     private fun init() {
         // User, Title, Description, Categories, Link, Multimedia, Comments and SettingsButton
-        initUser()
+        Log.d("[DETAILED CARD ACT]", "Init")
+
+        /**init methods*/
+        initUser() //OK
+        initCategories()//OK
+        initLink() //OK
+        initMultimedia() //OK
+        initSettingsButton() //OK
+
+        Log.d("[DETAILED CARD ACT]", "End init")
+
         findViewById<TextView>(R.id.title).text = selectedCard.title
         findViewById<TextView>(R.id.description).text = selectedCard.description
-        initCategories()
-        initLink()
-        initMultimedia()
-        initSettingsButton()
 
         // Date
         val date = Date(selectedCard.timestamp.toLong() * 1000)
@@ -126,9 +129,16 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
                 .into(profile_image)
         }
 
+        Log.d("[DETAILED CARD ACT]", "Final init")
         // To initialize Rating Bar
-        userObs = FirebaseUtils.getPrimaryProfile()
-        userObs.addObserver(this)
+        var userObj = FirebaseUtils.primaryUserProfileObservable.getValue() as User
+
+        Log.d("[DETAILED CARD ACT]", "get user")
+
+        initRatingBar(userObj)
+        Log.d("[DETAILED CARD ACT]", "end rating bar init")
+        initComments(userObj)
+        Log.d("[DETAILED CARD ACT]", "end comment init")
 
     }
 
@@ -343,6 +353,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
             newComment.timestamp = (System.currentTimeMillis() / 1000).toInt()
 
             FirebaseUtils.updateData("cards/${selectedCard.id}/comments/${newComment.id }", newComment.toMutableMap())
+            Log.d("[DETAILED CARD ACT]", "UPDATED Card")
             Toast.makeText(this, this.getString(R.string.add_comment_done), Toast.LENGTH_SHORT)
 
             comment.setText("")
@@ -379,7 +390,6 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
         super.onDestroy()
         tabsObs.deleteObserver(this)
         cardsObs.deleteObserver(this)
-        userObs.deleteObserver(this)
     }
 
 }

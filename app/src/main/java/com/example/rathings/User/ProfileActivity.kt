@@ -23,7 +23,6 @@ import kotlin.collections.ArrayList
 
 class ProfileActivity : AppCompatActivity(), Observer {
 
-    var primaryUserProfileObservable= FirebaseUtils.getPrimaryProfile()
     var localUserProfileObservable= FirebaseUtils.userProfileObservable
     var localUserCardsObservable= FirebaseUtils.userCardsObservable
 
@@ -44,7 +43,6 @@ class ProfileActivity : AppCompatActivity(), Observer {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         /**-----------------*/
 
-        primaryUserProfileObservable.addObserver(this)
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
@@ -57,7 +55,9 @@ class ProfileActivity : AppCompatActivity(), Observer {
         user_cards_recycler_view.isNestedScrollingEnabled = false
 
         val user=intent.getStringExtra("user");
-        FirebaseUtils.getPrimaryProfile()
+        val value=FirebaseUtils.primaryUserProfileObservable.getValue()
+        checkFollowRelation()
+
         //call for get profile info
         FirebaseUtils.getProfile(user)
         //call for get card of current user
@@ -173,7 +173,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(profile_image)
                     }
-                    Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
+                    Log.d("[PROFILE-ACTIVITY]", "PROFILE observable $user")
                 }
 
 
@@ -182,8 +182,8 @@ class ProfileActivity : AppCompatActivity(), Observer {
                 val value = localUserCardsObservable.getValue()
                 if (value is List<*>) {
                     val cards: ArrayList<Card> = ArrayList(value.filterIsInstance<Card>())
-                    Log.d("[PROFILE-FRAGMENT]", "CARDS observable lenght ${cards.size}")
-                    Log.d("[PROFILE-FRAGMENT]", "CARDS observable $cards")
+                    Log.d("[PROFILE-ACTIVITY]", "CARDS observable lenght ${cards.size}")
+                    Log.d("[PROFILE-ACTIVITY]", "CARDS observable $cards")
 
                     findViewById<TextView>(R.id.txt_post).text = this.getString(R.string.cards_size, cards.size)
 
@@ -199,18 +199,7 @@ class ProfileActivity : AppCompatActivity(), Observer {
                     cardRecyclerView?.adapter = cardAdapter
                 }
             }
-            primaryUserProfileObservable-> {
-                val value=primaryUserProfileObservable.getValue()
-                if(value is User){
-                    val user= value
-                    localPrimaryUserProfile=user
-                    if(localUserProfile.id!=""){
-                        checkFollowRelation()
-                    }
-                    Log.d("[PROFILE-FRAGMENT]", "PROFILE observable $user")
-                }
-            }
-            else -> Log.d("[USER-CONTROLLER]", "observable not recognized $data")
+            else -> Log.d("[PROFILE-ACTIVITY]", "observable not recognized $data")
         }
     }
 
@@ -233,6 +222,5 @@ class ProfileActivity : AppCompatActivity(), Observer {
         super.onDestroy()
         localUserProfileObservable.deleteObserver(this)
         localUserCardsObservable.deleteObserver(this)
-        primaryUserProfileObservable.deleteObserver(this)
     }
 }
