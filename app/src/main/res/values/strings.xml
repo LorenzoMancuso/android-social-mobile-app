@@ -100,6 +100,7 @@
 
     <!-- Profile Fragment -->
     <string name="sign_out_button">Sign out</string>
+    <string name="change_language_button">Language</string>
 
     <!-- Search Fragment -->
     <string name="search_hint">Search user by name</string>
@@ -129,4 +130,9 @@
     <string name="follow_you">%1$s %2$s started to follow you.</string>
     <string name="push_notification_title">You have a new notification!</string>
     <string name="push_notification_message">Enter in Rathings for see what\'s up</string>
+
+    <!-- Languages Menu -->
+    <string name="language_en">English</string>
+    <string name="language_it">Italian</string>
+
 </resources>

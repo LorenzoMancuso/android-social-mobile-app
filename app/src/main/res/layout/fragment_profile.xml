@@ -68,11 +68,20 @@
                         <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/btn_edit"
-                                android:background="#FFF"
+                                android:id="@+id/change_language"
+                                android:backgroundTint="@color/redPrimary"
                                 style="?android:attr/borderlessButtonStyle"
                                 android:layout_margin="5dp"
-                                android:textColor="#F00"
+                                android:textColor="#FFF"
+                                android:text="@string/change_language_button"/>
+                        <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btn_edit"
+                                android:backgroundTint="@color/redPrimary"
+                                style="?android:attr/borderlessButtonStyle"
+                                android:layout_margin="5dp"
+                                android:textColor="#FFF"
                                 android:text="@string/edit_button"/>
                         <Button
                                 android:layout_width="wrap_content"
@@ -80,7 +89,7 @@
                                 android:id="@+id/btn_signout"
                                 android:layout_margin="5dp"
                                 style="?android:attr/borderlessButtonStyle"
-                                android:background="#F00"
+                                android:backgroundTint="@color/blackPrimary"
                                 android:textColor="#FFF"
                                 android:text="@string/sign_out_button"/>
                 </LinearLayout>
