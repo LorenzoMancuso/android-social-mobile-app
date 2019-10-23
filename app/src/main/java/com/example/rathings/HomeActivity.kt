@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.util.Log
 import com.example.rathings.Card.CardsFragment
@@ -36,7 +37,14 @@ class HomeActivity : AppCompatActivity(), CardsFragment.OnFragmentInteractionLis
         // Initialize Tabs
         TabController.getTabs()
 
-        switchFragment(intent.getStringExtra("mode"))
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("restart", false)) {
+            switchFragment("profile")
+            val editSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this).edit()
+            editSharedPreferences.putBoolean("restart", false)
+            editSharedPreferences.apply()
+        } else {
+            switchFragment(intent.getStringExtra("mode"))
+        }
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
