@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:967750282231:android:71d6d9f2e58aec99",
+        "mobilesdk_app_id": "1:967750282231:android:0a0505fc8241a423f3dcf2",
         "android_client_info": {
           "package_name": "com.example.rathings"
         }
       },
       "oauth_client": [
         {
-          "client_id": "967750282231-fv7dmfl6ems5265lu6pnpuqm7qpdibsr.apps.googleusercontent.com",
+          "client_id": "967750282231-faad3sb841rspin2dutevtt79md38ogd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.rathings",
-            "certificate_hash": "86a267dca7db22c33e7ad01195a18613d41bf39f"
+            "certificate_hash": "51e1e53533036a3981e5c0caa9216152464a4940"
           }
         },
         {

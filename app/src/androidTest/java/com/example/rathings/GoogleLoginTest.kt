@@ -35,7 +35,7 @@ class GoogleLoginTest {
 
         val materialButton = onView(
             allOf(
-                withId(R.id.google_sign_in_button), withText("Continue with Google"),
+                withId(R.id.google_sign_in_button), withText(R.string.google_button),
                 childAtPosition(
                     allOf(
                         withId(R.id.email_login_form),
