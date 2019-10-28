@@ -4,14 +4,14 @@ package com.example.rathings
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
@@ -20,16 +20,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class GoogleLoginTest {
+class SearchUserTest {
 
     @Rule
     @JvmField
     var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
-    // InstrumentationRegistry.getInstrumentation().targetContext.resources.getString(R.string.google_button)
-
     @Test
-    fun googleLoginTest() {
+    fun searchUserTest() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -59,6 +57,96 @@ class GoogleLoginTest {
 
         val bottomNavigationItemView = onView(
             allOf(
+                withId(R.id.action_search), withContentDescription("search"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.bottom_navigation),
+                        0
+                    ),
+                    4
+                ),
+                isDisplayed()
+            )
+        )
+        bottomNavigationItemView.perform(click())
+
+        val appCompatEditText = onView(
+            allOf(
+                withId(R.id.user_text),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText.perform(replaceText("lore"), closeSoftKeyboard())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(7000)
+
+        val appCompatEditText2 = onView(
+            allOf(
+                withId(R.id.user_text),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText2.perform(replaceText("lorenzo"))
+
+        val appCompatEditText3 = onView(
+            allOf(
+                withId(R.id.user_text), withText("lorenzo"),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText3.perform(closeSoftKeyboard())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(5000)
+
+        val materialButton2 = onView(
+            allOf(
+                withId(R.id.search_user),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton2.perform(click())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(2000)
+
+        val bottomNavigationItemView2 = onView(
+            allOf(
                 withId(R.id.action_profile), withContentDescription("profile"),
                 childAtPosition(
                     childAtPosition(
@@ -70,16 +158,11 @@ class GoogleLoginTest {
                 isDisplayed()
             )
         )
-        bottomNavigationItemView.perform(click())
+        bottomNavigationItemView2.perform(click())
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        Thread.sleep(7000)
-
-        val materialButton2 = onView(
+        val materialButton3 = onView(
             allOf(
-                withId(R.id.btn_signout),
+                withId(R.id.btn_signout), withText("Sign out"),
                 childAtPosition(
                     allOf(
                         withId(R.id.info_buttons_section),
@@ -93,7 +176,7 @@ class GoogleLoginTest {
                 isDisplayed()
             )
         )
-        materialButton2.perform(click())
+        materialButton3.perform(click())
     }
 
     private fun childAtPosition(

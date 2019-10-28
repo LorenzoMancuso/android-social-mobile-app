@@ -29,7 +29,7 @@ class GoogleSignupTest {
     fun googleSignupTest() {
         val materialButton = onView(
             allOf(
-                withId(R.id.google_sign_in_button), withText(R.string.google_button),
+                withId(R.id.google_sign_in_button),
                 childAtPosition(
                     allOf(
                         withId(R.id.email_login_form),
@@ -88,7 +88,7 @@ class GoogleSignupTest {
 
         val materialButton2 = onView(
             allOf(
-                withId(R.id.confirm_button), withText("Confirm"),
+                withId(R.id.confirm_button),
                 childAtPosition(
                     childAtPosition(
                         withId(R.id.login_form),

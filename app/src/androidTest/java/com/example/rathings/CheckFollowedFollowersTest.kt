@@ -12,6 +12,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
@@ -20,16 +21,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class GoogleLoginTest {
+class CheckFollowedFollowersTest {
 
     @Rule
     @JvmField
     var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
-    // InstrumentationRegistry.getInstrumentation().targetContext.resources.getString(R.string.google_button)
-
     @Test
-    fun googleLoginTest() {
+    fun checkFollowedFollowesTest() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -71,6 +70,87 @@ class GoogleLoginTest {
             )
         )
         bottomNavigationItemView.perform(click())
+
+        val appCompatTextView = onView(
+            allOf(
+                withId(R.id.txt_followers),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.follow_section),
+                        1
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatTextView.perform(click())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(7000)
+
+        val appCompatImageButton = onView(
+            allOf(
+                withContentDescription("Navigate up"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.toolbar),
+                        childAtPosition(
+                            withClassName(`is`("android.widget.LinearLayout")),
+                            0
+                        )
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatImageButton.perform(click())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(7000)
+
+        val appCompatTextView2 = onView(
+            allOf(
+                withId(R.id.txt_followed),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.follow_section),
+                        2
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatTextView2.perform(click())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(7000)
+
+        val appCompatImageButton2 = onView(
+            allOf(
+                withContentDescription("Navigate up"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.toolbar),
+                        childAtPosition(
+                            withClassName(`is`("android.widget.LinearLayout")),
+                            0
+                        )
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatImageButton2.perform(click())
 
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:

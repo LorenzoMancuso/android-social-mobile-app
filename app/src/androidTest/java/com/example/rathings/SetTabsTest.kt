@@ -8,6 +8,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.Description
@@ -20,16 +21,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class GoogleLoginTest {
+class SetTabsTest {
 
     @Rule
     @JvmField
     var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
-    // InstrumentationRegistry.getInstrumentation().targetContext.resources.getString(R.string.google_button)
-
     @Test
-    fun googleLoginTest() {
+    fun setTabsTest() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -59,6 +58,68 @@ class GoogleLoginTest {
 
         val bottomNavigationItemView = onView(
             allOf(
+                withId(R.id.action_tabs), withContentDescription("tabs"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.bottom_navigation),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        bottomNavigationItemView.perform(click())
+
+        val button = onView(
+            allOf(
+                withText("Videogiochi"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.container),
+                        1
+                    ),
+                    1
+                )
+            )
+        )
+        button.perform(scrollTo(), click())
+
+        val button2 = onView(
+            allOf(
+                withText("Scienza"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.container),
+                        3
+                    ),
+                    1
+                )
+            )
+        )
+        button2.perform(scrollTo(), click())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(7000)
+
+        val button3 = onView(
+            allOf(
+                withText("Cinema"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.container),
+                        2
+                    ),
+                    0
+                )
+            )
+        )
+        button3.perform(scrollTo(), click())
+
+        val bottomNavigationItemView2 = onView(
+            allOf(
                 withId(R.id.action_profile), withContentDescription("profile"),
                 childAtPosition(
                     childAtPosition(
@@ -70,16 +131,11 @@ class GoogleLoginTest {
                 isDisplayed()
             )
         )
-        bottomNavigationItemView.perform(click())
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        Thread.sleep(7000)
+        bottomNavigationItemView2.perform(click())
 
         val materialButton2 = onView(
             allOf(
-                withId(R.id.btn_signout),
+                withId(R.id.btn_signout), withText("Sign out"),
                 childAtPosition(
                     allOf(
                         withId(R.id.info_buttons_section),

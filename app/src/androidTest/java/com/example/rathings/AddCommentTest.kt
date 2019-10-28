@@ -3,15 +3,17 @@ package com.example.rathings
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
@@ -20,16 +22,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class GoogleLoginTest {
+class AddCommentTest {
 
     @Rule
     @JvmField
     var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
-    // InstrumentationRegistry.getInstrumentation().targetContext.resources.getString(R.string.google_button)
-
     @Test
-    fun googleLoginTest() {
+    fun addCommentTest() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -57,6 +57,81 @@ class GoogleLoginTest {
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         Thread.sleep(7000)
 
+        val cardView = onView(
+            allOf(
+                withId(R.id.cv),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.my_recycler_view),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        cardView.perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+
+        /// cardView.perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(7000)
+
+        val appCompatEditText = onView(
+            allOf(
+                withId(R.id.added_comment),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("androidx.coordinatorlayout.widget.CoordinatorLayout")),
+                        1
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText.perform(replaceText("Wow! This card is really helpful!"), closeSoftKeyboard())
+
+        val materialButton2 = onView(
+            allOf(
+                withId(R.id.publish_comment),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("androidx.coordinatorlayout.widget.CoordinatorLayout")),
+                        1
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton2.perform(click())
+
+        val appCompatImageButton = onView(
+            allOf(
+                withContentDescription("Navigate up"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.toolbar),
+                        childAtPosition(
+                            withClassName(`is`("android.widget.LinearLayout")),
+                            0
+                        )
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatImageButton.perform(click())
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        Thread.sleep(7000)
+
         val bottomNavigationItemView = onView(
             allOf(
                 withId(R.id.action_profile), withContentDescription("profile"),
@@ -72,12 +147,7 @@ class GoogleLoginTest {
         )
         bottomNavigationItemView.perform(click())
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        Thread.sleep(7000)
-
-        val materialButton2 = onView(
+        val materialButton3 = onView(
             allOf(
                 withId(R.id.btn_signout),
                 childAtPosition(
@@ -93,7 +163,7 @@ class GoogleLoginTest {
                 isDisplayed()
             )
         )
-        materialButton2.perform(click())
+        materialButton3.perform(click())
     }
 
     private fun childAtPosition(
