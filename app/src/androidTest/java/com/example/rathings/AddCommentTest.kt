@@ -59,14 +59,7 @@ class AddCommentTest {
 
         val cardView = onView(
             allOf(
-                withId(R.id.cv),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.my_recycler_view),
-                        0
-                    ),
-                    0
-                ),
+                withId(R.id.my_recycler_view),
                 isDisplayed()
             )
         )
@@ -93,6 +86,8 @@ class AddCommentTest {
             )
         )
         appCompatEditText.perform(replaceText("Wow! This card is really helpful!"), closeSoftKeyboard())
+
+        Thread.sleep(5000)
 
         val materialButton2 = onView(
             allOf(
