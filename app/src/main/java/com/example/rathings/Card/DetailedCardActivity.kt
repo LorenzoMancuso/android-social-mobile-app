@@ -1,6 +1,7 @@
 package com.example.rathings.Card
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -333,6 +334,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
     fun editCard() {
         val intent = Intent(applicationContext, EditCardActivity::class.java)
         intent.putExtra("card", selectedCard)
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
         applicationContext.startActivity(intent)
         Log.d("[AFTER ACTIVITY]", "Init Card")
         init()
