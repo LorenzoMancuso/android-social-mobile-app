@@ -43,6 +43,11 @@ class ProfileActivity : AppCompatActivity(), Observer {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         /**-----------------*/
 
+        val primaryUser = FirebaseUtils.primaryUserProfileObservable.getValue()
+        if (primaryUser is User){
+            localPrimaryUserProfile = primaryUser
+        }
+
         localUserProfileObservable.addObserver(this)
         localUserCardsObservable.addObserver(this)
 
