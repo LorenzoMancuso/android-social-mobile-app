@@ -102,22 +102,23 @@ class ProfileActivity : AppCompatActivity(), Observer {
     }
 
     fun addNotification(userProfile: User, otherUserProfile: User){
+        if (userProfile.id != otherUserProfile.id) {
+            val timestamp = System.currentTimeMillis() / 1000L
+            val split = userProfile.id.length/2
+            val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
+                otherUserProfile.id,
+                this.getString(R.string.follow_you, otherUserProfile.name, otherUserProfile.surname),
+                timestamp,
+                false,
+                "profile",
+                userProfile.id)
 
-        val timestamp = System.currentTimeMillis() / 1000L
-        val split = userProfile.id.length/2
-        val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
-            otherUserProfile.id,
-            this.getString(R.string.follow_you, otherUserProfile.name, otherUserProfile.surname),
-            timestamp,
-            false,
-            "profile",
-            userProfile.id)
-
-        userProfile.notifications.add(tmp)
-        FirebaseUtils.updateData(
-            "users/${userProfile.id}/",
-            localUserProfile.toMutableMap()
-        )
+            userProfile.notifications.add(tmp)
+            FirebaseUtils.updateData(
+                "users/${userProfile.id}/",
+                localUserProfile.toMutableMap()
+            )
+        }
     }
 
     fun removeFollower(){

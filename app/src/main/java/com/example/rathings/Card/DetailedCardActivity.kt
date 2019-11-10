@@ -369,23 +369,24 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
     fun addNotification(userProfile: User, card: Card, type:String){
         val otherUserProfile = card.userObj
+        if (userProfile.id != otherUserProfile.id) {
+            val timestamp = System.currentTimeMillis() / 1000L
+            val split = userProfile.id.length/2
 
-        val timestamp = System.currentTimeMillis() / 1000L
-        val split = userProfile.id.length/2
+            val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
+                userProfile.id,
+                "${userProfile.name} ${userProfile.surname} added a ${type} to your card.",
+                timestamp,
+                false,
+                "card",
+                card.id)
 
-        val tmp = Notification("${timestamp}${userProfile.id.substring(split)}${otherUserProfile.id.substring(split)}",
-            userProfile.id,
-            "${userProfile.name} ${userProfile.surname} added a ${type} to your card.",
-            timestamp,
-            false,
-            "card",
-            card.id)
-
-        otherUserProfile.notifications.add(tmp)
-        FirebaseUtils.updateData(
-            "users/${otherUserProfile.id}/",
-            otherUserProfile.toMutableMap()
-        )
+            otherUserProfile.notifications.add(tmp)
+            FirebaseUtils.updateData(
+                "users/${otherUserProfile.id}/",
+                otherUserProfile.toMutableMap()
+            )
+        }
     }
 
     override fun onDestroy() {
