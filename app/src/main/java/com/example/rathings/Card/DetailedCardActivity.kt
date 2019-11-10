@@ -217,6 +217,7 @@ class DetailedCardActivity : AppCompatActivity(), Observer, LinkPreviewFragment.
 
         if (selectedCard.multimedia.size == 1) {
             var row = containerMultimedia.getChildAt(containerMultimedia.childCount - 1) as LinearLayout
+            row.setOnClickListener{ openMultimediaActivity() }
 
             var imageView = ImageView(applicationContext)
             imageView.setPadding(5,5,5,5)

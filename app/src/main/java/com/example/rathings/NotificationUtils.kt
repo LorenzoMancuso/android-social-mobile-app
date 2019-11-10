@@ -26,6 +26,7 @@ object NotificationUtils {
             createNotificationChannel(context)
 
         val intent: Intent
+        Log.d("[TARGET TYPE]", notification.targetType)
         if (notification.targetType == "card"){
             intent = Intent(context, DetailedCardActivity::class.java)
             intent.putExtra("idCard", notification.targetId)
@@ -78,7 +79,7 @@ object NotificationUtils {
                 Log.d("[PRE-NOTIFICATION]", previousNotifications.toString())
                 Log.d("[NOTIFICATION]", notifications.toString())
                 if (previousNotifications.size >0 && previousNotifications.size < notifications.size) {
-                    val notification = notifications[notifications.size-1]
+                    val notification = notifications[0]
                     /**CONTROL FOR SEND PUSH NOTIFICATIONS*/
                     Log.d("[SEND NOTIFICATION]", notification.toString())
                     sendPushNotification(context, notification)
