@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -74,12 +75,16 @@ object NotificationUtils {
         FirebaseUtils.getNotifications().addObserver(object: Observer {
             override fun update(o: Observable?, arg: Any?) {
                 val notifications = (o as CustomObservable).getValue() as ArrayList<Notification>
+                Log.d("[PRE-NOTIFICATION]", previousNotifications.toString())
+                Log.d("[NOTIFICATION]", notifications.toString())
                 if (previousNotifications.size >0 && previousNotifications.size < notifications.size) {
                     val notification = notifications[notifications.size-1]
                     /**CONTROL FOR SEND PUSH NOTIFICATIONS*/
+                    Log.d("[SEND NOTIFICATION]", notification.toString())
                     sendPushNotification(context, notification)
                 }
                 previousNotifications = notifications
+                Log.d("[POST-NOTIFICATION]", previousNotifications.toString())
             }
         })
     }

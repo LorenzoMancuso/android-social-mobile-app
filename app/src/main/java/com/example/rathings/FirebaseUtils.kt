@@ -334,7 +334,18 @@ object FirebaseUtils {
             FirebaseUtils.database.child("users/${user.id}/notifications").addValueEventListener(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        notificationsObservable.setValue(ArrayList(user.notifications.sortedWith(compareByDescending({ it.timestamp }))))
+                        Log.d("[NOTIFICATION OBS]", user.notifications.toString())
+                        Log.d("[NOTIFICATION OBS]", user.notifications.sortedWith(compareByDescending({ it.timestamp })).toString())
+
+                        val notifications = ArrayList<Notification>()
+                        for (singleSnapshot in dataSnapshot.children) {
+                            var notification=singleSnapshot.getValue(Notification::class.java)
+                            if(notification is Notification){
+                                notifications.add(notification)
+                            }
+                        }
+                        // user.notifications = notifications.sortedWith(compareByDescending({ it.timestamp })).toMutableList()
+                        notificationsObservable.setValue(ArrayList(notifications.sortedWith(compareByDescending({ it.timestamp }))))
                     }
                     override fun onCancelled(p0: DatabaseError) {
                         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
